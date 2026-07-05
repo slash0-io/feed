@@ -1,0 +1,20 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 189062
+Last-Modified: Fri, 05 Jun 2026 08:40:26 GMT
+ETag: "6a228b7a-2e286"
+X-XSS-Protection: 1; mode=block
+X-Content-Type-Options: nosniff
+Strict-Transport-Security: max-age=31536000; includeSubdomains
+Content-Security-Policy: default-src 'self'; img-src 'self' data: https://*.truste.com https://*.trustarc.com https://oracle.112.2o7.net https://oracle.sc.omtrdc.net https://dpm.demdex.net *.psn-pco.it *.nricloud.jp *.sovereigncloud.nz *.jpsovereigncloud.jp *.thaiaiscloud.com *.dutechcloud.ae *.stccloud.com *.opencanvas.jp *.portalclarocco.com.br *.svcl.jp *.eonecloud.com *.oracle.com *.oraclecloud.com *.oracleinfinity.io console.r1.oracleiaas.com *.cloud.oracle.com; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.oracle.com https://www.oracleimg.com https://*.truste.com https://*.trustarc.com https://cdnjs.cloudflare.com https://code.jquery.com https://*.oracleinfinity.io https://*.oci.oraclecloud.com https://activitymap.adobe.com *.psn-pco.it *.nricloud.jp *.sovereigncloud.nz *.jpsovereigncloud.jp *.thaiaiscloud.com *.dutechcloud.ae *.stccloud.com *.opencanvas.jp *.portalclarocco.com.br *.svcl.jp *.eonecloud.com; style-src 'self' 'unsafe-inline' https://maxcdn.bootstrapcdn.com ; font-src 'self' https://maxcdn.bootstrapcdn.com ; frame-src 'self' *.truste.com *.trustarc.com *.omniture.com ; connect-src 'self' *.truste.com *.trustarc.com *.psn-pco.it *.nricloud.jp *.sovereigncloud.nz *.jpsovereigncloud.jp *.thaiaiscloud.com *.dutechcloud.ae *.stccloud.com *.opencanvas.jp *.portalclarocco.com.br *.svcl.jp *.eonecloud.com sitecatalyst.omniture.com feedback.us-phoenix-1.oci.oraclecloud.com feedback-dev.us-phoenix-1.oci.oraclecloud.com *.cloud.oracle.com console.r1.oracleiaas.com ; frame-ancestors 'self' https://*.oraclecloud.com https://*.oraclecloud8.com https://*.oraclecloud9.com https://*.oraclecloud10.com https://*.oraclecloud11.com https://cloud.oracle.com https://cloud-staging.oracle.com *.psn-pco.it *.nricloud.jp *.sovereigncloud.nz *.jpsovereigncloud.jp *.thaiaiscloud.com *.dutechcloud.ae *.stccloud.com *.opencanvas.jp *.portalclarocco.com.br *.svcl.jp *.eonecloud.com
+Access-Control-Allow-Origin: *
+Access-Control-Max-Age: 3600
+Access-Control-Expose-Headers: Content-Length
+Access-Control-Allow-Headers: Range
+Accept-Ranges: bytes
+Cache-Control: max-age=556
+Expires: Sat, 04 Jul 2026 13:05:04 GMT
+Date: Sat, 04 Jul 2026 12:55:48 GMT
+Connection: keep-alive
+Akamai-GRN: 0.96922e17.1783169748.2179481f
+

@@ -1,0 +1,19 @@
+HTTP/2 200 
+content-type: application/json
+content-length: 9041
+date: Sat, 04 Jul 2026 12:57:43 GMT
+last-modified: Sat, 04 Jul 2026 08:01:17 GMT
+x-amz-expiration: expiry-date="Tue, 04 Aug 2026 00:00:00 GMT", rule-id="Cleanup PII"
+etag: "49de29711a8c22c911333534558fc3fd"
+x-amz-server-side-encryption: AES256
+x-amz-version-id: qkH.7UHfUIeh0dDSUXsPd.Pt54z5rxPU
+accept-ranges: bytes
+server: AmazonS3
+x-cache: Miss from cloudfront
+via: 1.1 48d44df2a05cf5d4e8d9356fee976800.cloudfront.net (CloudFront)
+x-amz-cf-pop: ATL59-P1
+alt-svc: h3=":443"; ma=86400
+x-amz-cf-id: rElXlwZ0IYDJPMULyyE_Ri8oDv_n_Z30rNYUwf4Yyn2E1FKeUP6T_Q==
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+cross-origin-resource-policy: cross-origin
+

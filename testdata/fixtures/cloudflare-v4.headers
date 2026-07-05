@@ -1,0 +1,17 @@
+HTTP/2 200 
+date: Sat, 04 Jul 2026 12:55:45 GMT
+content-type: text/plain;charset=UTF-8
+content-length: 230
+cf-ray: a15e493cdb0ffb13-BNA
+cf-cache-status: HIT
+accept-ranges: bytes
+age: 18803
+cache-control: s-maxage=86400
+last-modified: Sat, 04 Jul 2026 07:42:22 GMT
+server: cloudflare
+vary: accept-encoding
+set-cookie: __cf_bm=UDCpHSYkLkeMuNR2KdfCsLLsKw90W_WKLGCzoAlTbfE-1783169745.4179358-1.0.1.1-TR2uTYZTDfNvuGh5N.gft7NG2rf2fi1RP4.yaGb76HMI46SXT.FMkm8.ibp1ZJLAfeNp3TbVxgQ20z4ZQp3RmiqiCy697SAAJZS_Qv6yRGMOocQ9nLES3O16xZhZ97iEn9YrNnNgW6TDFeQwJnW3Aw; HttpOnly; SameSite=None; Secure; Path=/; Domain=www.cloudflare.com; Expires=Sat, 04 Jul 2026 13:25:45 GMT
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=mpG7MUMqK44cEx31Kyc35l6in1RBqaDPae4ZtluFOhe9vqPWMvftjCqOn0IvXSLo%2BsRCL7ZTzjUBnOt5mtP6AgYMPtB4cFI5rugRVRsPjnevEE9jX0Xj1GHvFI6s7OFQ1u42k505BTSvBhqSkNNILA%3D%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}
+alt-svc: h3=":443"; ma=86400
+

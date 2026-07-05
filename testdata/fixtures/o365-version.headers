@@ -1,0 +1,9 @@
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+date: Sat, 04 Jul 2026 12:55:49 GMT
+server: Microsoft-IIS/10.0
+content-length: 620
+strict-transport-security: max-age=2592000
+request-context: appId=cid-v1:3b69ad08-0c5d-4246-92fc-ed327f6ae5e3
+x-powered-by: ASP.NET
+

@@ -1,0 +1,690 @@
+# Machine registry of upstream IP-range sources — consumed by the feed generator.
+#
+# Every `endpoints[].url` in this file was fetched and verified live on the date in
+# `verified`. Human-readable research, evidence, and methodology: research/SOURCES.md
+#
+# Field reference:
+#   classification: dedicated   = vendor-owned ranges, safe to pin in IP allowlists
+#                   mixed       = some purposes dedicated, others shared/dynamic
+#                   cdn-shared  = fronted by shared CDN ranges; IP pinning is leaky (do not publish as pinnable)
+#   direction:      egress      = ranges you connect TO (destination allowlists / SG egress)
+#                   ingress     = ranges they connect FROM (webhook sources / SG ingress)
+#   detection.poll: cond-get    = server honors If-None-Match / If-Modified-Since (verified 304)
+#                   hash        = no cache headers; fetch + content-hash compare
+#                   docs-page   = HTML page; extract CIDRs, hash the extracted set
+#   detection.push: optional out-of-band change signal (subscribe in addition to polling)
+
+schema_version: 1
+
+defaults:
+  poll_interval_seconds:
+    cond-get: 60      # a 304 costs ~200 bytes; poll aggressively
+    hash: 300
+    docs-page: 900
+
+services:
+  # ── Cloud / IaaS ──────────────────────────────────────────────────────────
+  - slug: aws
+    name: Amazon Web Services
+    category: cloud
+    classification: dedicated
+    provenance: https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html
+    cadence: "irregular, several changes per week (observed); every publish signaled via SNS"
+    endpoints:
+      - id: main
+        url: https://ip-ranges.amazonaws.com/ip-ranges.json
+        format: aws-ip-ranges          # {syncToken, createDate, prefixes[], ipv6_prefixes[]}
+        detection:
+          poll: cond-get
+          push: "SNS arn:aws:sns:us-east-1:806199016981:AmazonIpSpaceChanged (us-east-1 subscription required)"
+        purposes:
+          - {key: all,        direction: egress, select: "*"}
+          - {key: s3,         direction: egress, select: "service=S3"}
+          - {key: dynamodb,   direction: egress, select: "service=DYNAMODB"}
+          - {key: cloudfront, direction: egress, select: "service=CLOUDFRONT"}
+          - {key: route53-healthchecks, direction: ingress, select: "service=ROUTE53_HEALTHCHECKS"}
+    verified: "2026-07-04"
+
+  - slug: google-cloud
+    name: Google Cloud Platform
+    category: cloud
+    classification: dedicated
+    provenance: https://support.google.com/a/answer/10026322
+    cadence: "regenerated frequently (roughly daily); syncToken/creationTime in file"
+    endpoints:
+      - id: cloud
+        url: https://www.gstatic.com/ipranges/cloud.json
+        format: google-prefixes        # {syncToken, creationTime, prefixes[{ipv4Prefix|ipv6Prefix, scope, service}]}
+        detection: {poll: cond-get}
+        purposes:
+          - {key: all, direction: egress, select: "*"}
+    verified: "2026-07-04"
+
+  - slug: google
+    name: Google (all services)
+    category: cloud
+    classification: dedicated
+    provenance: https://support.google.com/a/answer/10026322
+    cadence: "regenerated frequently (roughly daily)"
+    notes: "goog.json is the superset of all Google netblocks; Google documents goog-minus-cloud as the set for Google APIs/Workspace default domains."
+    endpoints:
+      - id: goog
+        url: https://www.gstatic.com/ipranges/goog.json
+        format: google-prefixes
+        detection: {poll: cond-get}
+        purposes:
+          - {key: all, direction: egress, select: "*"}
+    verified: "2026-07-04"
+
+  - slug: azure
+    name: Microsoft Azure (Service Tags)
+    category: cloud
+    classification: dedicated
+    provenance: https://learn.microsoft.com/en-us/azure/virtual-network/service-tags-overview
+    cadence: "weekly publication; new IPs unused for >=1 week after publication (documented grace window)"
+    notes: >
+      Weekly ServiceTags_Public_YYYYMMDD.json; per-tag changeNumber for diffing. The download
+      URL rotates weekly behind a confirmation page (id=56519), so the fetcher must resolve the
+      current URL from the download-page HTML or use the authenticated Service Tag Discovery API.
+    endpoints:
+      - id: service-tags
+        url: https://www.microsoft.com/en-us/download/details.aspx?id=56519
+        format: azure-service-tags     # resolve real JSON URL from page, then {values[{name, properties.addressPrefixes}]}
+        detection: {poll: docs-page}
+        purposes:
+          - {key: all,     direction: egress, select: "tag=AzureCloud"}
+          - {key: storage, direction: egress, select: "tag=Storage"}
+          - {key: sql,     direction: egress, select: "tag=Sql"}
+    verified: "2026-07-04"
+
+  - slug: microsoft-365
+    name: Microsoft 365
+    category: business-saas
+    classification: mixed
+    provenance: https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service
+    cadence: "monthly planned (start of month) plus out-of-band; /version endpoint is the purpose-built change signal"
+    endpoints:
+      - id: worldwide
+        url: https://endpoints.office.com/endpoints/worldwide?clientrequestid=<uuid>
+        format: o365-endpoints         # array of {serviceArea, ips[], urls[], category, required}
+        detection:
+          poll: hash
+          push: "poll https://endpoints.office.com/version (tiny response; version string bumps on change)"
+        purposes:
+          - {key: exchange,   direction: egress, select: "serviceArea=Exchange"}
+          - {key: sharepoint, direction: egress, select: "serviceArea=SharePoint"}
+          - {key: teams,      direction: egress, select: "serviceArea=Skype"}
+          - {key: common,     direction: egress, select: "serviceArea=Common"}
+    verified: "2026-07-04"
+
+  - slug: oracle-cloud
+    name: Oracle Cloud Infrastructure
+    category: cloud
+    classification: dedicated
+    provenance: https://docs.oracle.com/en-us/iaas/Content/General/Concepts/addressranges.htm
+    cadence: "irregular; last_updated_timestamp in file"
+    endpoints:
+      - id: main
+        url: https://docs.oracle.com/en-us/iaas/tools/public_ip_ranges.json
+        format: oci-ranges             # {last_updated_timestamp, regions[{region, cidrs[{cidr, tags[]}]}]}
+        detection: {poll: cond-get}
+        purposes:
+          - {key: all,          direction: egress, select: "*"}
+          - {key: object-storage, direction: egress, select: "tag=OBJECT_STORAGE"}
+    verified: "2026-07-04"
+
+  - slug: digitalocean
+    name: DigitalOcean
+    category: cloud
+    classification: dedicated
+    provenance: https://www.digitalocean.com/geo/google.csv
+    cadence: "irregular; self-published RFC 8805 geofeed"
+    endpoints:
+      - id: geofeed
+        url: https://www.digitalocean.com/geo/google.csv
+        format: geofeed-csv            # cidr,country,region,city,postal
+        detection: {poll: hash}        # no cache headers (verified)
+        purposes:
+          - {key: all, direction: egress, select: "*"}
+    verified: "2026-07-04"
+
+  - slug: linode
+    name: Akamai Connected Cloud (Linode)
+    category: cloud
+    classification: dedicated
+    provenance: https://geoip.linode.com/
+    cadence: "irregular; 'Last modified' comment in feed; RFC 8805 geofeed"
+    endpoints:
+      - id: geofeed
+        url: https://geoip.linode.com/
+        format: geofeed-csv
+        detection: {poll: cond-get}
+        purposes:
+          - {key: all, direction: egress, select: "*"}
+    verified: "2026-07-04"
+
+  # ── CDN / edge ────────────────────────────────────────────────────────────
+  - slug: cloudflare
+    name: Cloudflare
+    category: cdn
+    classification: cdn-shared
+    provenance: https://www.cloudflare.com/ips/
+    cadence: "rare; new ranges staged on the list before production use (documented)"
+    notes: "Shared edge ranges. Publishing these as 'pinnable' for a Cloudflare-fronted SaaS would allowlist the entire CDN — surfaced in the feed as cdn-shared so consumers can make that call explicitly."
+    endpoints:
+      - id: api
+        url: https://api.cloudflare.com/client/v4/ips
+        format: cloudflare-api         # {result:{ipv4_cidrs[], ipv6_cidrs[], etag}}
+        detection: {poll: cond-get}    # response includes its own etag field too
+        purposes:
+          - {key: edge, direction: both, select: "*"}
+    verified: "2026-07-04"
+
+  - slug: fastly
+    name: Fastly
+    category: cdn
+    classification: cdn-shared
+    provenance: https://www.fastly.com/documentation/reference/api/utils/public-ip-list/
+    cadence: "rare; changes announced in advance on the Fastly status page (subscribable)"
+    endpoints:
+      - id: public-ip-list
+        url: https://api.fastly.com/public-ip-list
+        format: fastly-list            # {addresses[], ipv6_addresses[]}
+        detection:
+          poll: hash                   # no cache headers (verified)
+          push: "status.fastly.com subscription ('IP address announcement')"
+        purposes:
+          - {key: edge, direction: both, select: "*"}
+    verified: "2026-07-04"
+
+  # ── Developer platforms / CI ──────────────────────────────────────────────
+  - slug: github
+    name: GitHub
+    category: devtools
+    classification: dedicated
+    provenance: https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-githubs-ip-addresses
+    cadence: "occasional; major changes announced on the GitHub changelog blog"
+    endpoints:
+      - id: meta
+        url: https://api.github.com/meta
+        format: github-meta            # {hooks[], web[], api[], git[], pages[], actions[], importer[], dependabot[]}
+        detection: {poll: cond-get}
+        purposes:
+          - {key: api,       direction: egress,  select: "api"}
+          - {key: git,       direction: egress,  select: "git"}
+          - {key: web,       direction: egress,  select: "web"}
+          - {key: pages,     direction: egress,  select: "pages"}
+          - {key: hooks,     direction: ingress, select: "hooks"}
+          - {key: actions,   direction: ingress, select: "actions"}
+          - {key: packages,  direction: egress,  select: "packages"}
+    verified: "2026-07-04"
+
+  - slug: gitlab
+    name: GitLab.com
+    category: devtools
+    classification: mixed
+    provenance: https://docs.gitlab.com/user/gitlab_com/
+    cadence: "stable dedicated ranges for web/API; runners have NO static IPs (documented)"
+    notes: "34.74.90.64/28 and 34.74.226.0/24 solely allocated to GitLab (web/API/webhooks/mirroring). Docs are open source — watch the docs repo file via commit feed for near-instant change detection."
+    endpoints:
+      - id: docs
+        url: https://docs.gitlab.com/user/gitlab_com/
+        format: html-cidr-extract
+        detection:
+          poll: docs-page
+          push: "gitlab.com/gitlab-org/gitlab commits atom feed for doc/user/gitlab_com/_index.md"
+        purposes:
+          - {key: web-api,  direction: egress,  select: "web/api fleet ranges"}
+          - {key: webhooks, direction: ingress, select: "same ranges; webhook + mirroring sources"}
+    verified: "2026-07-04"
+
+  - slug: circleci
+    name: CircleCI
+    category: devtools
+    classification: dedicated
+    provenance: https://circleci.com/docs/guides/security/ip-ranges/
+    cadence: "irregular; list is small (~30 IPs); feature requires Performance/Scale plan on the job side"
+    endpoints:
+      - id: jobs
+        url: https://circleci.com/docs/ip-ranges-list.json
+        format: circleci-list          # {IPRanges: {jobs: [], core: [], macOS: []}}
+        detection: {poll: hash}        # no cache headers (verified)
+        purposes:
+          - {key: jobs, direction: ingress, select: "jobs"}   # CI jobs reaching YOUR systems
+          - {key: core, direction: egress,  select: "core"}   # CircleCI cloud service IPs
+    verified: "2026-07-04"
+
+  # ── Payments / fintech ────────────────────────────────────────────────────
+  - slug: stripe
+    name: Stripe
+    category: payments
+    classification: dedicated
+    provenance: https://docs.stripe.com/ips
+    cadence: "irregular; Stripe documents advance notice for webhook IP changes"
+    endpoints:
+      - id: api
+        url: https://stripe.com/files/ips/ips_api.json
+        format: stripe-list            # {"API": [bare IPs]} -> normalize to /32
+        detection: {poll: hash}        # no cache headers (verified)
+        purposes:
+          - {key: api, direction: egress, select: "*"}
+      - id: webhooks
+        url: https://stripe.com/files/ips/ips_webhooks.json
+        format: stripe-list            # {"WEBHOOKS": [...]}
+        detection: {poll: hash}
+        purposes:
+          - {key: webhooks, direction: ingress, select: "*"}
+      - id: terminal
+        url: https://stripe.com/files/ips/ips_armada_gator.json
+        format: stripe-list            # {"ARMADA_GATOR": [...]} (Stripe Terminal)
+        detection: {poll: hash}
+        purposes:
+          - {key: terminal, direction: egress, select: "*"}
+    verified: "2026-07-04"
+
+  - slug: braintree
+    name: Braintree (PayPal)
+    category: payments
+    classification: dedicated
+    provenance: https://developer.paypal.com/braintree/docs/reference/general/braintree-ip-addresses
+    cadence: "irregular; docs explicitly say 'watch for changes in ips.json'"
+    endpoints:
+      - id: ips
+        url: https://assets.braintreegateway.com/json/ips.json
+        format: braintree-ips          # {production:{...}, sandbox:{...}}
+        detection: {poll: hash}
+        purposes:
+          - {key: api,     direction: egress, select: "production"}
+          - {key: sandbox, direction: egress, select: "sandbox"}
+    verified: "2026-07-04"
+
+  # ── Observability ─────────────────────────────────────────────────────────
+  - slug: datadog
+    name: Datadog
+    category: observability
+    classification: dedicated
+    provenance: https://docs.datadoghq.com/api/latest/ip-ranges/
+    cadence: "irregular; version + modified fields in file; per-site feeds (US shown; .eu etc. same schema)"
+    endpoints:
+      - id: us
+        url: https://ip-ranges.datadoghq.com/
+        format: datadog-ranges         # {version, modified, <product>:{prefixes_ipv4[], prefixes_ipv6[]}}
+        detection: {poll: cond-get}
+        purposes:
+          - {key: agents,     direction: egress,  select: "agents"}
+          - {key: api,        direction: egress,  select: "api"}
+          - {key: logs,       direction: egress,  select: "logs"}
+          - {key: apm,        direction: egress,  select: "apm"}
+          - {key: synthetics, direction: ingress, select: "synthetics"}
+          - {key: webhooks,   direction: ingress, select: "webhooks"}
+      - id: eu
+        url: https://ip-ranges.datadoghq.eu/
+        format: datadog-ranges
+        detection: {poll: cond-get}
+        region: eu
+        purposes:
+          - {key: agents-eu, direction: egress, select: "agents"}
+          - {key: api-eu,    direction: egress, select: "api"}
+    verified: "2026-07-04"
+
+  - slug: grafana-cloud
+    name: Grafana Cloud
+    category: observability
+    classification: dedicated
+    provenance: https://grafana.com/docs/grafana-cloud/security-and-account-management/allow-list/
+    cadence: "irregular; per-product plain-text lists"
+    endpoints:
+      - id: alerts
+        url: https://grafana.com/api/hosted-alerts/source-ips.txt
+        format: ip-lines               # bare IPs, one per line -> /32
+        detection: {poll: hash}
+        purposes: [{key: alerts, direction: ingress, select: "*"}]
+      - id: metrics
+        url: https://grafana.com/api/hosted-metrics/source-ips.txt
+        format: ip-lines
+        detection: {poll: hash}
+        purposes: [{key: metrics, direction: ingress, select: "*"}]
+      - id: logs
+        url: https://grafana.com/api/hosted-logs/source-ips.txt
+        format: ip-lines
+        detection: {poll: hash}
+        purposes: [{key: logs, direction: ingress, select: "*"}]
+    verified: "2026-07-04"
+
+  - slug: sentry
+    name: Sentry (hosted)
+    category: observability
+    classification: dedicated
+    provenance: https://docs.sentry.io/security-legal-pii/security/ip-ranges/
+    cadence: "rare; static ingest/outbound IPs documented"
+    notes: "Docs are open source (getsentry/sentry-docs) — watch the page's source file commits."
+    endpoints:
+      - id: docs
+        url: https://docs.sentry.io/security-legal-pii/security/ip-ranges/
+        format: html-cidr-extract
+        detection:
+          poll: docs-page
+          push: "github.com/getsentry/sentry-docs commits feed for the ip-ranges page source"
+        purposes:
+          - {key: ingest,   direction: egress,  select: "event ingestion"}
+          - {key: webhooks, direction: ingress, select: "outbound/integration IPs"}
+          - {key: uptime,   direction: ingress, select: "uptime monitoring sources"}
+    verified: "2026-07-04"
+
+  - slug: new-relic
+    name: New Relic
+    category: observability
+    classification: dedicated
+    provenance: https://docs.newrelic.com/docs/new-relic-solutions/get-started/networks/
+    cadence: "occasional; changes announced in advance via what's-new posts (e.g. synthetics range change)"
+    notes: "Docs are open source (newrelic/docs-website, networks.mdx) — watch file commits for near-instant detection."
+    endpoints:
+      - id: docs
+        url: https://docs.newrelic.com/docs/new-relic-solutions/get-started/networks/
+        format: html-cidr-extract
+        detection:
+          poll: docs-page
+          push: "github.com/newrelic/docs-website commits feed for networks.mdx"
+        purposes:
+          - {key: agents,     direction: egress,  select: "agent endpoint ranges"}
+          - {key: synthetics, direction: ingress, select: "synthetic minion public IPs"}
+          - {key: webhooks,   direction: ingress, select: "alert webhook sources"}
+    verified: "2026-07-04"
+
+  # ── Identity ──────────────────────────────────────────────────────────────
+  - slug: okta
+    name: Okta
+    category: identity
+    classification: dedicated
+    provenance: https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm
+    cadence: "periodic as cells are provisioned; Okta docs recommend checking Last-Modified"
+    endpoints:
+      - id: main
+        url: https://s3.amazonaws.com/okta-ip-ranges/ip_ranges.json
+        format: okta-cells             # {<cell>: {ip_ranges: []}}
+        detection: {poll: cond-get}
+        purposes:
+          - {key: all, direction: both, select: "*"}
+    verified: "2026-07-04"
+
+  - slug: auth0
+    name: Auth0 (Okta CIC)
+    category: identity
+    classification: dedicated
+    provenance: https://auth0.com/docs/secure/security-guidance/data-security/allowlist
+    cadence: "rare; notification 'several months' before changes (documented); changelog embedded in the file"
+    endpoints:
+      - id: main
+        url: https://cdn.auth0.com/ip-ranges.json
+        format: auth0-regions          # {last_updated_at, regions{<region>...}, changelog}
+        detection: {poll: cond-get}
+        purposes:
+          - {key: all, direction: both, select: "*"}
+    verified: "2026-07-04"
+
+  # ── Comms / messaging ─────────────────────────────────────────────────────
+  - slug: zoom
+    name: Zoom
+    category: comms
+    classification: dedicated
+    provenance: "Zoom support KB: network firewall or web security gateway settings"
+    cadence: "irregular"
+    endpoints:
+      - id: all
+        url: https://assets.zoom.us/docs/ipranges/Zoom.txt
+        format: cidr-lines             # CIDRs, one per line
+        detection: {poll: cond-get}
+        purposes:
+          - {key: all, direction: egress, select: "*"}
+    verified: "2026-07-04"
+
+  - slug: intercom
+    name: Intercom
+    category: comms
+    classification: dedicated
+    provenance: https://developers.intercom.com/docs/webhooks
+    cadence: "regenerated daily at 09:00 Dublin (documented)"
+    endpoints:
+      - id: us
+        url: https://static.intercomcdn.com/intercom-ips/us/intercom-ip-ranges.json
+        format: intercom-ranges        # {ip_ranges:[{range, region, service}], date}
+        detection: {poll: cond-get}
+        purposes:
+          - {key: outbound-webhooks, direction: ingress, select: "service=INTERCOM-OUTBOUND"}
+          - {key: all,               direction: both,    select: "*"}
+      - id: eu
+        url: https://static.intercomcdn.com/intercom-ips/eu/intercom-ip-ranges.json
+        format: intercom-ranges
+        detection: {poll: cond-get}
+        region: eu
+        purposes:
+          - {key: all-eu, direction: both, select: "*"}
+    verified: "2026-07-04"
+
+  - slug: pagerduty
+    name: PagerDuty
+    category: comms
+    classification: dedicated
+    provenance: https://support.pagerduty.com/main/docs/safelist-ips
+    cadence: "rare; fixed webhook IP list; changes announced via support notices"
+    endpoints:
+      - id: webhooks-us
+        url: https://app.pagerduty.com/webhook_ips
+        format: json-ip-array          # ["ip", ...] -> /32
+        detection: {poll: cond-get}
+        purposes: [{key: webhooks, direction: ingress, select: "*"}]
+      - id: webhooks-eu
+        url: https://app.eu.pagerduty.com/webhook_ips
+        format: json-ip-array
+        detection: {poll: cond-get}
+        region: eu
+        purposes: [{key: webhooks-eu, direction: ingress, select: "*"}]
+    verified: "2026-07-04"
+
+  - slug: postmark
+    name: Postmark
+    category: comms
+    classification: dedicated
+    provenance: https://postmarkapp.com/support/article/800-ips-for-firewalls
+    cadence: "rare; fixed published IPs for SMTP/webhooks"
+    endpoints:
+      - id: docs
+        url: https://postmarkapp.com/support/article/800-ips-for-firewalls
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: smtp,     direction: egress,  select: "SMTP sending IPs"}
+          - {key: webhooks, direction: ingress, select: "webhook source IPs"}
+    verified: "2026-07-04"
+
+  # ── Business SaaS ─────────────────────────────────────────────────────────
+  - slug: salesforce
+    name: Salesforce
+    category: business-saas
+    classification: dedicated
+    provenance: "https://help.salesforce.com/s/articleView?id=000384438 (IP Addresses and Domains to Allow)"
+    cadence: "irregular; AWS-style syncToken/createDate in file"
+    endpoints:
+      - id: main
+        url: https://ip-ranges.salesforce.com/ip-ranges.json
+        format: salesforce-ranges      # AWS-style top level, but ip_prefix values are ARRAYS
+        detection: {poll: cond-get}
+        purposes:
+          - {key: all, direction: both, select: "*"}
+    verified: "2026-07-04"
+
+  - slug: atlassian
+    name: Atlassian Cloud
+    category: business-saas
+    classification: dedicated
+    provenance: https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/
+    cadence: "irregular; syncToken/creationDate in file; items carry product + direction + region tags"
+    endpoints:
+      - id: main
+        url: https://ip-ranges.atlassian.com/
+        format: atlassian-ranges       # {creationDate, syncToken, items[{cidr, product[], direction[], region[]}]}
+        detection: {poll: cond-get}
+        purposes:
+          - {key: all,       direction: both,    select: "*"}
+          - {key: egress,    direction: ingress, select: "direction=egress"}   # Atlassian's egress = your ingress
+          - {key: bitbucket, direction: both,    select: "product=bitbucket"}
+    verified: "2026-07-04"
+
+  - slug: docusign
+    name: DocuSign
+    category: business-saas
+    classification: mixed
+    provenance: "DocuSign Trust Center (inbound to DocuSign is Akamai-fronted: NOT pinnable, documented)"
+    cadence: "changes published with release notes"
+    endpoints:
+      - id: trust-center
+        url: https://www.docusign.com/trust
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: connect-webhooks, direction: ingress, select: "Connect webhook source ranges"}
+    verified: "2026-07-04"
+    needs_attention: "resolve exact Trust Center subpage URL for the IP list before enabling"
+
+  # ── Security ──────────────────────────────────────────────────────────────
+  - slug: zscaler
+    name: Zscaler (zscaler.net cloud)
+    category: security
+    classification: dedicated
+    provenance: https://config.zscaler.com/
+    cadence: "irregular; per-cloud JSON APIs (zscaler.net shown; zscalertwo/three/ten same pattern)"
+    endpoints:
+      - id: cenr
+        url: https://config.zscaler.com/api/zscaler.net/cenr/json
+        format: zscaler-cenr           # {"zscaler.net": {continent: {city: [{range}]}}, svpnIPs[]}
+        detection: {poll: cond-get}
+        purposes:
+          - {key: enforcement-nodes, direction: egress, select: "*"}
+    verified: "2026-07-04"
+
+  # ── Data platforms ────────────────────────────────────────────────────────
+  - slug: databricks
+    name: Databricks
+    category: data-platform
+    classification: dedicated
+    provenance: https://docs.databricks.com/aws/en/resources/ip-domain-region
+    cadence: "can change as often as every 30 days; updated IPs active >=60 days after publication (documented grace window)"
+    endpoints:
+      - id: main
+        url: https://www.databricks.com/networking/v1/ip-ranges.json
+        format: databricks-ranges      # {timestampSeconds, schemaVersion, prefixes}
+        detection: {poll: hash}
+        purposes:
+          - {key: all, direction: both, select: "*"}
+    verified: "2026-07-04"
+
+  # ── AI APIs ───────────────────────────────────────────────────────────────
+  - slug: anthropic
+    name: Anthropic (Claude API)
+    category: ai
+    classification: dedicated
+    provenance: https://platform.claude.com/docs/en/api/ip-addresses
+    cadence: "'will not change without notice' (documented); dedicated address space"
+    notes: "Rare among AI APIs: inbound API endpoint is IP-pinnable (160.79.104.0/23 v4, 2607:6bc0::/48 v6); outbound tool-call traffic from 160.79.104.0/21. No JSON feed — docs page."
+    endpoints:
+      - id: docs
+        url: https://platform.claude.com/docs/en/api/ip-addresses
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: api,      direction: egress,  select: "inbound IP addresses section"}
+          - {key: outbound, direction: ingress, select: "outbound IP addresses section"}
+    verified: "2026-07-04"
+
+  - slug: openai
+    name: OpenAI (ChatGPT egress)
+    category: ai
+    classification: mixed
+    provenance: https://developers.openai.com/api/docs/guides/ip-addresses
+    cadence: "irregular; creationTime in each file; docs say fetch regularly"
+    notes: "These files cover OpenAI's egress to YOUR systems (connectors/actions/agents). api.openai.com itself is Cloudflare-fronted — NOT IP-pinnable for your egress; see non_publishers."
+    endpoints:
+      - id: connectors
+        url: https://openai.com/chatgpt-connectors.json
+        format: google-prefixes        # {creationTime, prefixes[{ipv4Prefix|ipv6Prefix}]}
+        detection: {poll: hash}
+        purposes: [{key: connectors, direction: ingress, select: "*"}]
+      - id: agents
+        url: https://openai.com/chatgpt-agents.json
+        format: google-prefixes
+        detection: {poll: hash}
+        purposes: [{key: agents, direction: ingress, select: "*"}]
+    verified: "2026-07-04"
+
+# ── Services that do NOT publish pinnable ranges ─────────────────────────────
+# Verified vendor positions. These are surfaced in the feed as `pinnable: false`
+# with the vendor's recommended alternative — the honest-catalog differentiator.
+non_publishers:
+  - slug: twilio
+    name: Twilio (REST API + webhooks)
+    evidence: https://support.twilio.com/hc/en-us/articles/115015934048-All-About-Twilio-IP-Addresses
+    vendor_position: "IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking/media DO have published ranges (candidate for a narrow sip purpose later)."
+  - slug: adyen
+    name: Adyen
+    evidence: https://help.adyen.com/knowledge/ecommerce-integrations/webhooks/what-ip-addresses-does-adyen-use-to-send-webhook-events
+    vendor_position: "No IP list; allowlist out.adyen.com or resolve it via DNS hourly (their words)."
+  - slug: sendgrid
+    name: SendGrid (webhooks/parse)
+    evidence: https://support.sendgrid.com/hc/en-us/articles/44375457225371
+    vendor_position: "Dynamic cloud infra; use signed webhooks, not IP allowlists."
+  - slug: slack
+    name: Slack
+    evidence: https://docs.slack.dev/concepts/security/
+    vendor_position: "No published egress IPs; their allowlisting feature restricts YOUR IPs calling THEM."
+  - slug: shopify
+    name: Shopify (webhooks)
+    evidence: "Shopify community threads; no official ranges page"
+    vendor_position: "Webhook source IPs not published; verify HMAC signatures instead."
+  - slug: duo
+    name: Duo Security
+    evidence: https://duo.com/docs (KB 1337)
+    vendor_position: "Explicitly discourages IP-based egress rules; may change to maintain availability."
+  - slug: snowflake
+    name: Snowflake
+    evidence: "SYSTEM$ALLOWLIST() function docs"
+    vendor_position: "Deployment-specific hostnames/IPs per account; no global list."
+  - slug: mongodb-atlas
+    name: MongoDB Atlas (data plane)
+    evidence: https://www.mongodb.com/docs/atlas/reference/faq/networking/
+    vendor_position: "Cluster IPs are per-project/dynamic; control-plane IPs only via authenticated Admin API. Use private endpoints (PrivateLink) — which is itself the strategy's Tier-2 story."
+  - slug: vercel
+    name: Vercel (function egress)
+    evidence: https://vercel.com/docs/networking/static-ips
+    vendor_position: "Dynamic by default; static IPs are a paid per-customer feature, not a public range."
+  - slug: netlify
+    name: Netlify (function egress)
+    evidence: "Netlify support/community; runs on AWS Lambda"
+    vendor_position: "No published IPs; any circulating list 'is a guess or outdated'."
+  - slug: hubspot
+    name: HubSpot
+    evidence: https://developers.hubspot.com/docs/api-reference (ip-ranges guide)
+    vendor_position: "No static publication ('change too frequently'); offers an API returning current ranges — could be integrated later as an authed source."
+  - slug: openai-api
+    name: OpenAI API (api.openai.com)
+    evidence: "Cloudflare-fronted endpoint; no inbound range publication"
+    vendor_position: "Egress to api.openai.com resolves to shared Cloudflare ranges — pinning would allowlist the whole CDN."
+  - slug: akamai
+    name: Akamai (CDN)
+    evidence: "Site Shield / Origin IP ACL docs (auth required)"
+    vendor_position: "Customer-specific maps behind login; no public global ranges."
+
+# ── Researched but not yet sourced — candidate backlog (v2+) ─────────────────
+backlog:
+  needs_research: [ibm-cloud, alibaba-cloud, vultr, scaleway, ovhcloud, hetzner, box,
+                   workday, servicenow, netsuite, segment, amplitude, mixpanel, braze,
+                   iterable, klaviyo, crowdstrike, sentinelone, netskope, palo-alto,
+                   qualys, tenable, rapid7, plaid, paypal, square, checkout-com, wise,
+                   buildkite, jfrog, docker-hub, elastic-cloud, confluent, aiven,
+                   redis-cloud, planetscale, cockroachdb, supabase, neon, ringcentral,
+                   vonage, mailchimp-mandrill, sumo-logic, dynatrace, appdynamics,
+                   honeycomb, zendesk, mailgun, splunk-cloud, sumologic, google-workspace]
+  partially_verified:
+    - slug: zendesk
+      note: "developer.zendesk.com documents a public_ips API; endpoint appears account-scoped — confirm whether an unauthenticated global variant exists."
+    - slug: mailgun
+      note: "publishes account-specific sending IPs via authenticated API only."

@@ -1,0 +1,7 @@
+# Feed build output
+dist/
+
+# Editors/OS
+.DS_Store
+.idea/
+.vscode/

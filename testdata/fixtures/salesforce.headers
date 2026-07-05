@@ -1,0 +1,17 @@
+HTTP/2 200 
+content-type: application/json
+content-length: 5867
+last-modified: Thu, 21 May 2026 23:16:15 GMT
+x-amz-server-side-encryption: aws:kms
+x-amz-server-side-encryption-aws-kms-key-id: arn:aws:kms:us-east-2:058264341741:key/mrk-a020fe2ef55a456fa631b1398b3f0dcc
+x-amz-version-id: 8DHvowjnafaQR3IdGrpaeFw8ILsSshfh
+accept-ranges: bytes
+server: AmazonS3
+date: Sat, 04 Jul 2026 08:26:22 GMT
+etag: "4c5066ac6b7ce15c6e01f1855ff17406"
+x-cache: Hit from cloudfront
+via: 1.1 b6194c23417b2824cd9001dd64048b9a.cloudfront.net (CloudFront)
+x-amz-cf-pop: ATL58-P12
+x-amz-cf-id: jeTL980y8QITZLcQ4N5kkQ6t3QAVpZtVknYTbAkRgZrFUkK1chePmA==
+age: 16167
+

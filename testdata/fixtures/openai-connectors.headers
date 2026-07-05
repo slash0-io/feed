@@ -1,0 +1,24 @@
+HTTP/2 200 
+date: Sat, 04 Jul 2026 12:57:41 GMT
+content-type: application/octet-stream
+content-length: 7863
+content-md5: 6HsEFswMLfArumODZb40Ng==
+last-modified: Wed, 24 Jun 2026 22:41:20 GMT
+etag: 0x8DED241B5F04B62
+server: cloudflare
+x-ms-request-id: 9522c505-301e-0019-1fb4-0baa6f000000
+x-ms-request-priority: 3
+x-ms-version: 2009-09-19
+x-ms-lease-status: unlocked
+x-ms-blob-type: BlockBlob
+cf-cache-status: DYNAMIC
+set-cookie: __cf_bm=cNDyMW1QHDynn733I6UE4nyYX6tJRMCoEe.NA1KznDs-1783169861.0408893-1.0.1.1-SruqnMBYZhUqdS45JLLOwd_yJtfuV7orSCOBadXSUrsldvdYFbbjzetLlzk6Bo_hBHLqJ2hblOD3t0QmllRzNrfDqd.8FB8mXxLoBVAA85BQ8JQNwzQEXo.hcm20hzjm; HttpOnly; SameSite=None; Secure; Path=/; Domain=openai.com; Expires=Sat, 04 Jul 2026 13:27:41 GMT
+set-cookie: _cfuvid=rN9QbaU79CmRFM7gIllWWBhUjnLdwdS5BwjZVcQ1_y0-1783169861.0408893-1.0.1.1-JT8WUfws1Q_l_301vOOgQ2NQqEhTF9uuE6z1DQsQhsk; HttpOnly; SameSite=None; Secure; Path=/; Domain=openai.com
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-content-type-options: nosniff
+report-to: {"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=o%2BPFCycltI2KyXVBSc%2F1g59gfzuoTj5hguCcSquM6tFCCFqfYEC0uT5rCNXFiG2ibnFnCaLH0%2Bjh6JfGAIstgb0ZpzJ9otm7ZwP%2F6AW9mzp%2B60erjefdwKZ%2BR%2BEWL7T2lxeGwcafLewUY9gQ55ricaPACBrDYIT6tOhhzwk%3D"}]}
+nel: {"report_to":"cf-nel","success_fraction":0.01,"max_age":604800}
+oai-host: openai.com
+cf-ray: a15e4c0f7a79fb1e-BNA
+alt-svc: h3=":443"; ma=86400
+

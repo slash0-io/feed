@@ -1,0 +1,18 @@
+HTTP/2 200 
+content-type: application/json
+content-length: 87939
+date: Sat, 04 Jul 2026 12:55:47 GMT
+last-modified: Wed, 17 Jun 2026 04:11:29 GMT
+etag: "7e8d342160ae6a0ea9bf92f8a0faec98"
+x-amz-server-side-encryption: AES256
+accept-ranges: bytes
+server: AmazonS3
+x-cache: Miss from cloudfront
+via: 1.1 493303bd82437243d9548b7bdc9081fc.cloudfront.net (CloudFront)
+x-amz-cf-pop: ATL59-P13
+x-amz-cf-id: U6vuztgpk8E-PRDElIlXTwYGr4zbdMZ-qspu2yux8MBRnfctpv3vIw==
+x-xss-protection: 1; mode=block
+x-frame-options: DENY
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+vary: Origin
+

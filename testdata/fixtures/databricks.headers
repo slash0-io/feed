@@ -1,0 +1,24 @@
+HTTP/2 200 
+date: Sat, 04 Jul 2026 12:57:40 GMT
+content-type: application/json
+cf-ray: a15e4c0cbe82fb18-BNA
+cf-cache-status: DYNAMIC
+age: 57405
+etag: W/"09dfc4566025346b897e97706169d943"
+last-modified: Thu, 21 May 2026 19:10:19 GMT
+server: cloudflare
+vary: Accept-Encoding
+via: 1.1 2ea8728ec00b3a509c7a78b30ce8fb72.cloudfront.net (CloudFront)
+x-amz-cf-id: oNplXBVoC7DafIanIlNdLAn4Ey3EQpndH6pRWFKVWchZw9FJtspZmw==
+x-amz-cf-pop: ATL59-P6
+x-amz-server-side-encryption: AES256
+x-amz-version-id: 6IUZ9ZINYzAiwYo_tG1HDcds2eQ6sHPj
+x-cache: Hit from cloudfront
+set-cookie: __cf_bm=KeEnZ7DvpltTPsP.rci_DvvquoR9SCIABz3zMJ9bX1g-1783169860.5930445-1.0.1.1-NDsvaGWnmWlOQm4E8wsMKcThA3MZZr3SHZv29hMMln26s8QaiPpgDNsy_e4.2pCdvWgXXB6b3Av4MPFIZpAyk98acB6gw28pXM5pgJ3tFsiloasnRBnupx7LgkoZ2uTx; HttpOnly; SameSite=None; Secure; Path=/; Domain=databricks.com; Expires=Sat, 04 Jul 2026 13:27:40 GMT
+content-security-policy: default-src 'unsafe-inline' 'unsafe-eval' vitals.vercel-insights.com https: data: wss://*.qualified.com *.arkoselabs.com; block-all-mixed-content; upgrade-insecure-requests
+referrer-policy: strict-origin-when-cross-origin
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-frame-options: DENY
+

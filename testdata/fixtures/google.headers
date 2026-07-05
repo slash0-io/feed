@@ -1,0 +1,18 @@
+HTTP/2 200 
+accept-ranges: bytes
+cross-origin-resource-policy: cross-origin
+cross-origin-opener-policy-report-only: same-origin; report-to="static-on-bigtable"
+report-to: {"group":"static-on-bigtable","max_age":2592000,"endpoints":[{"url":"https://csp.withgoogle.com/csp/report-to/static-on-bigtable"}]}
+content-length: 4793
+x-content-type-options: nosniff
+server: sffe
+x-xss-protection: 0
+date: Sat, 04 Jul 2026 12:55:46 GMT
+expires: Sat, 04 Jul 2026 12:55:46 GMT
+cache-control: public, max-age=0
+last-modified: Sat, 04 Jul 2026 08:28:00 GMT
+content-type: application/json
+vary: Accept-Encoding
+age: 0
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+

@@ -1,0 +1,32 @@
+[
+  {
+    "instance": "USGovGCCHigh",
+    "serviceArea": "O365Default",
+    "latest": "2026070100"
+  },
+  {
+    "instance": "China",
+    "serviceArea": "O365Default",
+    "latest": "2026022700"
+  },
+  {
+    "instance": "France",
+    "serviceArea": "O365Default",
+    "latest": "2026043000"
+  },
+  {
+    "instance": "Worldwide",
+    "serviceArea": "O365Default",
+    "latest": "2026052900"
+  },
+  {
+    "instance": "USGovDoD",
+    "serviceArea": "O365Default",
+    "latest": "2026063000"
+  },
+  {
+    "instance": "Germany",
+    "serviceArea": "O365Default",
+    "latest": "2026043000"
+  }
+]

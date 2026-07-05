@@ -1,0 +1,17 @@
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+content-length: 800
+x-frame-options: SAMEORIGIN
+x-request-id: 3223307f-be53-41af-9011-0abe49a49e4c
+x-route: /docs/ip-ranges-list.json
+date: Sat, 04 Jul 2026 12:55:48 GMT
+access-control-allow-credentials: true
+strict-transport-security: max-age=63072000; includeSubDomains; preload
+feature-policy: autoplay 'none'; camera 'none'
+x-content-type-options: nosniff
+x-xss-protection: 1; mode=block
+x-cache: Miss from cloudfront
+via: 1.1 c49e31ea2ad15494621b264698f7c09e.cloudfront.net (CloudFront)
+x-amz-cf-pop: ATL58-P11
+x-amz-cf-id: 3E_oiz8g6Y2dqSadZXRe8Ct30DOBHt-shJcW64CquZK5Ced9HVFfhg==
+

@@ -1,0 +1,24 @@
+HTTP/2 301 
+date: Sat, 04 Jul 2026 12:55:47 GMT
+content-type: text/html; charset=UTF-8
+location: https://www.digitalocean.com/geo/google.csv
+set-cookie: __cf_bm=2dDAnSx41r5XVsZpvzF4RJUOrZjLuVcwHGby0nT2r1s-1783169747.3126416-1.0.1.1-6xE28fpeaujyIkDG7nGfyLKBqzkIcCwyUnFpTw0JZhCz5AjGo62VGQJgai_OCdDPln2hG7mgcRnTvkTCYOaGGm2fhXTLlAzJ0vu5oCDr4FSjYZr1MIkmO3yROUrQKiTJ5GpcdfGLZAkw6dWwUE3yzw; HttpOnly; SameSite=None; Secure; Path=/; Domain=digitalocean.com; Expires=Sat, 04 Jul 2026 13:25:47 GMT
+server: cloudflare
+cf-ray: a15e4948bfd3fb10-BNA
+
+HTTP/2 200 
+date: Sat, 04 Jul 2026 12:55:47 GMT
+content-type: application/csv
+server: cloudflare
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+x-nextjs-cache: HIT
+cache-control: s-maxage=1800
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-envoy-upstream-service-time: 24
+do-upstream-service-time: 48
+set-cookie: amp_ssr_device_id=a3d81ee6-ce27-418f-8858-86564694b086; Path=/; Expires=Sun, 04 Jul 2027 12:55:47 GMT; Max-Age=31536000; Secure; HttpOnly; SameSite=lax
+set-cookie: __cf_bm=dgXTPAA1FcU_DdYaD0KqwVH5pdpir42GqPh_5XeNN5Q-1783169747.448941-1.0.1.1-dHgYYkLHrntlW4ncHrOC94rVcu7agkCQcEtt89DnMJ.Qy5Yet48xTwmlUyxG2RLsmiX00.s3YVEqchBsZmNnt95aPw.qcGUT7tDWyvOu6QrXsZChdVkkA0bOSrYIaFLDcNMma18XjquR31mQgPtIoA; HttpOnly; SameSite=None; Secure; Path=/; Domain=digitalocean.com; Expires=Sat, 04 Jul 2026 13:25:47 GMT
+cf-cache-status: BYPASS
+cf-ray: a15e49498e95fb13-BNA
+

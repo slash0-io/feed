@@ -1,0 +1,18 @@
+HTTP/2 200 
+date: Sat, 04 Jul 2026 12:57:40 GMT
+content-type: application/json
+cache-control: public, max-age=14400
+cf-cache-status: HIT
+expires: Sat, 04 Jul 2026 16:57:40 GMT
+last-modified: Tue, 15 Oct 2024 19:45:45 GMT
+paypal-debug-id: 8ef0f3fc9b4a6
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+timing-allow-origin: https://www.paypal.com,https://www.sandbox.paypal.com
+vary: Accept-Encoding
+vary: Accept-Encoding
+x-content-type-options: nosniff
+dc: ccg11-origin-www-1.paypal.com
+etag: W/"670ec669-1643"
+server: cloudflare
+cf-ray: a15e4c0e9eb5fb17-BNA
+

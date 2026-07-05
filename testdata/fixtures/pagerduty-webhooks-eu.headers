@@ -1,0 +1,23 @@
+HTTP/1.1 200 OK
+Server: nginx
+Date: Sat, 04 Jul 2026 12:57:41 GMT
+Content-Type: application/json
+Content-Length: 188
+Connection: keep-alive
+vary: Accept-Encoding,Accept
+x-frame-options: SAMEORIGIN
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+x-download-options: noopen
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+cache-control: no-store
+pragma: no-cache
+expires: Fri, 01 Jan 1990 00:00:00 GMT
+etag: W/"fb560478c0ca2137857b8b23ad4d3c8f"
+set-cookie: _pagerduty_session=3muzbye6mcYo2QFwV13T%2BioZ4eCLUH4yC%2B%2BsyitpMMm%2BbMFU6FDIFgBRjiKG4qTdq%2Fv4Xe0c3CapY13HgA%3D%3D--Utq7xmKiWhN1AWfB--VNk3DAIQQudAU4Cl4bYG2g%3D%3D; Path=/; Secure; HttpOnly; SameSite=Lax
+x-request-id: 6fce9a273e10723b54804467352d94c2
+Strict-Transport-Security: max-age=31536000; includeSubDomains
+Referrer-Policy: no-referrer-when-downgrade
+Feature-Policy: accelerometer 'none'; camera 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; payment 'none'; usb 'none'
+

@@ -1,0 +1,17 @@
+HTTP/1.1 200 OK
+Content-Type: application/json
+Content-Length: 9397
+Connection: keep-alive
+Last-Modified: Tue, 24 Feb 2026 21:05:53 GMT
+x-amz-server-side-encryption: AES256
+x-amz-version-id: 7Ww6Rn50Ja5LF2c6h_cxDQwb.oRgrYax
+Accept-Ranges: bytes
+Server: AmazonS3
+Date: Sat, 04 Jul 2026 12:55:47 GMT
+ETag: "70a17dd68d8ce49aca5abb6c3d3b717d"
+X-Cache: RefreshHit from cloudfront
+Via: 1.1 93309f2e8a93384beeedfcc4af03fcb2.cloudfront.net (CloudFront)
+X-Amz-Cf-Pop: ATL58-P8
+X-Amz-Cf-Id: 7arS69UedUFnXC6DA2Z2r8R7taMPP_CPMrNbmRi10mhCBVdBoP4ntQ==
+Vary: Origin
+

@@ -1,0 +1,19 @@
+HTTP/2 200 
+status: 200 OK
+content-type: application/json
+x-envoy-upstream-service-time: 36
+via: 1.1 varnish, 1.1 varnish
+server: fastly istio-envoy
+accept-ranges: bytes
+age: 35
+date: Sat, 04 Jul 2026 12:55:45 GMT
+x-served-by: cache-chi-kigq8000068-CHI, cache-pdk-kpdk2140070-PDK
+x-cache: HIT, MISS
+x-cache-hits: 40, 0
+x-timer: S1783169746.904583,VS0,VE18
+vary: Accept-Encoding
+cache-control: no-store
+pragma: no-cache
+strict-transport-security: max-age=31536000
+content-length: 402
+

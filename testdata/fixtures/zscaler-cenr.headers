@@ -1,0 +1,28 @@
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+content-length: 128324
+date: Sat, 04 Jul 2026 12:55:04 GMT
+x-amzn-remapped-date: Sat, 04 Jul 2026 12:55:04 GMT
+x-amzn-requestid: 10190ee2-133e-4924-8c0a-3aba315deb3f
+referrer-policy: origin-when-cross-origin
+x-ua-compatible: IE=edge
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-frame-options: SAMEORIGIN
+access-control-allow-headers: Origin, X-Requested-With, Content-Type, Accept
+x-amzn-remapped-content-length: 128324
+content-language: en
+x-amzn-remapped-connection: keep-alive
+x-amz-apigw-id: f-1aWGoGvHcENAg=
+cache-control: public, max-age=60, must-revalidate
+x-content-type-options: nosniff
+expires: Sun, 19 Nov 1978 05:00:00 GMT
+x-amzn-trace-id: Root=1-6a4902a8-58d41947720d0ee368a40208;Parent=37a4ddfc6cdbb72e;Sampled=0;Lineage=1:aa7047eb:0
+etag: "1f544-p1zSevAfQm+6+4Ji9fpjsotONZE"
+vary: Cookie,Accept-Encoding
+x-cache: Hit from cloudfront
+via: 1.1 71e73fb23d5ac474450a8aa0b98555e4.cloudfront.net (CloudFront)
+x-amz-cf-pop: ATL59-P17
+x-amz-cf-id: mCuu51d8MS4gmYkMhyVfp9bBlAgBZelgS7lfykyURXDGYVpCXW4AMA==
+age: 45
+content-security-policy: default-src 'none'; connect-src 'self' https://config.zscaler.com https://config.webdev.zscaler.com https://config-dev.webdev.zscaler.com https://config-us-dev.webdev.zscaler.com https://config-us.webdev.zscaler.com;
+
