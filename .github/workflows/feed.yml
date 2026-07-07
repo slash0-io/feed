@@ -1,8 +1,11 @@
 name: Publish feed
 
 on:
-  schedule:
-    - cron: "*/30 * * * *"
+  # Cron disabled while the repo is private: GitHub Pages won't serve from a
+  # private repo on the free plan, so scheduled runs would fail and burn
+  # Actions minutes. Re-enable at go-public.
+  # schedule:
+  #   - cron: "*/30 * * * *"
   workflow_dispatch:
 
 permissions:
