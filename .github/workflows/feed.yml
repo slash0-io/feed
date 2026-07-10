@@ -1,11 +1,8 @@
 name: Publish feed
 
 on:
-  # Cron disabled while the repo is private: GitHub Pages won't serve from a
-  # private repo on the free plan. Re-enable at go-public — deploys are gated
-  # on actual content change, so a tight cadence only costs the build job.
-  # schedule:
-  #   - cron: "*/10 * * * *"
+  schedule:
+    - cron: "*/10 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -22,7 +19,15 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       changed: ${{ steps.diff.outputs.changed }}
+      public: ${{ steps.vis.outputs.public }}
     steps:
+      # Pages can't serve from a private repo (free plan) — skip deploys, not
+      # builds, until the repo goes public.
+      - name: Check repo visibility
+        id: vis
+        run: echo "public=$(gh api "repos/$GITHUB_REPOSITORY" --jq '.private | not')" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
@@ -35,13 +40,13 @@ jobs:
         id: diff
         run: echo "changed=$(head -c5 dist/BUILD_CHANGED | tr -d '\n')" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-pages-artifact@v3
-        if: steps.diff.outputs.changed == 'true'
+        if: steps.diff.outputs.changed == 'true' && steps.vis.outputs.public == 'true'
         with:
           path: dist
 
   deploy:
     needs: build
-    if: needs.build.outputs.changed == 'true'
+    if: needs.build.outputs.changed == 'true' && needs.build.outputs.public == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

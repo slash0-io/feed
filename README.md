@@ -28,6 +28,10 @@ go run ./generator -services stripe,github      # subset
 go test ./...
 ```
 
+## Hosted tier
+
+Want these ranges as AWS-managed prefix lists kept current in your account — no `terraform apply` required? The hosted tier is in development with design partners: [request early access](https://github.com/egresshq/terraform-provider-egress/issues/new?template=early-access.yml).
+
 ## Contributing a source
 
 Add an entry to `sources.yaml` (official vendor endpoint only, with provenance link), a parser for its format in `generator/parsers.go` if new, and a fixture in `testdata/fixtures/`. CI requires the offline build to pass.
