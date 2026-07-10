@@ -1,0 +1,13 @@
+HTTP/2 200 
+content-type: application/json
+content-length: 8938
+date: Fri, 10 Jul 2026 21:30:12 GMT
+last-modified: Fri, 08 Mar 2024 22:46:36 GMT
+x-amz-version-id: DdhXo23hWL_ene.HRKQpbi4LUeKgFscu
+etag: "1e7f41b80bfd00f377ac098e6217342a"
+server: AmazonS3
+x-cache: Miss from cloudfront
+via: 1.1 82b6879061f693dead88cc3cf08de05e.cloudfront.net (CloudFront)
+x-amz-cf-pop: ATL59-P16
+x-amz-cf-id: FIrP-aTTx2vloUp8RzL-TPPr0XOAkdXpZRBHdnsrya8be_cgustOgg==
+

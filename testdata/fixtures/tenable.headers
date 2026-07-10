@@ -1,0 +1,20 @@
+HTTP/2 200 
+date: Fri, 10 Jul 2026 21:21:12 GMT
+content-type: application/json
+content-length: 18710
+cache-control: public, max-age=86400
+server: cloudflare
+x-amz-id-2: qcHTdWLXzTCttKFmvKEn0kZTzc7r0dpCfDlqFR4GhsK0bIFn163j2M9uJ/XXEkVmZDg9ycuregkoiXRZDDS1jR0ymCC9iHWl
+x-amz-request-id: HWHS76F0WWJ2NNJ9
+last-modified: Tue, 31 Mar 2026 11:10:58 GMT
+etag: "dce5bc2ebc3ac4815b7a2c03093331a9"
+content-security-policy: script-src 'self' *.searchunify.com *.d37oby9fj3mvk7.cloudfront.net d37oby9fj3mvk7.cloudfront.net *.d1fdwa8cq95yup.cloudfront.net d1fdwa8cq95yup.cloudfront.net code.jquery.com *.hotjar.com cdn.userway.org static.cloud.coveo.com cdnjs.cloudflare.com static.cloudflareinsights.com *.marketo.net *.tenable.com *.tenablesecurity.com *.google-analytics.com google-analytics.com *.analytics.google.com analytics.google.com *.googletagmanager.com googletagmanager.com google.com *.google.com gstatic.com *.gstatic.com trendemon.com *.trendemon.com simplecommenter.com *.simplecommenter.com 'unsafe-inline' 'unsafe-eval' *.amplitude.com simplecommenter.com *.simplecommenter.com; style-src 'self' *.searchunify.com *.d37oby9fj3mvk7.cloudfront.net d37oby9fj3mvk7.cloudfront.net *.d1fdwa8cq95yup.cloudfront.net d1fdwa8cq95yup.cloudfront.net cdn.userway.org use.fontawesome.com static.cloud.coveo.com fonts.googleapis.com *.tenable.com *.tenablesecurity.com 'unsafe-inline'; img-src 'self' data: i.ytimg.com static.cloud.coveo.com cdn.userway.org *.google.com  *.tenable.com *.tenablesecurity.com *.google-analytics.com *.googletagmanager.com trendemon.com *.trendemon.com d37oby9fj3mvk7.cloudfront.net; font-src 'self' cdn.userway.org use.fontawesome.com fonts.gstatic.com *.tenable.com *.tenablesecurity.com static.cloud.coveo.com staticdev.cloud.coveo.com; object-src 'none'; frame-src 'self' *.youtube.com cdn.userway.org vars.hotjar.com *.tenable.com *.tenablesecurity.com google.com *.google.com; connect-src 'self' *.searchunify.com wss://*.searchunify.com *.d37oby9fj3mvk7.cloudfront.net d37oby9fj3mvk7.cloudfront.net *.d1fdwa8cq95yup.cloudfront.net d1fdwa8cq95yup.cloudfront.net *.tenable.com *.tenablesecurity.com google.com *.google.com *.mktoresp.com api.userway.org cdn.userway.org *.hotjar.com *.hotjar.io *.doubleclick.net *.coveo.com *.google-analytics.com *.analytics.google.com analytics.google.com *.googletagmanager.com *.googleapis.com googleapis.com tenable202310191921143.api.madcapcentral.com *.api.madcapcentral.com *.amplitude.com simplecommenter.com *.simplecommenter.com; media-src 'self' cdn.userway.org *.tenable.com *.tenablesecurity.com; frame-ancestors 'self' tenable.pathfactory.com tenable.lookbookhq.com *.tenable.com; default-src 'self';
+x-content-type-options: nosniff
+x-frame-options: sameorigin
+x-xss-protection: 1; mode=block
+accept-ranges: bytes
+expires: Sat, 11 Jul 2026 21:21:12 GMT
+cf-cache-status: HIT
+strict-transport-security: max-age=31536000
+cf-ray: a1929de689cefb19-BNA
+

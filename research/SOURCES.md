@@ -8,7 +8,7 @@ This document records, for every service in the catalog: **how the ranges are ob
 
 1. **Official sources only.** Every entry cites the vendor's own publication (docs page, JSON/CSV endpoint, or API). Community aggregators (e.g. `rezmoss/cloud-provider-ip-addresses`, `tobilg/public-cloud-provider-ip-ranges`) were used only to discover leads, never as a data source — our feed's provenance chain must terminate at the vendor.
 2. **Live verification.** Every machine-readable endpoint in `sources.yaml` was fetched on the research date; HTTP status, payload shape, and caching headers were recorded. Response bodies are archived as parser fixtures.
-3. **Conditional-GET probing.** For every endpoint that returned an `ETag` or `Last-Modified` header, we replayed the request with `If-None-Match`/`If-Modified-Since` and confirmed the server honors it. **All 12 probed endpoints returned `304 Not Modified`** — cheap sub-minute polling is viable across the board.
+3. **Conditional-GET probing.** For every endpoint that returned an `ETag` or `Last-Modified` header, we replayed the request with `If-None-Match`/`If-Modified-Since` and confirmed the server honors it. **All 15 probed endpoints returned `304 Not Modified`** (12 on 2026-07-04; Buildkite, Tenable, and Elastic Cloud on 2026-07-10) — cheap sub-minute polling is viable across the board.
 
 ## Source quality tiers
 
@@ -61,6 +61,13 @@ Direction: **E** = ranges you connect *to* (egress allowlists) · **I** = ranges
 | PayPal | help-center page | none | n/a | — | irregular; "if you must allowlist" (their wording) | E/I |
 | DocuSign | Trust Center page (`/trust/security/esignature`) | none | n/a | release notes | with releases | I |
 | Vultr (Constant) | RFC 8805 geofeed | `Last Updated` comment | ✗ (hash) | — | irregular | E |
+| Buildkite | JSON (`/v2/meta`, unauthenticated) | none | ✓ | — | irregular; **new IPs advertised ≥7 days before use (documented)** | I |
+| Tenable | JSON (AWS-schema clone) | `syncToken`, `createDate` | ✓ | — | irregular | I |
+| Rapid7 (InsightAppSec) | docs page | none | n/a | — | irregular; per-region engine IPs | I |
+| Elastic Cloud | JSON (`ips.cld.elstc.co`) | none | ✓ | **status-page announcements** | **changes announced ≥8 weeks ahead (documented)** | E/I |
+| Neon | docs page | none | n/a | **docs-repo commit feed** (`neondatabase/website`) | with region buildout | I |
+| Klaviyo | help-center page | none | n/a | — | rare; two dedicated blocks | I |
+| Twilio SIP Trunking | docs page | none | n/a | — | rare; regional /30s + media /18 | E/I |
 
 ## How we know about updates fast (detection architecture)
 
@@ -91,7 +98,7 @@ The honest-catalog list — published in the feed as `pinnable: false` with the 
 
 | Service | Vendor's stated position | Their recommended alternative |
 |---|---|---|
-| Twilio (REST/webhooks) | IPs "highly dynamic, span a large range" | allow `*.twilio.com`; SIP has real ranges |
+| Twilio (REST/webhooks) | IPs "highly dynamic, span a large range" | allow `*.twilio.com`; SIP trunking IS pinnable — see the `twilio-sip` service |
 | Adyen | no IP list; ranges change with ISPs | allowlist/resolve `out.adyen.com` hourly (their wording) |
 | SendGrid (webhooks) | dynamic cloud infra | signed webhooks, not IP allowlists |
 | Slack | no egress IPs published | their allowlist feature restricts *your* IPs calling *them* |
@@ -109,7 +116,7 @@ The honest-catalog list — published in the feed as `pinnable: false` with the 
 
 ## Notable findings
 
-- **Salesforce publishes an AWS-style `ip-ranges.json`** at `ip-ranges.salesforce.com` (same `syncToken`/`createDate`/`prefixes` top level, but `ip_prefix` values are *arrays* of CIDRs rather than scalars) — undocumented in most search results, verified live. The AWS schema is becoming a de-facto standard (a point in favor of modeling our public feed on it), though even its imitators drift, which is why every source gets its own fixture-tested parser.
+- **Salesforce publishes an AWS-style `ip-ranges.json`** at `ip-ranges.salesforce.com` (same `syncToken`/`createDate`/`prefixes` top level, but `ip_prefix` values are *arrays* of CIDRs rather than scalars) — undocumented in most search results, verified live. The AWS schema is becoming a de-facto standard (a point in favor of modeling our public feed on it), though even its imitators drift, which is why every source gets its own fixture-tested parser. **Tenable** (`docs.tenable.com/ip-ranges/data.json`) is a second, schema-exact clone — our AWS parser consumes it unmodified.
 - **Direction matters and nobody models it.** Roughly a third of published ranges describe the vendor's *egress toward customers* (webhook/agent/synthetic sources) — useful for *ingress* rules, useless for egress allowlists. Every purpose in our schema carries a `direction` field; no upstream source does this consistently except Atlassian.
 - **Anthropic is the only major AI API with pinnable inbound ranges** (dedicated space, "will not change without notice"). OpenAI publishes only its own egress; its API is CDN-fronted.
 - **Grace windows are the emerging best practice** (Azure ≥1 week, Databricks 60 days) — our feed's `deprecated` flag generalizes this pattern to vendors that don't offer one.
@@ -117,7 +124,9 @@ The honest-catalog list — published in the feed as `pinnable: false` with the 
 
 ## Backlog
 
-~40 candidates remain (IBM Cloud, Alibaba, Workday, ServiceNow, Braze, CrowdStrike, SentinelOne, Netskope, Plaid, Square, Buildkite, JFrog, Elastic, Confluent, Aiven, …) — full list in `sources.yaml` under `backlog`. Researched 2026-07-10 and resolved: Zendesk, PayPal, Vultr, DocuSign integrated as publishers; Box and Sumo Logic documented as non-publishers; Dynatrace is tier D (per-tenant authenticated API only); Segment/Amplitude/Mixpanel have no public range documentation (vendor-outreach candidates); Scaleway/OVH/Hetzner expose no geofeeds at standard URLs.
+~27 candidates remain (IBM Cloud, Alibaba, Workday, ServiceNow, CrowdStrike, SentinelOne, Netskope, Plaid, Square, JFrog, Confluent, Aiven, …) — full list in `sources.yaml` under `backlog`. Researched 2026-07-10 and resolved: Zendesk, PayPal, Vultr, DocuSign integrated as publishers; Box and Sumo Logic documented as non-publishers; Dynatrace is tier D (per-tenant authenticated API only); Segment/Amplitude/Mixpanel have no public range documentation (vendor-outreach candidates); Scaleway/OVH/Hetzner expose no geofeeds at standard URLs.
+
+Second pass (2026-07-10, same day): **Buildkite, Tenable, Rapid7, Elastic Cloud, Neon, Klaviyo, and Twilio SIP Trunking integrated as publishers** (all endpoints fetched live; 304 support verified for the three JSON feeds). Dead ends recorded in `sources.yaml → backlog.partially_verified`: Qualys *does* publish scanner ranges but only on client-rendered pages; Iterable's help center bot-blocks all non-browser fetchers (403); RingCentral's supernets live in an SPA-only support portal; Braze's IP page moved (docs are open source — locate the successor page). ServiceNow, Workday, NetSuite, CrowdStrike, and SentinelOne publish only behind customer login per prior research notes — still unverified.
 
 ## Verification artifacts
 

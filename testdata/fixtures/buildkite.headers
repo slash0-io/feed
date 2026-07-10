@@ -1,0 +1,29 @@
+HTTP/2 200 
+content-type: application/json; charset=utf-8
+content-length: 65
+date: Fri, 10 Jul 2026 21:12:26 GMT
+x-ua-compatible: chrome=1
+server: nginx
+x-frame-options: SAMEORIGIN
+x-frame-options: SAMEORIGIN
+x-xss-protection: 0
+x-content-type-options: nosniff
+x-content-type-options: nosniff
+x-permitted-cross-domain-policies: none
+referrer-policy: strict-origin-when-cross-origin
+access-control-allow-methods: GET, HEAD, POST, PUT, DELETE, OPTIONS
+access-control-allow-origin: *
+access-control-expose-headers: Accept-Ranges, Content-Range, Link, RateLimit-Remaining, RateLimit-Limit, RateLimit-Reset, X-OAuth-Scopes
+vary: Accept
+etag: W/"ffd6a69216466b9a6af4714e349085c0"
+cache-control: max-age=0, private, must-revalidate
+content-security-policy-report-only: object-src 'none'; script-src 'unsafe-inline' 'strict-dynamic' 'report-sample' https: http: 'nonce-3AndBeJJQ7XzA5lTKWOwHA=='; report-uri https://buildkite.uriports.com/reports/report
+x-request-id: 2e9e0844-8f7c-4f80-a87a-9f2b314c42e3
+x-runtime: 0.243053
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+x-cache: Miss from cloudfront
+via: 1.1 6aaf059c8fb1a1e31354f1b3cdcd9c90.cloudfront.net (CloudFront)
+x-amz-cf-pop: ATL59-P13
+x-amz-cf-id: eVYoUkSi2AOVO5liZyqf-tpNwNOKbsNEXQCKrdMMahSXSw2Tr2TZKQ==
+

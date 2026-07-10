@@ -254,6 +254,22 @@ services:
           - {key: core, direction: egress,  select: "core"}   # CircleCI cloud service IPs
     verified: "2026-07-04"
 
+  - slug: buildkite
+    name: Buildkite
+    category: devtools
+    classification: dedicated
+    provenance: https://buildkite.com/docs/apis/rest-api/meta
+    cadence: "irregular; docs recommend daily checks; new addresses advertised >=7 days before use (documented)"
+    notes: "Unauthenticated meta API. webhook_ips = sources of webhooks and commit statuses Buildkite sends you."
+    endpoints:
+      - id: meta
+        url: https://api.buildkite.com/v2/meta
+        format: json-cidr-map          # {"webhook_ips": ["ip", ...]}
+        detection: {poll: cond-get}    # ETag honored (verified 304)
+        purposes:
+          - {key: webhooks, direction: ingress, select: "webhook_ips"}
+    verified: "2026-07-10"
+
   # ── Payments / fintech ────────────────────────────────────────────────────
   - slug: stripe
     name: Stripe
@@ -503,6 +519,46 @@ services:
           - {key: webhooks, direction: ingress, select: "section=Webhooks"}
     verified: "2026-07-10"
 
+  - slug: klaviyo
+    name: Klaviyo
+    category: comms
+    classification: dedicated
+    provenance: https://help.klaviyo.com/hc/en-us/articles/19143781289115
+    cadence: "rare; two dedicated blocks (207.211.192.0/20, 207.186.206.0/24)"
+    notes: >
+      Integration traffic sources (Klaviyo connecting TO your systems). Flow-triggered
+      webhook traffic uses different, unpublished IPs (documented). The page also lists a
+      /24 decomposition of the /20 for restrictive firewalls — subsumed losslessly.
+    endpoints:
+      - id: docs
+        url: https://help.klaviyo.com/hc/en-us/articles/19143781289115
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: integrations, direction: ingress, select: "section=What IP addresses does Klaviyo use"}
+    verified: "2026-07-10"
+
+  - slug: twilio-sip
+    name: Twilio Elastic SIP Trunking
+    category: comms
+    classification: dedicated
+    provenance: https://www.twilio.com/docs/sip-trunking/ip-addresses
+    cadence: "rare; stable regional signaling /30s + global media 168.86.128.0/18 (Twilio-owned)"
+    notes: >
+      The ONLY Twilio product with pinnable published ranges — REST API and webhooks are
+      explicitly dynamic (see non_publishers). SIP signaling and RTP media flow both ways.
+      The page lists each /30 alongside its constituent IPs; aggregation restores the /30s
+      losslessly.
+    endpoints:
+      - id: docs
+        url: https://www.twilio.com/docs/sip-trunking/ip-addresses
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: sip-signaling, direction: both, select: "section=Regional signaling IP gateways"}
+          - {key: sip-media,     direction: both, select: "section=Global media IP gateways"}
+    verified: "2026-07-10"
+
   # ── Business SaaS ─────────────────────────────────────────────────────────
   - slug: salesforce
     name: Salesforce
@@ -569,6 +625,43 @@ services:
           - {key: enforcement-nodes, direction: egress, select: "*"}
     verified: "2026-07-04"
 
+  - slug: tenable
+    name: Tenable (Vulnerability Management)
+    category: security
+    classification: dedicated
+    provenance: https://docs.tenable.com/vulnerability-management/Content/Settings/Sensors/CloudSensors.htm
+    cadence: "irregular; AWS-style syncToken/createDate in file"
+    notes: >
+      Cloud-scanner source ranges (Tenable scanning YOUR assets — ingress). File carries
+      per-sensor-group regional detail. Egress side is hostname-based (*.cloud.tenable.com,
+      documented) — no pinnable destination list.
+    endpoints:
+      - id: ip-ranges
+        url: https://docs.tenable.com/ip-ranges/data.json
+        format: aws-ip-ranges          # same schema: {syncToken, createDate, prefixes[{ip_prefix, service}], ipv6_prefixes[]}
+        detection: {poll: cond-get}    # ETag + Last-Modified honored (verified 304)
+        purposes:
+          - {key: scanners, direction: ingress, select: "service=tenable-scanners"}
+    verified: "2026-07-10"
+
+  - slug: rapid7
+    name: Rapid7 (InsightAppSec cloud engines)
+    category: security
+    classification: dedicated
+    provenance: https://docs.rapid7.com/insightappsec/allowlist-cloud-engine-ips/
+    cadence: "irregular; per-region engine IPs on a docs page"
+    notes: >
+      Cloud-engine source IPs that scan YOUR applications (ingress). Insight platform
+      *destination* endpoints are region-specific hostnames — no pinnable egress list.
+    endpoints:
+      - id: docs
+        url: https://docs.rapid7.com/insightappsec/allowlist-cloud-engine-ips/
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: appsec-engines, direction: ingress, select: "section=Allowlist Cloud Engine IPs"}
+    verified: "2026-07-10"
+
   # ── Data platforms ────────────────────────────────────────────────────────
   - slug: databricks
     name: Databricks
@@ -584,6 +677,49 @@ services:
         purposes:
           - {key: all, direction: both, select: "*"}
     verified: "2026-07-04"
+
+  - slug: elastic-cloud
+    name: Elastic Cloud
+    category: data-platform
+    classification: dedicated
+    provenance: https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips
+    cadence: "changes announced >=8 weeks in advance on the Elastic status page (documented)"
+    notes: >
+      Regional static IPs; not every region supports both directions, and Serverless is
+      excluded (documented). ingress_to_elastic = deployment endpoints you connect TO;
+      egress_from_elastic = alert/watcher/CCR traffic Elastic sends you.
+    endpoints:
+      - id: ips
+        url: https://ips.cld.elstc.co/
+        format: elastic-ips            # {regions: {<region>: {egress_from_elastic[], ingress_to_elastic[]}}}
+        detection:
+          poll: cond-get               # ETag honored (verified 304)
+          push: "status.elastic.co subscription (static IP changes announced >=8 weeks ahead)"
+        purposes:
+          - {key: api,      direction: egress,  select: "key=ingress_to_elastic"}
+          - {key: outbound, direction: ingress, select: "key=egress_from_elastic"}
+    verified: "2026-07-10"
+
+  - slug: neon
+    name: Neon (Serverless Postgres)
+    category: data-platform
+    classification: dedicated
+    provenance: https://neon.com/docs/introduction/regions
+    cadence: "changes with region buildout; 3-6 NAT addresses per region (documented)"
+    notes: >
+      NAT-gateway egress IPs per region — sources of Neon connecting OUT to your systems
+      (e.g. logical replication to external Postgres). Docs are open source
+      (neondatabase/website) — watch the regions.md source file for changes.
+    endpoints:
+      - id: docs
+        url: https://neon.com/docs/introduction/regions
+        format: html-cidr-extract
+        detection:
+          poll: docs-page
+          push: "github.com/neondatabase/website commits feed for content/docs/introduction/regions.md"
+        purposes:
+          - {key: outbound, direction: ingress, select: "section=NAT Gateway IP addresses"}
+    verified: "2026-07-10"
 
   # ── AI APIs ───────────────────────────────────────────────────────────────
   - slug: anthropic
@@ -686,7 +822,7 @@ non_publishers:
   - slug: twilio
     name: Twilio (REST API + webhooks)
     evidence: https://support.twilio.com/hc/en-us/articles/115015934048-All-About-Twilio-IP-Addresses
-    vendor_position: "IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking/media DO have published ranges (candidate for a narrow sip purpose later)."
+    vendor_position: "IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking IS pinnable — see the twilio-sip service."
   - slug: adyen
     name: Adyen
     evidence: https://help.adyen.com/knowledge/ecommerce-integrations/webhooks/what-ip-addresses-does-adyen-use-to-send-webhook-events
@@ -746,12 +882,12 @@ non_publishers:
 
 # ── Researched but not yet sourced — candidate backlog (v2+) ─────────────────
 backlog:
-  needs_research: [ibm-cloud, alibaba-cloud, workday, servicenow, netsuite, braze,
-                   iterable, klaviyo, crowdstrike, sentinelone, netskope, palo-alto,
-                   qualys, tenable, rapid7, plaid, square, checkout-com, wise,
-                   buildkite, jfrog, docker-hub, elastic-cloud, confluent, aiven,
-                   redis-cloud, planetscale, cockroachdb, supabase, neon, ringcentral,
-                   vonage, mailchimp-mandrill, appdynamics, honeycomb, mailgun,
+  needs_research: [ibm-cloud, alibaba-cloud, workday, servicenow, netsuite,
+                   crowdstrike, sentinelone, netskope, palo-alto,
+                   plaid, square, checkout-com, wise,
+                   jfrog, docker-hub, confluent, aiven,
+                   redis-cloud, planetscale, cockroachdb, supabase,
+                   vonage, mailchimp-mandrill, appdynamics, honeycomb,
                    splunk-cloud, google-workspace]
   partially_verified:
     - slug: mailgun
@@ -762,3 +898,11 @@ backlog:
       note: "no public range documentation found (2026-07-10); segment.com/docs bot-blocks fetches — candidates for vendor outreach."
     - slug: scaleway-ovh-hetzner
       note: "no geofeeds at standard URLs (2026-07-10); announced space visible only via BGP — low priority for SaaS-egress use case."
+    - slug: qualys
+      note: "DOES publish scanner ranges (www.qualys.com/platform-identification/) but the page is client-rendered (verified 2026-07-10); success.qualys.com KB is Salesforce-community JS too. Needs a static per-platform source or headless fetch — revisit."
+    - slug: iterable
+      note: "help-center article 'Allowing Iterable IP Addresses' exists but support.iterable.com returns 403 to non-browser fetchers, browser UA included (verified 2026-07-10) — vendor outreach candidate."
+    - slug: ringcentral
+      note: "publishes supernets in support articles but support.ringcentral.com is client-rendered/SPA (verified 2026-07-10) — revisit if a static source appears."
+    - slug: braze
+      note: "publishes per-cluster IPs but the docs page moved (2026-07-10, prior URL 404s); docs are open source (braze-inc/braze-docs) — locate the current page or source from the repo."

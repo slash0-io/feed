@@ -178,6 +178,57 @@ func TestParserSpotChecks(t *testing.T) {
 	if _, err := parsers[ep.Format](body, "tag=NoSuchTag"); err == nil {
 		t.Error("azure: expected error for unknown tag")
 	}
+
+	// Buildkite meta: three webhook /32s in the archived fixture.
+	body, ep = get("buildkite", "meta")
+	raw, _ = parsers[ep.Format](body, "webhook_ips")
+	v4bk, _ := normalize(raw, func(string, ...any) {})
+	if len(v4bk) != 3 || !contains(v4bk, "100.24.182.113/32") {
+		t.Errorf("buildkite webhooks = %v, want 3 /32s incl 100.24.182.113/32", v4bk)
+	}
+
+	// Tenable reuses the AWS ip-ranges schema; scanner selection must resolve.
+	body, ep = get("tenable", "ip-ranges")
+	raw, _ = parsers[ep.Format](body, "service=tenable-scanners")
+	if len(raw) < 30 || !contains(raw, "13.115.104.128/25") {
+		t.Errorf("tenable scanners: %d ranges, want >=30 incl 13.115.104.128/25", len(raw))
+	}
+
+	// Elastic Cloud: both direction keys populated; unknown key errors.
+	body, ep = get("elastic-cloud", "ips")
+	ecIn, _ := parsers[ep.Format](body, "key=ingress_to_elastic")
+	ecOut, _ := parsers[ep.Format](body, "key=egress_from_elastic")
+	if len(ecIn) == 0 || len(ecOut) == 0 {
+		t.Errorf("elastic-cloud: ingress %d, egress %d — want both non-empty", len(ecIn), len(ecOut))
+	}
+	if _, err := parsers[ep.Format](body, "key=nope"); err == nil {
+		t.Error("elastic-cloud: expected error for unknown key")
+	}
+
+	// Klaviyo: the page's /24 decomposition and range-boundary IPs must fold
+	// back into exactly the two published blocks — nothing more.
+	body, ep = get("klaviyo", "docs")
+	raw, err = parsers[ep.Format](body, "section=What IP addresses does Klaviyo use")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v4kl, _ := normalize(raw, func(string, ...any) {})
+	if strings.Join(v4kl, ",") != "207.186.206.0/24,207.211.192.0/20" {
+		t.Errorf("klaviyo = %v, want [207.186.206.0/24 207.211.192.0/20]", v4kl)
+	}
+
+	// Twilio SIP: signaling folds to the eight regional /30s; media is the /18.
+	body, ep = get("twilio-sip", "docs")
+	raw, _ = parsers[ep.Format](body, "section=Regional signaling IP gateways")
+	v4tw, _ := normalize(raw, func(string, ...any) {})
+	if len(v4tw) != 8 || !contains(v4tw, "54.172.60.0/30") {
+		t.Errorf("twilio-sip signaling = %v, want 8 /30s incl 54.172.60.0/30", v4tw)
+	}
+	raw, _ = parsers[ep.Format](body, "section=Global media IP gateways")
+	v4tm, _ := normalize(raw, func(string, ...any) {})
+	if strings.Join(v4tm, ",") != "168.86.128.0/18" {
+		t.Errorf("twilio-sip media = %v, want [168.86.128.0/18]", v4tm)
+	}
 }
 
 func TestNormalize(t *testing.T) {

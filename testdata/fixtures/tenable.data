@@ -1,0 +1,497 @@
+{
+    "syncToken": "1774955404.950218",
+    "createDate": "2026-03-31 11:10:04.950218+00:00",
+    "additionalInfo": "Please add *.cloud.tenable.com with the wildcard character (*) to allow cloud.tenable.com and all subdomains, such as sensor.cloud.tenable.com",
+    "prefixes": [
+        {
+            "ip_prefix": "13.115.104.128/25",
+            "region": "ap-northeast-1",
+            "network_border_group": "ap-northeast-1",
+            "service": "tenable-scanners",
+            "sensor_group": "AP Tokyo Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ip_prefix": "35.73.219.128/25",
+            "region": "ap-northeast-1",
+            "network_border_group": "ap-northeast-1",
+            "service": "tenable-scanners",
+            "sensor_group": "AP Tokyo Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ip_prefix": "13.213.79.0/24",
+            "region": "ap-southeast-1",
+            "network_border_group": "ap-southeast-1",
+            "service": "tenable-scanners",
+            "sensor_group": "AP Singapore Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ip_prefix": "18.139.204.0/25",
+            "region": "ap-southeast-1",
+            "network_border_group": "ap-southeast-1",
+            "service": "tenable-scanners",
+            "sensor_group": "AP Singapore Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ip_prefix": "54.255.254.0/26",
+            "region": "ap-southeast-1",
+            "network_border_group": "ap-southeast-1",
+            "service": "tenable-scanners",
+            "sensor_group": "AP Singapore Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ip_prefix": "13.210.1.64/26",
+            "region": "ap-southeast-2",
+            "network_border_group": "ap-southeast-2",
+            "service": "tenable-scanners",
+            "sensor_group": "AP Sydney Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ip_prefix": "3.106.118.128/25",
+            "region": "ap-southeast-2",
+            "network_border_group": "ap-southeast-2",
+            "service": "tenable-scanners",
+            "sensor_group": "AP Sydney Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ip_prefix": "3.26.100.0/24",
+            "region": "ap-southeast-2",
+            "network_border_group": "ap-southeast-2",
+            "service": "tenable-scanners",
+            "sensor_group": "AP Sydney Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ip_prefix": "3.108.37.0/24",
+            "region": "ap-south-1",
+            "network_border_group": "ap-south-1",
+            "service": "tenable-scanners",
+            "sensor_group": "India Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ip_prefix": "3.98.92.0/25",
+            "region": "ca-central-1",
+            "network_border_group": "ca-central-1",
+            "service": "tenable-scanners",
+            "sensor_group": "CA Central Cloud Scanners"
+        },
+        {
+            "ip_prefix": "35.182.14.64/26",
+            "region": "ca-central-1",
+            "network_border_group": "ca-central-1",
+            "service": "tenable-scanners",
+            "sensor_group": "CA Central Cloud Scanners"
+        },
+        {
+            "ip_prefix": "3.251.224.0/24",
+            "region": "eu-west-1",
+            "network_border_group": "eu-west-1",
+            "service": "tenable-scanners",
+            "sensor_group": "Ireland Cloud Scanners, EMEA Cloud Scanners, EU Cloud Scanners"
+        },
+        {
+            "ip_prefix": "18.168.180.128/25",
+            "region": "eu-west-2",
+            "network_border_group": "eu-west-2",
+            "service": "tenable-scanners",
+            "sensor_group": "UK London Cloud Scanners, UK Cloud Scanners, EMEA Cloud Scanners"
+        },
+        {
+            "ip_prefix": "18.168.224.128/25",
+            "region": "eu-west-2",
+            "network_border_group": "eu-west-2",
+            "service": "tenable-scanners",
+            "sensor_group": "UK London Cloud Scanners, UK Cloud Scanners, EMEA Cloud Scanners"
+        },
+        {
+            "ip_prefix": "3.9.159.128/25",
+            "region": "eu-west-2",
+            "network_border_group": "eu-west-2",
+            "service": "tenable-scanners",
+            "sensor_group": "UK London Cloud Scanners, UK Cloud Scanners, EMEA Cloud Scanners"
+        },
+        {
+            "ip_prefix": "35.177.219.0/26",
+            "region": "eu-west-2",
+            "network_border_group": "eu-west-2",
+            "service": "tenable-scanners",
+            "sensor_group": "UK London Cloud Scanners, UK Cloud Scanners, EMEA Cloud Scanners"
+        },
+        {
+            "ip_prefix": "18.194.95.64/26",
+            "region": "eu-central-1",
+            "network_border_group": "eu-central-1",
+            "service": "tenable-scanners",
+            "sensor_group": "EU Frankfurt Cloud Scanners, EMEA Cloud Scanners, EU Cloud Scanners"
+        },
+        {
+            "ip_prefix": "3.124.123.128/25",
+            "region": "eu-central-1",
+            "network_border_group": "eu-central-1",
+            "service": "tenable-scanners",
+            "sensor_group": "EU Frankfurt Cloud Scanners, EMEA Cloud Scanners, EU Cloud Scanners"
+        },
+        {
+            "ip_prefix": "3.67.7.128/25",
+            "region": "eu-central-1",
+            "network_border_group": "eu-central-1",
+            "service": "tenable-scanners",
+            "sensor_group": "EU Frankfurt Cloud Scanners, EMEA Cloud Scanners, EU Cloud Scanners"
+        },
+        {
+            "ip_prefix": "54.93.254.128/26",
+            "region": "eu-central-1",
+            "network_border_group": "eu-central-1",
+            "service": "tenable-scanners",
+            "sensor_group": "EU Frankfurt Cloud Scanners, EMEA Cloud Scanners, EU Cloud Scanners"
+        },
+        {
+            "ip_prefix": "34.201.223.128/25",
+            "region": "us-east-1",
+            "network_border_group": "us-east-1",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US East Cloud Scanners"
+        },
+        {
+            "ip_prefix": "44.192.244.0/24",
+            "region": "us-east-1",
+            "network_border_group": "us-east-1",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US East Cloud Scanners"
+        },
+        {
+            "ip_prefix": "44.206.3.0/24",
+            "region": "us-east-1",
+            "network_border_group": "us-east-1",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US East Cloud Scanners"
+        },
+        {
+            "ip_prefix": "54.175.125.192/26",
+            "region": "us-east-1",
+            "network_border_group": "us-east-1",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US East Cloud Scanners"
+        },
+        {
+            "ip_prefix": "13.59.252.0/25",
+            "region": "us-east-2",
+            "network_border_group": "us-east-2",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US East Cloud Scanners"
+        },
+        {
+            "ip_prefix": "18.116.198.0/24",
+            "region": "us-east-2",
+            "network_border_group": "us-east-2",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US East Cloud Scanners"
+        },
+        {
+            "ip_prefix": "3.132.217.0/25",
+            "region": "us-east-2",
+            "network_border_group": "us-east-2",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US East Cloud Scanners"
+        },
+        {
+            "ip_prefix": "13.56.21.128/25",
+            "region": "us-west-1",
+            "network_border_group": "us-west-1",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US West Cloud Scanners"
+        },
+        {
+            "ip_prefix": "34.223.64.0/25",
+            "region": "us-west-2",
+            "network_border_group": "us-west-2",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US West Cloud Scanners"
+        },
+        {
+            "ip_prefix": "35.82.51.128/25",
+            "region": "us-west-2",
+            "network_border_group": "us-west-2",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US West Cloud Scanners"
+        },
+        {
+            "ip_prefix": "35.86.126.0/24",
+            "region": "us-west-2",
+            "network_border_group": "us-west-2",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US West Cloud Scanners"
+        },
+        {
+            "ip_prefix": "35.93.174.0/24",
+            "region": "us-west-2",
+            "network_border_group": "us-west-2",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US West Cloud Scanners"
+        },
+        {
+            "ip_prefix": "44.242.181.128/25",
+            "region": "us-west-2",
+            "network_border_group": "us-west-2",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US West Cloud Scanners"
+        },
+        {
+            "ip_prefix": "15.228.125.0/24",
+            "region": "sa-east-1",
+            "network_border_group": "sa-east-1",
+            "service": "tenable-scanners",
+            "sensor_group": "Brazil Cloud Scanners"
+        },
+        {
+            "ip_prefix": "51.112.93.0/24",
+            "region": "me-central-1",
+            "network_border_group": "me-central-1",
+            "service": "tenable-scanners",
+            "sensor_group": "UAE Cloud Scanners, EMEA Cloud Scanners"
+        },
+        {
+            "ip_prefix": "162.159.129.83/32",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ip_prefix": "162.159.130.83/32",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ip_prefix": "162.159.140.26/32",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ip_prefix": "172.66.0.26/32",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        }
+    ],
+    "ipv6_prefixes": [
+        {
+            "ipv6_prefix": "2406:da14:e76:5b00::/56",
+            "region": "ap-northeast-1",
+            "network_border_group": "ap-northeast-1",
+            "service": "tenable-scanners",
+            "sensor_group": "AP Tokyo Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2406:da18:844:7100::/56",
+            "region": "ap-southeast-1",
+            "network_border_group": "ap-southeast-1",
+            "service": "tenable-scanners",
+            "sensor_group": "AP Singapore Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2406:da1c:20f:2f00::/56",
+            "region": "ap-southeast-2",
+            "network_border_group": "ap-southeast-2",
+            "service": "tenable-scanners",
+            "sensor_group": "AP Sydney Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2406:da1a:5b2:8500::/56",
+            "region": "ap-south-1",
+            "network_border_group": "ap-south-1",
+            "service": "tenable-scanners",
+            "sensor_group": "India Cloud Scanners, APAC Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2600:1f11:622:3000::/56",
+            "region": "ca-central-1",
+            "network_border_group": "ca-central-1",
+            "service": "tenable-scanners",
+            "sensor_group": "CA Central Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2a05:d018:f53:4100::/56",
+            "region": "eu-west-1",
+            "network_border_group": "eu-west-1",
+            "service": "tenable-scanners",
+            "sensor_group": "Ireland Cloud Scanners, EMEA Cloud Scanners, EU Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2a05:d01c:da5:e800::/56",
+            "region": "eu-west-2",
+            "network_border_group": "eu-west-2",
+            "service": "tenable-scanners",
+            "sensor_group": "UK London Cloud Scanners, UK Cloud Scanners, EMEA Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2a05:d014:532:b00::/56",
+            "region": "eu-central-1",
+            "network_border_group": "eu-central-1",
+            "service": "tenable-scanners",
+            "sensor_group": "EU Frankfurt Cloud Scanners, EMEA Cloud Scanners, EU Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2600:1f18:614c:8000::/56",
+            "region": "us-east-1",
+            "network_border_group": "us-east-1",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US East Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2600:1f16:8ca:e900::/56",
+            "region": "us-east-2",
+            "network_border_group": "us-east-2",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US East Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2600:1f14:141:7b00::/56",
+            "region": "us-west-2",
+            "network_border_group": "us-west-2",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner, US West Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2600:1f1e:9a:ba00::/56",
+            "region": "sa-east-1",
+            "network_border_group": "sa-east-1",
+            "service": "tenable-scanners",
+            "sensor_group": "Brazil Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2406:da17:524:dd00::/56",
+            "region": "me-central-1",
+            "network_border_group": "me-central-1",
+            "service": "tenable-scanners",
+            "sensor_group": "UAE Cloud Scanners, EMEA Cloud Scanners"
+        },
+        {
+            "ipv6_prefix": "2606:4700:7::a29f:8153/128",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ipv6_prefix": "2606:4700:7::a29f:8253/128",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ipv6_prefix": "2606:4700:7::1a/128",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ipv6_prefix": "2a06:98c1:58::1a/128",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        }
+    ],
+    "additionalFedRAMPInfo": "Please add *.fedcloud.tenable.com with the wildcard character (*) to allow fedcloud.tenable.com and all subdomains, such as gov01.fedcloud.tenable.com",
+    "fedramp_prefixes": [
+        {
+            "ip_prefix": "52.61.37.84/32",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ip_prefix": "15.200.117.191/32",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ip_prefix": "172.65.64.208/32",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ip_prefix": "172.65.64.209/32",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ip_prefix": "172.65.64.210/32",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ip_prefix": "172.65.64.211/32",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ip_prefix": "3.31.100.0/24",
+            "region": "us-gov-west-1",
+            "network_border_group": "us-gov-west-1",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner"
+        },
+        {
+            "ip_prefix": "3.32.43.0/27",
+            "region": "us-gov-west-1",
+            "network_border_group": "us-gov-west-1",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner"
+        }
+    ],
+    "fedramp_ipv6_prefixes": [
+        {
+            "ipv6_prefix": "2606:4700:78::120:0:1200/128",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ipv6_prefix": "2606:4700:78::120:0:1201/128",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ipv6_prefix": "2606:4700:78::120:0:1202/128",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ipv6_prefix": "2606:4700:78::120:0:1203/128",
+            "region": "static",
+            "network_border_group": "static",
+            "service": "tenable-scanners",
+            "sensor_group": "tenable.io"
+        },
+        {
+            "ipv6_prefix": "2600:1f12:98d:c900::/56",
+            "region": "us-gov-west-1",
+            "network_border_group": "us-gov-west-1",
+            "service": "tenable-scanners",
+            "sensor_group": "US Cloud Scanner"
+        }
+    ]
+}

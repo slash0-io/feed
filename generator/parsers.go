@@ -40,6 +40,7 @@ var parsers = map[string]parseFunc{
 	"azure-service-tags": parseAzureServiceTags,
 	"json-cidr-map":      parseJSONCIDRMap,
 	"zendesk-ips":        parseZendeskIPs,
+	"elastic-ips":        parseElasticIPs,
 }
 
 // selKV splits "service=S3" into ("service", "S3"). all=true for "*" or "".
@@ -536,6 +537,31 @@ func parseJSONCIDRMap(body []byte, sel string) ([]string, error) {
 	var out []string
 	for _, v := range d {
 		out = append(out, v...)
+	}
+	return out, nil
+}
+
+// parseElasticIPs handles Elastic Cloud's https://ips.cld.elstc.co/ document:
+// {"regions": {"<region>": {"egress_from_elastic": [...], "ingress_to_elastic": [...]}}}.
+// Select "key=<inner key>" collects that list across every region.
+func parseElasticIPs(body []byte, sel string) ([]string, error) {
+	var d struct {
+		Regions map[string]map[string][]string `json:"regions"`
+	}
+	if err := json.Unmarshal(body, &d); err != nil {
+		return nil, err
+	}
+	_, want, all := selKV(sel)
+	var out []string
+	for _, region := range d.Regions {
+		for k, v := range region {
+			if all || strings.EqualFold(k, want) {
+				out = append(out, v...)
+			}
+		}
+	}
+	if !all && len(out) == 0 {
+		return nil, fmt.Errorf("elastic-ips: no region has key %q", want)
 	}
 	return out, nil
 }

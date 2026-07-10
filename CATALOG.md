@@ -61,6 +61,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
+| `buildkite` | Buildkite | dedicated | `webhooks` (ingress) | [official ↗](https://buildkite.com/docs/apis/rest-api/meta) |
 | `circleci` | CircleCI | dedicated | `core` (egress), `jobs` (ingress) | [official ↗](https://circleci.com/docs/guides/security/ip-ranges/) |
 | `github` | GitHub | dedicated | `actions` (ingress), `api` (egress), `git` (egress), `hooks` (ingress), `packages` (egress), `pages` (egress), `web` (egress) | [official ↗](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-githubs-ip-addresses) |
 | `gitlab` | GitLab.com | mixed | `web-api` (egress), `webhooks` (ingress) | [official ↗](https://docs.gitlab.com/user/gitlab_com/) |
@@ -70,6 +71,8 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
 | `databricks` | Databricks | dedicated | `all` (both) | [official ↗](https://docs.databricks.com/aws/en/resources/ip-domain-region) |
+| `elastic-cloud` | Elastic Cloud | dedicated | `api` (egress), `outbound` (ingress) | [official ↗](https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips) |
+| `neon` | Neon (Serverless Postgres) | dedicated | `outbound` (ingress) | [official ↗](https://neon.com/docs/introduction/regions) |
 
 ## Identity & auth
 
@@ -83,8 +86,10 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
 | `intercom` | Intercom | dedicated | `all-eu` (both), `all` (both), `outbound-webhooks` (ingress) | [official ↗](https://developers.intercom.com/docs/webhooks) |
+| `klaviyo` | Klaviyo | dedicated | `integrations` (ingress) | [official ↗](https://help.klaviyo.com/hc/en-us/articles/19143781289115) |
 | `pagerduty` | PagerDuty | dedicated | `webhooks-eu` (ingress), `webhooks` (ingress) | [official ↗](https://support.pagerduty.com/main/docs/safelist-ips) |
 | `postmark` | Postmark | dedicated | `smtp` (egress), `webhooks` (ingress) | [official ↗](https://postmarkapp.com/support/article/800-ips-for-firewalls) |
+| `twilio-sip` | Twilio Elastic SIP Trunking | dedicated | `sip-media` (both), `sip-signaling` (both) | [official ↗](https://www.twilio.com/docs/sip-trunking/ip-addresses) |
 | `zoom` | Zoom | dedicated | `all` (egress) | [official ↗](Zoom support KB: network firewall or web security gateway settings) |
 
 ## Business SaaS
@@ -101,6 +106,8 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
+| `rapid7` | Rapid7 (InsightAppSec cloud engines) | dedicated | `appsec-engines` (ingress) | [official ↗](https://docs.rapid7.com/insightappsec/allowlist-cloud-engine-ips/) |
+| `tenable` | Tenable (Vulnerability Management) | dedicated | `scanners` (ingress) | [official ↗](https://docs.tenable.com/vulnerability-management/Content/Settings/Sensors/CloudSensors.htm) |
 | `zscaler` | Zscaler (zscaler.net cloud) | dedicated | `enforcement-nodes` (egress) | [official ↗](https://config.zscaler.com/) |
 
 ## AI APIs
@@ -117,7 +124,7 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 
 | Service | Vendor position |
 |---|---|
-| Twilio (REST API + webhooks) | IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking/media DO have published ranges (candidate for a narrow sip purpose later). |
+| Twilio (REST API + webhooks) | IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking IS pinnable — see the twilio-sip service. |
 | Adyen | No IP list; allowlist out.adyen.com or resolve it via DNS hourly (their words). |
 | SendGrid (webhooks/parse) | Dynamic cloud infra; use signed webhooks, not IP allowlists. |
 | Slack | No published egress IPs; their allowlisting feature restricts YOUR IPs calling THEM. |
