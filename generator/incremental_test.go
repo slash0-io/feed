@@ -145,6 +145,37 @@ func TestIncrementalChangePublishesAndLogs(t *testing.T) {
 	}
 }
 
+func TestFailedFetchKeepsPreviousVersion(t *testing.T) {
+	dist1 := t.TempDir()
+	if _, err := runBuild(buildOpts(t, fixturesDir, dist1, "")); err != nil {
+		t.Fatal(err)
+	}
+
+	fixtures := copyFixtures(t)
+	for _, f := range []string{"stripe-api.data", "stripe-webhooks.data", "stripe-terminal.data"} {
+		if err := os.Remove(filepath.Join(fixtures, f)); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	dist2 := t.TempDir()
+	s, err := runBuild(buildOpts(t, fixtures, dist2, filepath.Join(dist1, "v1")))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if s.Failed != 1 {
+		t.Fatalf("stats = %+v, want one failed service", s)
+	}
+	// The service must remain in the published catalog, byte-for-byte.
+	if string(mustRead(t, filepath.Join(dist1, "v1/services/stripe.json"))) !=
+		string(mustRead(t, filepath.Join(dist2, "v1/services/stripe.json"))) {
+		t.Error("failed stripe must keep serving the previously published version")
+	}
+	if s.BuildChanged {
+		t.Error("BUILD_CHANGED should be false when a failed service falls back to previous")
+	}
+}
+
 func TestQuarantineKeepsPreviousVersion(t *testing.T) {
 	dist1 := t.TempDir()
 	if _, err := runBuild(buildOpts(t, fixturesDir, dist1, "")); err != nil {

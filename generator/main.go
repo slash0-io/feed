@@ -103,22 +103,27 @@ func runBuild(opts buildOptions) (buildStats, error) {
 		if len(filter) > 0 && !filter[svc.Slug] {
 			continue
 		}
-		built, err := buildService(svc, fetcher, generatedAt, syncToken)
-		if err != nil {
-			if _, unimpl := err.(errUnimplemented); unimpl {
-				log.Printf("SKIP %-16s %v", svc.Slug, err)
-				stats.Skipped++
-			} else {
-				log.Printf("FAIL %-16s %v", svc.Slug, err)
-				stats.Failed++
-			}
-			continue
-		}
+		built, buildErr := buildService(svc, fetcher, generatedAt, syncToken)
 
 		// Decide what actually gets published for this service.
 		var doc *feedschema.Service
 		var docBytes []byte
 		switch {
+		case buildErr != nil:
+			if _, unimpl := buildErr.(errUnimplemented); unimpl {
+				log.Printf("SKIP %-16s %v", svc.Slug, buildErr)
+				stats.Skipped++
+			} else {
+				log.Printf("FAIL %-16s %v", svc.Slug, buildErr)
+				stats.Failed++
+			}
+			// Fail static: a broken or unreachable upstream must not shrink
+			// the published catalog — keep serving the last-good version.
+			if prev == nil || prev.services[svc.Slug] == nil {
+				continue
+			}
+			doc, docBytes = prev.services[svc.Slug], prev.serviceBytes[svc.Slug]
+			log.Printf("KEEP %-16s serving previously published version", svc.Slug)
 		case prev != nil && prev.fingerprints[svc.Slug] == purposesFingerprint(built.Purposes):
 			doc, docBytes = prev.services[svc.Slug], prev.serviceBytes[svc.Slug]
 			stats.Unchanged++

@@ -540,17 +540,18 @@ services:
     name: DocuSign
     category: business-saas
     classification: mixed
-    provenance: "DocuSign Trust Center (inbound to DocuSign is Akamai-fronted: NOT pinnable, documented)"
+    provenance: https://www.docusign.com/trust/security/esignature
     cadence: "changes published with release notes"
+    notes: "Inbound to DocuSign is Akamai-fronted (NOT pinnable, documented). Page publishes some entries with host bits set (e.g. 162.248.184.1/22); normalization masks them."
     endpoints:
       - id: trust-center
-        url: https://www.docusign.com/trust
-        format: docs-page-todo         # parked: html-cidr-extract is live now, but the exact Trust Center subpage is unresolved
+        url: https://www.docusign.com/trust/security/esignature
+        format: html-cidr-extract
         detection: {poll: docs-page}
         purposes:
-          - {key: connect-webhooks, direction: ingress, select: "Connect webhook source ranges"}
-    verified: "2026-07-04"
-    needs_attention: "resolve exact Trust Center subpage URL for the IP list before enabling"
+          - {key: connect-webhooks, direction: ingress, select: "section=Connections from Docusign"}
+          - {key: email,            direction: ingress, select: "section=Docusign email IP addresses"}
+    verified: "2026-07-10"
 
   # ── Security ──────────────────────────────────────────────────────────────
   - slug: zscaler
@@ -622,6 +623,62 @@ services:
         purposes: [{key: agents, direction: ingress, select: "*"}]
     verified: "2026-07-04"
 
+  - slug: zendesk
+    name: Zendesk
+    category: business-saas
+    classification: mixed
+    provenance: https://developer.zendesk.com/api-reference/ticketing/account-configuration/public_ips/
+    cadence: "irregular; Zendesk documents a daily scheduled fetch as best practice"
+    notes: >
+      Served per-subdomain at https://<subdomain>.zendesk.com/ips (unauthenticated; global list —
+      we poll Zendesk's own support subdomain). Zendesk's "ingress" = ranges you connect TO;
+      their "egress" = ranges they connect FROM. The ingress list includes Cloudflare-shared
+      /32s, hence classification mixed. IPv6 unsupported (documented).
+    endpoints:
+      - id: ips
+        url: https://support.zendesk.com/ips
+        format: zendesk-ips            # {ips:{ingress:{all,specific}, egress:{all,specific}}}
+        detection: {poll: hash}        # no cache headers (verified)
+        purposes:
+          - {key: api,      direction: egress,  select: "way=ingress"}
+          - {key: webhooks, direction: ingress, select: "way=egress"}
+    verified: "2026-07-10"
+
+  - slug: paypal
+    name: PayPal
+    category: payments
+    classification: dedicated
+    provenance: https://www.paypal.com/us/cshelp/article/what-are-the-internet-protocol-ip-addresses-for-paypal-server-endpoints-ts1056
+    cadence: "irregular; PayPal recommends DNS resolution and publishes ranges 'if you must allowlist' (their wording)"
+    notes: "Single help article covers live + sandbox API endpoints and IPN/webhook sources; ranges not separated by purpose on the page."
+    endpoints:
+      - id: docs
+        url: https://www.paypal.com/us/cshelp/article/what-are-the-internet-protocol-ip-addresses-for-paypal-server-endpoints-ts1056
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: all, direction: both, select: "section=What are the Internet Protocol"}
+    verified: "2026-07-10"
+
+  - slug: vultr
+    name: Vultr (Constant, AS20473)
+    category: cloud
+    classification: dedicated
+    provenance: https://geofeed.constant.com/
+    cadence: "irregular; 'Last Updated' comment in feed; RFC 8805 geofeed"
+    endpoints:
+      - id: geofeed
+        url: https://geofeed.constant.com/
+        format: geofeed-csv
+        detection: {poll: hash}
+        purposes:
+          - {key: all, direction: egress, select: "*"}
+    verified: "2026-07-10"
+    needs_attention: >
+      TLS chain verifies via Mozilla-derived bundles (curl/Linux) but fails Go verification on
+      macOS 13 (Sectigo R46 root absent from that trust store). Confirm green on Linux CI's
+      first live publish; fail-static keeps the last-good version serving regardless.
+
 # ── Services that do NOT publish pinnable ranges ─────────────────────────────
 # Verified vendor positions. These are surfaced in the feed as `pinnable: false`
 # with the vendor's recommended alternative — the honest-catalog differentiator.
@@ -678,19 +735,30 @@ non_publishers:
     name: Akamai (CDN)
     evidence: "Site Shield / Origin IP ACL docs (auth required)"
     vendor_position: "Customer-specific maps behind login; no public global ranges."
+  - slug: box
+    name: Box
+    evidence: https://support.box.com/hc/en-us/articles/360043696434-Configuring-A-Firewall-For-Box-Applications-and-Services
+    vendor_position: "Use domain names; 'IP addresses can change frequently and without notice' (their wording). No webhook source ranges published."
+  - slug: sumo-logic
+    name: Sumo Logic
+    evidence: https://support.sumologic.com/hc/en-us/articles/360012685393-How-to-allow-or-enable-IP-ranges-for-Sumo-Logic-endpoints
+    vendor_position: "No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region) — covered by our aws service."
 
 # ── Researched but not yet sourced — candidate backlog (v2+) ─────────────────
 backlog:
-  needs_research: [ibm-cloud, alibaba-cloud, vultr, scaleway, ovhcloud, hetzner, box,
-                   workday, servicenow, netsuite, segment, amplitude, mixpanel, braze,
+  needs_research: [ibm-cloud, alibaba-cloud, workday, servicenow, netsuite, braze,
                    iterable, klaviyo, crowdstrike, sentinelone, netskope, palo-alto,
-                   qualys, tenable, rapid7, plaid, paypal, square, checkout-com, wise,
+                   qualys, tenable, rapid7, plaid, square, checkout-com, wise,
                    buildkite, jfrog, docker-hub, elastic-cloud, confluent, aiven,
                    redis-cloud, planetscale, cockroachdb, supabase, neon, ringcentral,
-                   vonage, mailchimp-mandrill, sumo-logic, dynatrace, appdynamics,
-                   honeycomb, zendesk, mailgun, splunk-cloud, sumologic, google-workspace]
+                   vonage, mailchimp-mandrill, appdynamics, honeycomb, mailgun,
+                   splunk-cloud, google-workspace]
   partially_verified:
-    - slug: zendesk
-      note: "developer.zendesk.com documents a public_ips API; endpoint appears account-scoped — confirm whether an unauthenticated global variant exists."
     - slug: mailgun
       note: "publishes account-specific sending IPs via authenticated API only."
+    - slug: dynatrace
+      note: "synthetic location IPs only via per-tenant authenticated API; public-locations docs page is client-rendered (verified 2026-07-10) — tier D / partner candidate."
+    - slug: segment-amplitude-mixpanel
+      note: "no public range documentation found (2026-07-10); segment.com/docs bot-blocks fetches — candidates for vendor outreach."
+    - slug: scaleway-ovh-hetzner
+      note: "no geofeeds at standard URLs (2026-07-10); announced space visible only via BGP — low priority for SaaS-egress use case."

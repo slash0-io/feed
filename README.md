@@ -1,6 +1,6 @@
 # egress feed
 
-The versioned public feed of third-party service IP ranges behind [terraform-provider-egress](https://github.com/egresshq/terraform-provider-egress): **31 services** (Stripe, GitHub, Datadog, Okta, Cloudflare, AWS, Azure, Anthropic, …), built exclusively from each vendor's **official publication** — never from third-party aggregators.
+The versioned public feed of third-party service IP ranges behind [terraform-provider-egress](https://github.com/egresshq/terraform-provider-egress): **35 services** (Stripe, GitHub, Datadog, Okta, Cloudflare, AWS, Azure, Anthropic, PayPal, Zendesk, …) plus **15 documented non-publishers**, built exclusively from each vendor's **official publication** — never from third-party aggregators.
 
 Feed URL: `https://egresshq.github.io/feed/v1` (`index.json` + `services/<slug>.json`).
 

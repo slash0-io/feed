@@ -57,6 +57,10 @@ Direction: **E** = ranges you connect *to* (egress allowlists) · **I** = ranges
 | Databricks | JSON | `timestampSeconds` | ✗ (hash) | — | **≤ every 30 days; 60-day activation grace (documented)** | E/I |
 | Anthropic | docs page | none | n/a | "will not change without notice" (documented) | rare; dedicated address space | E/I |
 | OpenAI (ChatGPT egress) | JSON ×2 | `creationTime` | ✗ (hash) | — | irregular; "fetch regularly" | I |
+| Zendesk | JSON (`/ips`, per-subdomain, unauthenticated) | none | ✗ (hash) | daily fetch is vendor-documented best practice | irregular | E/I |
+| PayPal | help-center page | none | n/a | — | irregular; "if you must allowlist" (their wording) | E/I |
+| DocuSign | Trust Center page (`/trust/security/esignature`) | none | n/a | release notes | with releases | I |
+| Vultr (Constant) | RFC 8805 geofeed | `Last Updated` comment | ✗ (hash) | — | irregular | E |
 
 ## How we know about updates fast (detection architecture)
 
@@ -100,6 +104,8 @@ The honest-catalog list — published in the feed as `pinnable: false` with the 
 | HubSpot | "change too frequently" for static lists | their live IP-ranges API (tier-D integration candidate) |
 | OpenAI **API** (`api.openai.com`) | Cloudflare-fronted | domain rules; note contrast with Anthropic's dedicated ranges |
 | Akamai | customer-specific maps, auth-gated | Site Shield per customer |
+| Box | "IP addresses can change frequently and without notice" | domain allowlisting |
+| Sumo Logic | no own ranges published | AWS `ip-ranges.json` (Amazon/EC2, your deployment region) — covered by our `aws` service |
 
 ## Notable findings
 
@@ -111,7 +117,7 @@ The honest-catalog list — published in the feed as `pinnable: false` with the 
 
 ## Backlog
 
-~50 additional candidates identified but not yet researched (IBM Cloud, Alibaba, Vultr, Scaleway, OVH, Hetzner, Box, Workday, ServiceNow, Segment, Amplitude, Mixpanel, Braze, CrowdStrike, SentinelOne, Netskope, Plaid, PayPal, Square, Buildkite, JFrog, Elastic, Confluent, Aiven, Zendesk, Sumo Logic, Dynatrace, …) — full list in `sources.yaml` under `backlog`. Zendesk and Mailgun are partially verified (account-scoped APIs; need confirmation whether unauthenticated global variants exist).
+~40 candidates remain (IBM Cloud, Alibaba, Workday, ServiceNow, Braze, CrowdStrike, SentinelOne, Netskope, Plaid, Square, Buildkite, JFrog, Elastic, Confluent, Aiven, …) — full list in `sources.yaml` under `backlog`. Researched 2026-07-10 and resolved: Zendesk, PayPal, Vultr, DocuSign integrated as publishers; Box and Sumo Logic documented as non-publishers; Dynatrace is tier D (per-tenant authenticated API only); Segment/Amplitude/Mixpanel have no public range documentation (vendor-outreach candidates); Scaleway/OVH/Hetzner expose no geofeeds at standard URLs.
 
 ## Verification artifacts
 

@@ -39,6 +39,7 @@ var parsers = map[string]parseFunc{
 	"html-cidr-extract":  parseHTMLCIDRExtract,
 	"azure-service-tags": parseAzureServiceTags,
 	"json-cidr-map":      parseJSONCIDRMap,
+	"zendesk-ips":        parseZendeskIPs,
 }
 
 // selKV splits "service=S3" into ("service", "S3"). all=true for "*" or "".
@@ -464,6 +465,31 @@ func parseDatabricksRanges(body []byte, sel string) ([]string, error) {
 		}
 	}
 	return out, nil
+}
+
+// parseZendeskIPs handles https://<subdomain>.zendesk.com/ips. Select is
+// "way=ingress" (ranges you connect to) or "way=egress" (ranges Zendesk
+// connects from). Note the inversion: Zendesk names directions from its own
+// perspective.
+func parseZendeskIPs(body []byte, sel string) ([]string, error) {
+	var d struct {
+		IPs map[string]struct {
+			All      []string `json:"all"`
+			Specific []string `json:"specific"`
+		} `json:"ips"`
+	}
+	if err := json.Unmarshal(body, &d); err != nil {
+		return nil, err
+	}
+	_, want, all := selKV(sel)
+	if all {
+		return nil, fmt.Errorf("zendesk-ips requires a way select (way=ingress|way=egress)")
+	}
+	way, ok := d.IPs[want]
+	if !ok {
+		return nil, fmt.Errorf("zendesk-ips: no way %q", want)
+	}
+	return append(append([]string{}, way.All...), way.Specific...), nil
 }
 
 // parseAzureServiceTags handles the ServiceTags_Public JSON (the fetcher
