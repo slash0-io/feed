@@ -40,8 +40,8 @@ func TestCatalogContent(t *testing.T) {
 			t.Errorf("service %s missing from catalog (unknown category %q?)", s.Slug, s.Category)
 		}
 	}
-	html := renderCatalogHTML(reg)
-	for _, want := range []string{"<code>stripe</code>", "v1/services/stripe.json", "Doesn't publish"} {
+	html := renderCatalogHTML(reg, map[string]map[string]string{"stripe": {"api": "130+0"}})
+	for _, want := range []string{"<code>stripe</code>", "v1/services/stripe.json", "Doesn't publish", "api</code> (egress, 130+0)"} {
 		if !strings.Contains(html, want) {
 			t.Errorf("catalog html missing %q", want)
 		}

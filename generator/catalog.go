@@ -109,7 +109,9 @@ Published in the feed (` + "`index.json` → `nonPublishers`" + `) so tooling ca
 }
 
 // renderCatalogHTML is the human landing page served at the feed root.
-func renderCatalogHTML(reg *Registry) string {
+// counts (slug -> purpose -> "v4+v6" summary) come from the built index so
+// visitors see the security-group quota cost of a purpose up front.
+func renderCatalogHTML(reg *Registry, counts map[string]map[string]string) string {
 	var b strings.Builder
 	b.WriteString(`<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -134,6 +136,10 @@ a{color:#1d4ed8;text-decoration:none}
 </p>
 <p>Use with Terraform: <code>data "egress_ranges" "x" { service = "&lt;slug&gt;"  purpose = "&lt;purpose&gt;" }</code>.
 <b>egress</b> purposes are ranges you connect to; <b>ingress</b> purposes are webhook/agent sources.</p>
+<p><b>Entry counts matter:</b> every CIDR consumes one security-group rule (default quota: 60 per SG,
+IPv4 and IPv6 counted separately). Ranges are losslessly aggregated — published coverage is
+preserved exactly, never widened. Purposes with hundreds+ of entries belong in prefix lists or
+firewall rule groups, not security groups.</p>
 `)
 	byCat := servicesByCategory(reg)
 	for _, cat := range categoryOrder {
@@ -141,11 +147,26 @@ a{color:#1d4ed8;text-decoration:none}
 		if len(services) == 0 {
 			continue
 		}
-		fmt.Fprintf(&b, "<h2>%s</h2>\n<table><tr><th>Slug</th><th>Service</th><th>Classification</th><th>Purposes</th><th>Ranges</th></tr>\n", html.EscapeString(cat.title))
+		fmt.Fprintf(&b, "<h2>%s</h2>\n<table><tr><th>Slug</th><th>Service</th><th>Classification</th><th>Purposes (entries v4+v6)</th><th>Ranges</th></tr>\n", html.EscapeString(cat.title))
 		for _, s := range services {
-			purposes := strings.ReplaceAll(html.EscapeString(strings.ReplaceAll(purposeSummary(s), "`", "")), ", ", "<br>")
+			var lines []string
+			seen := map[string]bool{}
+			for _, ep := range s.Endpoints {
+				for _, p := range ep.Purposes {
+					if seen[p.Key] {
+						continue
+					}
+					seen[p.Key] = true
+					line := fmt.Sprintf("<code>%s</code> (%s", p.Key, p.Direction)
+					if c := counts[s.Slug][p.Key]; c != "" {
+						line += ", " + c
+					}
+					lines = append(lines, line+")")
+				}
+			}
+			sort.Strings(lines)
 			fmt.Fprintf(&b, "<tr><td><code>%s</code></td><td>%s</td><td>%s</td><td>%s</td><td><a href=\"v1/services/%s.json\">json</a></td></tr>\n",
-				s.Slug, html.EscapeString(s.Name), s.Classification, purposes, s.Slug)
+				s.Slug, html.EscapeString(s.Name), s.Classification, strings.Join(lines, "<br>"), s.Slug)
 		}
 		b.WriteString("</table>\n")
 	}

@@ -178,7 +178,12 @@ func runBuild(opts buildOptions) (buildStats, error) {
 		}
 		var purposes []feedschema.PurposeMeta
 		for key, p := range doc.Purposes {
-			purposes = append(purposes, feedschema.PurposeMeta{Key: key, Direction: p.Direction})
+			purposes = append(purposes, feedschema.PurposeMeta{
+				Key:       key,
+				Direction: p.Direction,
+				IPv4Count: len(p.IPv4),
+				IPv6Count: len(p.IPv6),
+			})
 		}
 		sort.Slice(purposes, func(i, j int) bool { return purposes[i].Key < purposes[j].Key })
 		index.Services = append(index.Services, feedschema.IndexService{
@@ -248,8 +253,16 @@ func runBuild(opts buildOptions) (buildStats, error) {
 	if err := os.WriteFile(filepath.Join(opts.OutDir, "BUILD_CHANGED"), []byte(fmt.Sprintf("%v\n", stats.BuildChanged)), 0o644); err != nil {
 		return stats, err
 	}
-	// Human landing page at the feed root (same registry-derived data as CATALOG.md).
-	if err := os.WriteFile(filepath.Join(opts.OutDir, "index.html"), []byte(renderCatalogHTML(reg)), 0o644); err != nil {
+	// Human landing page at the feed root, with per-purpose entry counts so
+	// visitors see the SG-quota cost of a purpose before using it.
+	counts := map[string]map[string]string{}
+	for _, s := range index.Services {
+		counts[s.Slug] = map[string]string{}
+		for _, p := range s.Purposes {
+			counts[s.Slug][p.Key] = fmt.Sprintf("%d+%d", p.IPv4Count, p.IPv6Count)
+		}
+	}
+	if err := os.WriteFile(filepath.Join(opts.OutDir, "index.html"), []byte(renderCatalogHTML(reg, counts)), 0o644); err != nil {
 		return stats, err
 	}
 

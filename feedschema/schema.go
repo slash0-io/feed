@@ -27,6 +27,11 @@ type IndexService struct {
 type PurposeMeta struct {
 	Key       string `json:"key"`
 	Direction string `json:"direction"`
+	// Post-aggregation range counts — the quota cost of using this purpose
+	// (every CIDR consumes one security-group rule; IPv4/IPv6 quotas are
+	// separate).
+	IPv4Count int `json:"ipv4Count"`
+	IPv6Count int `json:"ipv6Count"`
 }
 
 // NonPublisher records a service that does not publish pinnable ranges, with
