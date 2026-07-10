@@ -4,6 +4,8 @@ The versioned public feed of third-party service IP ranges behind [terraform-pro
 
 Feed URL: `https://egresshq.github.io/feed/v1` (`index.json` + `services/<slug>.json`).
 
+**→ [Browse the full service catalog](CATALOG.md)** — every slug, purpose, direction, and classification. Auto-generated from `sources.yaml` and CI-enforced to never drift; also served human-readable at the [feed root](https://egresshq.github.io/feed/).
+
 ## Why trust it
 
 - **[sources.yaml](sources.yaml)** is the complete registry: every vendor's official endpoint, data format, documented update cadence, and change-detection method — each verified live on the date recorded.

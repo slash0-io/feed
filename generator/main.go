@@ -57,7 +57,20 @@ func main() {
 	flag.StringVar(&opts.Previous, "previous", "", "published feed (http(s):// URL or directory) to publish incrementally against")
 	flag.Float64Var(&opts.MaxRemovedFrac, "max-removed-frac", 0.5, "quarantine a change removing more than this fraction of a purpose's ranges")
 	flag.IntVar(&opts.MinGuardCount, "min-guard-count", 8, "apply the removal guardrail only when the purpose previously had at least this many ranges")
+	catalogPath := flag.String("catalog", "", "write the human-readable catalog markdown to this path and exit (no fetching)")
 	flag.Parse()
+
+	if *catalogPath != "" {
+		reg, err := LoadRegistry(opts.SourcesPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := os.WriteFile(*catalogPath, []byte(renderCatalogMarkdown(reg)), 0o644); err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("wrote %s", *catalogPath)
+		return
+	}
 
 	stats, err := runBuild(opts)
 	if err != nil {
@@ -233,6 +246,10 @@ func runBuild(opts buildOptions) (buildStats, error) {
 		return stats, err
 	}
 	if err := os.WriteFile(filepath.Join(opts.OutDir, "BUILD_CHANGED"), []byte(fmt.Sprintf("%v\n", stats.BuildChanged)), 0o644); err != nil {
+		return stats, err
+	}
+	// Human landing page at the feed root (same registry-derived data as CATALOG.md).
+	if err := os.WriteFile(filepath.Join(opts.OutDir, "index.html"), []byte(renderCatalogHTML(reg)), 0o644); err != nil {
 		return stats, err
 	}
 
