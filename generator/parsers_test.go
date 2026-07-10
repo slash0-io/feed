@@ -104,17 +104,27 @@ func TestParserSpotChecks(t *testing.T) {
 		t.Errorf("aws s3: got %d ranges, want 0 < n < %d", len(s3), len(all))
 	}
 
-	// Stripe API IPs are bare IPs; normalize must emit /32s.
+	// Stripe API publishes bare IPs. Lossless aggregation may merge adjacent
+	// pairs, but the covered address count must EXACTLY equal the number of
+	// unique published IPs — the zero-overshoot invariant.
 	body, ep = get("stripe", "api")
 	raw, _ = parsers[ep.Format](body, "*")
 	v4, v6 := normalize(raw, func(string, ...any) {})
 	if len(v6) != 0 {
 		t.Errorf("stripe api: unexpected ipv6 %v", v6)
 	}
+	unique := map[string]bool{}
+	for _, ip := range raw {
+		unique[strings.TrimSpace(ip)] = true
+	}
+	var covered uint64
 	for _, c := range v4 {
-		if !strings.HasSuffix(c, "/32") {
-			t.Errorf("stripe api: %s not a /32", c)
-		}
+		p := netip.MustParsePrefix(c)
+		covered += uint64(1) << (32 - p.Bits())
+	}
+	if covered != uint64(len(unique)) {
+		t.Errorf("stripe api: %d addresses covered by %d CIDRs, want exactly %d published IPs (overshoot!)",
+			covered, len(v4), len(unique))
 	}
 
 	// Intercom outbound-webhook selection must be a strict subset of all.
@@ -184,6 +194,29 @@ func TestNormalize(t *testing.T) {
 	}
 	if warns != 3 { // 10.0.0.0/8 private, 0.0.0.0/0 default, bogus invalid
 		t.Errorf("warns = %d, want 3", warns)
+	}
+}
+
+func TestLosslessAggregation(t *testing.T) {
+	v4, v6 := normalize(
+		[]string{
+			"8.8.8.0/24", "8.8.8.128/25", // subsumed: /25 inside /24
+			"1.1.0.0/24", "1.1.1.0/24", // exact siblings -> 1.1.0.0/23
+			"9.9.9.0/25", "9.9.10.0/25", // NOT siblings (different parents) -> untouched
+			"2600::/33", "2600:0:8000::/33", // v6 siblings -> 2600::/32
+		},
+		func(string, ...any) { t.Error("unexpected warning") },
+	)
+	if want := "1.1.0.0/23,8.8.8.0/24,9.9.9.0/25,9.9.10.0/25"; strings.Join(v4, ",") != want {
+		t.Errorf("v4 = %v, want %s", v4, want)
+	}
+	if want := "2600::/32"; strings.Join(v6, ",") != want {
+		t.Errorf("v6 = %v, want %s", v6, want)
+	}
+	// Cascade: four /26 quarters collapse all the way to the /24.
+	v4, _ = normalize([]string{"7.7.7.0/26", "7.7.7.64/26", "7.7.7.128/26", "7.7.7.192/26"}, func(string, ...any) {})
+	if want := "7.7.7.0/24"; strings.Join(v4, ",") != want {
+		t.Errorf("cascade v4 = %v, want %s", v4, want)
 	}
 }
 
