@@ -1,0 +1,1239 @@
+
+
+        
+                
+  
+                      
+  
+  
+            
+  
+        <div class="alert alert--info alert--centered" id="alert-375116">
+      <div class="u-container alert_container">
+        <div class="alert_message">
+                                <span class="alert_emoji">🤖</span>
+                    <strong>Teach your AI coding agent how to send email with Postmark Skills</strong> 
+        </div>
+        <div class="alert_actions">
+          <a href="https://postmarkapp.com/blog/teach-your-ai-coding-agent-how-to-send-email-with-postmark-skills"  target="_blank"  class="cta-btn cta-btn--inverted">Learn more</a>
+        </div>
+      </div>
+
+                    <a href="#" class="alert_dismiss" data-id="375116">x</a>
+          </div>
+      
+<!doctype html>
+
+  <html lang="en" class="no-js">
+
+<head>
+  
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>
+      IPs for Firewalls | Postmark Support Center  </title>
+<meta name="description" content="Below is a list of IPs you can add to your firewall for sending email through SMTP, Inbound processing and Webhooks.
+Outbound SMTP Servers
+The IP addresses…">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="globalsign-domain-verification" content="F0n5fUwYguswb99EGyC5qD87O15uv5VBUiX9yRrxX6">
+<meta name="theme-color" content="#FFDE00">
+
+
+<script>dataLayer = [{'siteType': 'support', 'visitorIP': '104.30.167.165'}];</script>
+
+  <link href="https://postmarkapp.com/dist/css/core.379a574050244f2da12d.css" rel="stylesheet">
+  
+      <link href="https://postmarkapp.com/dist/css/postmark.ec15d99786971ea9ff13.css" rel="stylesheet">
+      
+<link rel="dns-prefetch" href="https://ssl.google-analytics.com">
+<link rel="dns-prefetch" href="https://www.google-analytics.com">
+
+
+
+<link rel="shortcut icon" href="/images/favicon.ico">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+
+
+
+
+      <link rel="canonical" href="https://postmarkapp.com/support/article/800-ips-for-firewalls">
+  <meta property="og:url" content="https://postmarkapp.com/support/article/800-ips-for-firewalls">
+
+  <meta property="og:type" content="website">
+  <meta property="fb:app_id" content="244883355940334">
+
+  <meta property="og:title" content="IPs for Firewalls | Postmark Support Center">
+
+  <meta property="og:description" content="Below is a list of IPs you can add to your firewall for sending email through SMTP, Inbound processing and Webhooks.
+Outbound SMTP Servers
+The IP addresses…">
+
+  
+
+
+          <meta property="og:image" content="https://postmarkapp.com/images/logo-stamp-social.png">
+  
+
+
+    <meta name="twitter:title" content="IPs for Firewalls | Postmark Support Center">
+ 
+    <meta name="twitter:description" content="Below is a list of IPs you can add to your firewall for sending email through SMTP, Inbound processing and Webhooks.
+Outbound SMTP Servers
+The IP addresses…">
+ 
+      <meta name="twitter:card" content="summary">
+
+        <meta name="twitter:image" content="https://postmarkapp.com/images/logo-stamp-social.png">
+  
+  <meta name="twitter:site" content="@postmarkapp">
+
+  <meta name="twitter:creator" content="@mattantwest">
+
+
+
+<meta name="slack-app-id" content="A8LSJN934">
+  </head>
+
+<body>
+
+
+
+
+
+  
+
+
+
+
+
+  
+<header class="header  header--bordered">
+  <div class="u-container header_container">
+
+    <div class="header_branding">
+      <a href="https://postmarkapp.com/" class="header_postmark-logo">Postmark</a>
+      <div class="header_actions">
+                  <a href="https://account.postmarkapp.com/login" class="header_login cta-btn cta-btn--small ">Log In</a>
+                  <button class="header_hamburger js-nav-mobile-button" aria-haspopup="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+      </div>
+    </div>
+
+    
+
+  
+
+
+<nav class="nav nav--header nav--desktop" role="navigation" aria-label="Main">
+
+      
+
+<ul class="nav_list">
+  
+  <li class="nav_item ">
+    <a href="https://postmarkapp.com/why" class="nav_link">Why Postmark?</a>
+  </li>
+  <li class="nav_item nav_item--dropdown">
+    <button class="nav_link js-nav-popup" aria-haspopup="true" aria-expanded="false" data-target=".js-dropdown-product">Product</button>
+
+    <div class="nav_dropdown js-dropdown-product">
+      <div class="nav_dropdown-wrapper nav_dropdown-wrapper--product">
+        <div class="nav_features">
+          <h2 class="nav_sub-heading nav_sub-heading--features">Features</h2>
+          <ul class="nav_list">
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/email-api" class="nav_link">
+                <span class="nav_icon nav_icon--email-api"></span>
+                <span class="nav_title">Email API</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/smtp-service" class="nav_link">
+                <span class="nav_icon nav_icon--smtp"></span>
+                <span class="nav_title">SMTP Service</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/message-streams" class="nav_link">
+                <span class="nav_icon nav_icon--streams"></span>
+                <span class="nav_title">Message Streams</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/transactional-email" class="nav_link">
+                <span class="nav_icon nav_icon--transactional"></span>
+                <span class="nav_title">Transactional Email</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/email-delivery" class="nav_link">
+                <span class="nav_icon nav_icon--delivery"></span>
+                <span class="nav_title">Email Delivery</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/email-templates" class="nav_link">
+                <span class="nav_icon nav_icon--templates"></span>
+                <span class="nav_title">Email Templates</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/inbound-email" class="nav_link">
+                <span class="nav_icon nav_icon--inbound"></span>
+                <span class="nav_title">Inbound Email</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/email-analytics" class="nav_link">
+                <span class="nav_icon nav_icon--insight"></span>
+                <span class="nav_title">Analytics & Retention</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/integrations" class="nav_link">
+                <span class="nav_icon nav_icon--integrations"></span>
+                <span class="nav_title">Integrations</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/bulk-api" class="nav_link">
+                <span class="nav_icon nav_icon--bulk-api"></span>
+                <span class="nav_title">Bulk API</span>
+                <span class="nav_label">New</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="nav_sub">
+          <h2 class="nav_sub-heading">
+            <span class="nav_icon nav_icon--for"></span>
+            <span class="nav_text">Postmark For</span>
+          </h2>
+          <ul class="nav_list">
+            <li><a href="https://postmarkapp.com/for/agencies" class="nav_sub-link">Agencies</a></li>
+            <li><a href="https://postmarkapp.com/for/enterprise" class="nav_sub-link">Enterprise</a></li>
+            <li><a href="https://postmarkapp.com/for/startups" class="nav_sub-link">Startups</a></li>
+            <li><a href="https://postmarkapp.com/for/bootstrapped-startups" class="nav_sub-link">Bootstrapped Startups</a></li>
+            <li><a href="https://postmarkapp.com/for/side-projects" class="nav_sub-link">Side Projects</a></li>
+          </ul>
+
+          <h2 class="nav_sub-heading u-pad-top--xs">
+            <span class="nav_icon nav_icon--versus"></span>
+            <span class="nav_text">Postmark vs.</span>
+          </h2>
+          <ul class="nav_list">
+            <li><a href="https://postmarkapp.com/compare/sendgrid-alternative" class="nav_sub-link">SendGrid</a></li>
+            <li><a href="https://postmarkapp.com/compare/mailgun-alternative" class="nav_sub-link">Mailgun</a></li>
+            <li><a href="https://postmarkapp.com/compare/amazon-ses-alternative" class="nav_sub-link">Amazon SES</a></li>
+            <li><a href="https://postmarkapp.com/compare/sparkpost-alternative" class="nav_sub-link">SparkPost</a></li>
+            <li><a href="https://postmarkapp.com/compare/mandrill-alternative" class="nav_sub-link">Mandrill</a></li>
+            <li>
+              <a href="https://postmarkapp.com/compare/resend-alternative" class="nav_sub-link">
+                <span>Resend</span>
+                <span class="nav_label">New</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </li>
+  <li class="nav_item">
+    <a href="https://postmarkapp.com/pricing" class="nav_link">Pricing</a>
+  </li>
+  <li class="nav_item nav_item--dropdown">
+    <button class="nav_link js-nav-popup" aria-haspopup="true" aria-expanded="false" data-target=".js-dropdown-resources">Resources</button>
+
+    <div class="nav_dropdown js-dropdown-resources">
+      <div class="nav_dropdown-wrapper">
+        <ul class="nav_list">
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/blog" class="nav_link">
+              <span class="nav_icon nav_icon--blog"></span>
+              <span class="nav_title">Blog</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/developer" class="nav_link">
+              <span class="nav_icon nav_icon--api-docs"></span>
+              <span class="nav_title">API Documentation</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/manual" class="nav_link">
+              <span class="nav_icon nav_icon--manual"></span>
+              <span class="nav_title">Getting Started</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/guides" class="nav_link">
+              <span class="nav_icon nav_icon--guides"></span>
+              <span class="nav_title">Email Guides</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/postmark-express" class="nav_link">
+              <span class="nav_icon nav_icon--comic"></span>
+              <span class="nav_title">Email Comic</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/webinars" class="nav_link">
+              <span class="nav_icon nav_icon--webinars"></span>
+              <span class="nav_title">Webinars</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/videos" class="nav_link">
+              <span class="nav_icon nav_icon--videos"></span>
+              <span class="nav_title">Videos</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/podcast" class="nav_link">
+              <span class="nav_icon nav_icon--podcast"></span>
+              <span class="nav_title">Podcast</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/labs" class="nav_link">
+              <span class="nav_icon nav_icon--labs"></span>
+              <span class="nav_title">Labs</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://dmarcdigests.com" target="_blank" rel="noopener" class="nav_link">
+              <span class="nav_icon nav_icon--dmarc"></span>
+              <span class="nav_title">DMARC Digests</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/glossary" class="nav_link">
+              <span class="nav_icon nav_icon--glossary"></span>
+              <span class="nav_title">Glossary</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>
+  <li class="nav_item nav_item--dropdown nav_item--current">
+    <button class="nav_link js-nav-popup" aria-haspopup="true" aria-expanded="false" data-target=".js-dropdown-help">Help</button>
+
+    <div class="nav_dropdown js-dropdown-help">
+      <div class="nav_dropdown-wrapper">
+        <ul class="nav_list">
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/support" class="nav_link">
+              <span class="nav_icon nav_icon--support"></span>
+              <span class="nav_title">Support Center</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/contact" class="nav_link">
+              <span class="nav_icon nav_icon--contact"></span>
+              <span class="nav_title">Contact Support</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/talk-to-sales" class="nav_link">
+              <span class="nav_icon nav_icon--contact-sales"></span>
+              <span class="nav_title">Talk to Sales</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://status.postmarkapp.com/" target="_blank" rel="noopener noreferrer" class="nav_link">
+              <span class="nav_icon nav_icon--status"></span>
+              <span class="nav_title">Status</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>
+
+  
+      <li class="nav_item nav_item--btn">
+      <a href="https://account.postmarkapp.com/login" id="nav-btn-log-in" class="nav_btn cta-btn ">Log in</a>
+    </li>
+    <li class="nav_item nav_item--btn">
+      <a href="https://account.postmarkapp.com/sign_up"
+         id="nav-btn-signup"
+         class="nav_btn cta-btn cta-btn--default js-signup"
+         data-track="Click"
+         data-category="Signup Button"
+         data-label="Header">Start free trial</a>
+    </li>
+  </ul>
+  
+</nav>
+
+    <div class="nav-mobile js-nav-mobile hidden--at-l-2">
+      <img src="/images/logo-stamp-simple.svg" class="nav-mobile_logo" />
+      
+
+  
+
+
+<nav class="nav nav--header nav--mobile" role="navigation" aria-label="Main">
+
+      
+
+<ul class="nav_list">
+  
+  <li class="nav_item ">
+    <a href="https://postmarkapp.com/why" class="nav_link">Why Postmark?</a>
+  </li>
+  <li class="nav_item nav_item--dropdown">
+    <button class="nav_link js-nav-popup" aria-haspopup="true" aria-expanded="false" data-target=".js-dropdown-product">Product</button>
+
+    <div class="nav_dropdown js-dropdown-product">
+      <div class="nav_dropdown-wrapper nav_dropdown-wrapper--product">
+        <div class="nav_features">
+          <h2 class="nav_sub-heading nav_sub-heading--features">Features</h2>
+          <ul class="nav_list">
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/email-api" class="nav_link">
+                <span class="nav_icon nav_icon--email-api"></span>
+                <span class="nav_title">Email API</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/smtp-service" class="nav_link">
+                <span class="nav_icon nav_icon--smtp"></span>
+                <span class="nav_title">SMTP Service</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/message-streams" class="nav_link">
+                <span class="nav_icon nav_icon--streams"></span>
+                <span class="nav_title">Message Streams</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/transactional-email" class="nav_link">
+                <span class="nav_icon nav_icon--transactional"></span>
+                <span class="nav_title">Transactional Email</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/email-delivery" class="nav_link">
+                <span class="nav_icon nav_icon--delivery"></span>
+                <span class="nav_title">Email Delivery</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/email-templates" class="nav_link">
+                <span class="nav_icon nav_icon--templates"></span>
+                <span class="nav_title">Email Templates</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/inbound-email" class="nav_link">
+                <span class="nav_icon nav_icon--inbound"></span>
+                <span class="nav_title">Inbound Email</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/email-analytics" class="nav_link">
+                <span class="nav_icon nav_icon--insight"></span>
+                <span class="nav_title">Analytics & Retention</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/integrations" class="nav_link">
+                <span class="nav_icon nav_icon--integrations"></span>
+                <span class="nav_title">Integrations</span>
+              </a>
+            </li>
+            <li class="nav_item">
+              <a href="https://postmarkapp.com/bulk-api" class="nav_link">
+                <span class="nav_icon nav_icon--bulk-api"></span>
+                <span class="nav_title">Bulk API</span>
+                <span class="nav_label">New</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="nav_sub">
+          <h2 class="nav_sub-heading">
+            <span class="nav_icon nav_icon--for"></span>
+            <span class="nav_text">Postmark For</span>
+          </h2>
+          <ul class="nav_list">
+            <li><a href="https://postmarkapp.com/for/agencies" class="nav_sub-link">Agencies</a></li>
+            <li><a href="https://postmarkapp.com/for/enterprise" class="nav_sub-link">Enterprise</a></li>
+            <li><a href="https://postmarkapp.com/for/startups" class="nav_sub-link">Startups</a></li>
+            <li><a href="https://postmarkapp.com/for/bootstrapped-startups" class="nav_sub-link">Bootstrapped Startups</a></li>
+            <li><a href="https://postmarkapp.com/for/side-projects" class="nav_sub-link">Side Projects</a></li>
+          </ul>
+
+          <h2 class="nav_sub-heading u-pad-top--xs">
+            <span class="nav_icon nav_icon--versus"></span>
+            <span class="nav_text">Postmark vs.</span>
+          </h2>
+          <ul class="nav_list">
+            <li><a href="https://postmarkapp.com/compare/sendgrid-alternative" class="nav_sub-link">SendGrid</a></li>
+            <li><a href="https://postmarkapp.com/compare/mailgun-alternative" class="nav_sub-link">Mailgun</a></li>
+            <li><a href="https://postmarkapp.com/compare/amazon-ses-alternative" class="nav_sub-link">Amazon SES</a></li>
+            <li><a href="https://postmarkapp.com/compare/sparkpost-alternative" class="nav_sub-link">SparkPost</a></li>
+            <li><a href="https://postmarkapp.com/compare/mandrill-alternative" class="nav_sub-link">Mandrill</a></li>
+            <li>
+              <a href="https://postmarkapp.com/compare/resend-alternative" class="nav_sub-link">
+                <span>Resend</span>
+                <span class="nav_label">New</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </li>
+  <li class="nav_item">
+    <a href="https://postmarkapp.com/pricing" class="nav_link">Pricing</a>
+  </li>
+  <li class="nav_item nav_item--dropdown">
+    <button class="nav_link js-nav-popup" aria-haspopup="true" aria-expanded="false" data-target=".js-dropdown-resources">Resources</button>
+
+    <div class="nav_dropdown js-dropdown-resources">
+      <div class="nav_dropdown-wrapper">
+        <ul class="nav_list">
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/blog" class="nav_link">
+              <span class="nav_icon nav_icon--blog"></span>
+              <span class="nav_title">Blog</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/developer" class="nav_link">
+              <span class="nav_icon nav_icon--api-docs"></span>
+              <span class="nav_title">API Documentation</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/manual" class="nav_link">
+              <span class="nav_icon nav_icon--manual"></span>
+              <span class="nav_title">Getting Started</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/guides" class="nav_link">
+              <span class="nav_icon nav_icon--guides"></span>
+              <span class="nav_title">Email Guides</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/postmark-express" class="nav_link">
+              <span class="nav_icon nav_icon--comic"></span>
+              <span class="nav_title">Email Comic</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/webinars" class="nav_link">
+              <span class="nav_icon nav_icon--webinars"></span>
+              <span class="nav_title">Webinars</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/videos" class="nav_link">
+              <span class="nav_icon nav_icon--videos"></span>
+              <span class="nav_title">Videos</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/podcast" class="nav_link">
+              <span class="nav_icon nav_icon--podcast"></span>
+              <span class="nav_title">Podcast</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/labs" class="nav_link">
+              <span class="nav_icon nav_icon--labs"></span>
+              <span class="nav_title">Labs</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://dmarcdigests.com" target="_blank" rel="noopener" class="nav_link">
+              <span class="nav_icon nav_icon--dmarc"></span>
+              <span class="nav_title">DMARC Digests</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/glossary" class="nav_link">
+              <span class="nav_icon nav_icon--glossary"></span>
+              <span class="nav_title">Glossary</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>
+  <li class="nav_item nav_item--dropdown nav_item--current">
+    <button class="nav_link js-nav-popup" aria-haspopup="true" aria-expanded="false" data-target=".js-dropdown-help">Help</button>
+
+    <div class="nav_dropdown js-dropdown-help">
+      <div class="nav_dropdown-wrapper">
+        <ul class="nav_list">
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/support" class="nav_link">
+              <span class="nav_icon nav_icon--support"></span>
+              <span class="nav_title">Support Center</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/contact" class="nav_link">
+              <span class="nav_icon nav_icon--contact"></span>
+              <span class="nav_title">Contact Support</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://postmarkapp.com/talk-to-sales" class="nav_link">
+              <span class="nav_icon nav_icon--contact-sales"></span>
+              <span class="nav_title">Talk to Sales</span>
+            </a>
+          </li>
+          <li class="nav_item">
+            <a href="https://status.postmarkapp.com/" target="_blank" rel="noopener noreferrer" class="nav_link">
+              <span class="nav_icon nav_icon--status"></span>
+              <span class="nav_title">Status</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </li>
+
+  
+      <li class="nav_item nav_item--btn">
+      <a href="https://account.postmarkapp.com/login" id="nav-btn-log-in" class="nav_btn cta-btn ">Log in</a>
+    </li>
+    <li class="nav_item nav_item--btn">
+      <a href="https://account.postmarkapp.com/sign_up"
+         id="nav-btn-signup"
+         class="nav_btn cta-btn cta-btn--default js-signup"
+         data-track="Click"
+         data-category="Signup Button"
+         data-label="Header">Start free trial</a>
+    </li>
+  </ul>
+  
+</nav>
+
+      <div class="nav-mobile_extras">
+                  <a href="https://account.postmarkapp.com/sign_up"
+             class="cta-btn cta-btn--default cta-btn--medium js-signup"
+             data-track="Click"
+             data-category="Signup Button"
+             data-label="Header (Mobile)">Start free trial</a>
+          <p class="nav-mobile_login">Already have an account? <a href="https://account.postmarkapp.com/login">Log in →</a></p>
+              </div>
+    </div>
+
+  </div>
+</header>
+
+<div class="page u-clearfix">
+
+<div class="support-article">
+
+    <nav class="nav nav--support support-article_breadcrumbs">
+  <div class="u-container u-grid u-grid--full u-grid--1of2-at-large u-grid--center">
+    <ul class="breadcrumbs u-grid-cell">
+      <li class="breadcrumbs_item">
+        <a href="https://postmarkapp.com/support" class="breadcrumbs_link">Support Center</a>
+      </li>
+
+            <li class="breadcrumbs_item">
+        <a href="https://postmarkapp.com/support/sending-emails" class="breadcrumbs_link">Sending Emails</a>
+      </li>
+      <li class="breadcrumbs_item">
+        <a href="https://postmarkapp.com/support/sending-emails#common-questions" class="breadcrumbs_link">Common Questions</a>
+      </li>
+          </ul>
+    <div class="u-grid-cell u-textalign-right hero_search hero_search--breadcrumbs">
+      <form class="search search--breadcrumbs" action="https://postmarkapp.com/search/results" method="get">
+  
+  <label for="query" class="section_label hidden">Search Query</label>
+  <input type="search" name="query" placeholder="Search the support center" class="search_input" value="" />
+  <button type="submit" class="search_button">Search</button>
+</form>
+<span>or</span><a href="/contact" class="cta-btn">Ask a Human</a>
+    </div>
+  </div>
+</nav>
+
+    <div class="u-container u-container--narrow support-article_body">
+    <article class="entry entry--solo entry--support-article">
+      <header class="entry_header">
+        <h1 class="title-page entry_title">IPs for Firewalls</h1>
+      </header>
+
+      <div class="scope-text scope-text--help-scout">
+        <p>Below is a list of IPs you can add to your firewall for sending email through SMTP, Inbound processing and Webhooks.</p>
+<h2 id="outbound">Outbound SMTP Servers</h2>
+<p>The IP addresses that Transactional and Broadcast messages are sent from.</p>
+<ul>
+<li>50.31.156.96/27 (50.31.156.96 - 127) [Transactional]</li>
+<li>104.245.209.192/26 (104.245.209.192 - 255) [Transactional]</li>
+<li>50.31.205.204/30 (50.31.205.204 - 207) [Transactional]</li>
+<li>
+<div>50.31.205.0/24 (50.31.205.1 - 255) [Broadcast]</div>
+</li>
+</ul>
+<h2 id="smtp">SMTP Endpoints</h2>
+<p>The IP endpoints for accessing SMTP outbound.</p>
+<h3 id="h_01JPJF9Q5NA3H83MDV8829P9GM">CIDR Blocks / Ranges</h3>
+<ul>
+<li>147.75.195.176/30 [147.75.195.176 - 147.75.195.179]</li>
+<li>147.75.202.84/30 [147.75.202.84 -147.75.202.87]</li>
+<li>147.75.205.84/30 [147.75.205.84 - 147.75.205.87]</li>
+</ul>
+<ul>
+<li>52.79.88.220</li>
+<li>54.180.186.193</li>
+<li>34.249.162.51</li>
+<li>52.208.184.61</li>
+<li>63.35.51.189</li>
+<li>3.208.98.158</li>
+<li>3.93.205.235</li>
+<li>3.95.122.1</li>
+<li>3.208.98.158</li>
+<li>3.93.205.235</li>
+<li>3.95.122.1</li>
+<li>13.209.189.43</li>
+<li>15.164.159.110</li>
+<li>52.208.94.138</li>
+<li>52.210.34.36</li>
+<li>54.77.222.65</li>
+</ul>
+<p>Note: IP allowlisting for our API is no longer supported. <a href="https://postmarkapp.com/updates/static-ip-deprecation-postmark-will-no-longer-support-ip-allow-listing" target="_blank" rel="noopener noreferrer">Learn more</a></p>
+<h2 id="inbound">Inbound SMTP Servers</h2>
+<p>These IPs are where Postmark's inbound MX record points.</p>
+<ul>
+<li>13.58.75.120</li>
+<li>52.36.8.247</li>
+<li>18.221.96.15</li>
+<li>34.211.250.229</li>
+<li>34.211.88.250</li>
+<li>18.221.180.145</li>
+<li>52.210.157.196</li>
+<li>52.213.211.243</li>
+<li>52.51.73.41</li>
+<li>13.125.126.102</li>
+<li>3.34.204.228</li>
+<li>3.34.213.247</li>
+<li>107.22.71.110</li>
+<li>52.2.5.255</li>
+<li>72.44.42.226</li>
+</ul>
+<h2 id="webhooks">Webhooks</h2>
+<p>These IPs apply for every webhook sent by Postmark (inbound, bounce, open, etc).</p>
+<ul>
+<li>3.134.147.250</li>
+<li>50.31.156.6</li>
+<li>50.31.156.77</li>
+<li>18.217.206.57</li>
+</ul>
+      </div>
+
+      <footer class="entry_footer">
+        Last updated March 17th, 2025
+      </footer>
+    </article>
+
+    
+      
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+  
+
+  
+<section class="resource-list resource-list--related " id="">
+
+  <h2 class="resource-list_title">Related articles</h2>
+  
+  <ul class="resource-list_items" id="list-">
+    
+      
+      
+      <li class="resource-list_item resource-list_item--chapter  ">
+        <a href="https://postmarkapp.com/manual#whats-the-best-way-for-you-to-integrate-with-postmark" class="resource-list_link">What’s the best way for you to integrate with Postmark?</a>
+      </li>
+
+          
+      
+      
+      <li class="resource-list_item resource-list_item--chapter  ">
+        <a href="https://postmarkapp.com/manual#implementing-email-sending-from-your-app" class="resource-list_link">Implementing email sending from your app</a>
+      </li>
+
+          
+      
+      
+      <li class="resource-list_item resource-list_item--helpScoutDoc  ">
+        <a href="https://postmarkapp.com/support/article/1126-can-you-resend-emails" class="resource-list_link">Can you resend emails?</a>
+      </li>
+
+          
+      
+      
+      <li class="resource-list_item resource-list_item--helpScoutDoc resource-list_item--highlight ">
+        <a href="https://postmarkapp.com/support/article/811-what-are-the-smtp-details-api-tokens-i-should-be-using" class="resource-list_link">What are the SMTP details / API Tokens I should be using?</a>
+      </li>
+
+            </ul>
+
+  
+  </section>
+
+  </div>
+
+</div>
+
+<section class="section section--cs-banner">
+  <div class="u-container u-grid u-grid--full u-grid--center">
+    <div class="u-grid-cell">
+      <h2 class="section_title">Still need some help?</h2>
+      <p class="section_intro">Our customer success team has your back!</p>
+    </div>
+
+    <div class="u-grid-cell section_ctas">
+      <a href="/contact" class="cta-btn cta-btn--default cta-btn--large">Contact Support</a>
+    </div>
+  </div>
+</section>
+
+</div>
+
+  
+
+
+
+
+<footer class="footer ">
+  <div class="u-container footer_container">
+    
+
+  
+
+
+<nav class="nav nav--footer " role="navigation" aria-label="Footer">
+
+      
+<div class="nav_group">
+  <h4 class="nav_heading">Product</h4>
+  <ul class="nav_list">
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/pricing" class="nav_link">Pricing</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/customers" class="nav_link">Customers</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/reviews" class="nav_link">Reviews</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/dedicated-ips" class="nav_link">Dedicated IPs</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/lp/referral-partner-program" class="nav_link">Referral Partner Program</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/updates" class="nav_link nav_link--updates" data-latest-update="1781029980">Latest Updates</a>
+    </li>
+  </ul>
+</div>
+
+<div class="nav_group">
+  <h4 class="nav_heading">Features</h4>
+  <ul class="nav_list">
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/email-api" class="nav_link">Email API</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/bulk-api" class="nav_link">Bulk API</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/smtp-service" class="nav_link">SMTP Service</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/message-streams" class="nav_link">Message Streams</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/transactional-email" class="nav_link">Transactional Email</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/email-delivery" class="nav_link">Email Delivery</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/email-templates" class="nav_link">Templates</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/inbound-email" class="nav_link">Inbound Email</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/email-analytics" class="nav_link">Analytics & Retention</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/integrations" class="nav_link">Integrations</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/email-webhooks" class="nav_link">Webhooks</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/security" class="nav_link">Security</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/email-experts" class="nav_link">Email Experts</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/rebound" class="nav_link">Rebound</a>
+    </li>
+  </ul>
+</div>
+
+
+    <div class="nav_group">
+    <h4 class="nav_heading">Postmark For</h4>
+    <ul class="nav_list">
+            <li class="nav_item">
+        <a href="https://postmarkapp.com/for/agencies" class="nav_link">Agencies</a>
+      </li>
+            <li class="nav_item">
+        <a href="https://postmarkapp.com/for/startups" class="nav_link">Startups</a>
+      </li>
+            <li class="nav_item">
+        <a href="https://postmarkapp.com/for/enterprise" class="nav_link">Enterprise</a>
+      </li>
+            <li class="nav_item">
+        <a href="https://postmarkapp.com/for/bootstrapped-startups" class="nav_link">Bootstrapped Startups</a>
+      </li>
+            <li class="nav_item">
+        <a href="https://postmarkapp.com/for/side-projects" class="nav_link">Side Projects</a>
+      </li>
+            <li class="nav_item">
+        <a href="/send-email" class="nav_link">Developers</a>
+      </li>
+    </ul>
+
+    <h4 class="nav_heading">Postmark vs.</h4>
+    <ul class="nav_list">
+              
+                      
+                <li class="nav_item">
+          <a href="https://postmarkapp.com/compare/sendgrid-alternative" title="Compare Postmark to SendGrid" class="nav_link">SendGrid</a>
+        </li>
+                      
+                <li class="nav_item">
+          <a href="https://postmarkapp.com/compare/sparkpost-alternative" title="Compare Postmark to SparkPost" class="nav_link">SparkPost</a>
+        </li>
+                      
+                <li class="nav_item">
+          <a href="https://postmarkapp.com/compare/mailgun-alternative" title="Compare Postmark to Mailgun" class="nav_link">Mailgun</a>
+        </li>
+                      
+                <li class="nav_item">
+          <a href="https://postmarkapp.com/compare/amazon-ses-alternative" title="Compare Postmark to Amazon SES" class="nav_link">Amazon SES</a>
+        </li>
+                      
+                <li class="nav_item">
+          <a href="https://postmarkapp.com/compare/mailchimp-transactional-alternative" title="Compare Postmark to Mandrill" class="nav_link">Mandrill</a>
+        </li>
+                      
+                <li class="nav_item">
+          <a href="https://postmarkapp.com/compare/resend-alternative" title="Compare Postmark to Resend" class="nav_link">Resend</a>
+        </li>
+              
+    </ul>
+  </div>
+
+<div class="nav_group">
+  <h4 class="nav_heading">Resources</h4>
+  <ul class="nav_list">
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/blog" class="nav_link">Blog</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/developer" class="nav_link">API Documentation</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/api-explorer" class="nav_link">API Explorer</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/manual" class="nav_link">Getting Started</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/guides" class="nav_link">Email Guides</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/postmark-express" class="nav_link">Email Comic</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/videos" class="nav_link">Videos</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/podcast" class="nav_link">Podcast</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://dmarcdigests.com" target="_blank" rel="noopener" class="nav_link">DMARC Digests</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/webinars" class="nav_link">Webinars</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/labs" class="nav_link">Labs</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/migration-guides" class="nav_link">Migration Guides</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/newsletter" class="nav_link">Newsletter</a>
+    </li>
+    <li class="nav_item">
+      <a href="https://postmarkapp.com/glossary" class="nav_link">Glossary</a>
+    </li>
+  </ul>
+</div>
+
+  <div class="nav_group">
+    <h4 class="nav_heading">Help</h4>
+    <ul class="nav_list">
+      <li class="nav_item">
+        <a href="https://postmarkapp.com/support" class="nav_link">Support Center</a>
+      </li>
+      <li class="nav_item">
+        <a href="https://postmarkapp.com/contact" class="nav_link">Contact Support</a>
+      </li>
+      <li class="nav_item">
+        <a href="https://postmarkapp.com/talk-to-sales" class="nav_link">Talk to Sales</a>
+      </li>
+      <li class="nav_item">
+        <a href="https://status.postmarkapp.com" target="_blank" rel="noopener noreferrer" class="nav_link">Service Status</a>
+      </li>
+    </ul>
+
+    
+    <h4 class="nav_heading">Visit ActiveCampaign for:</h4>
+    <ul class="nav_list">
+      <li class="nav_item">
+        <a href="https://www.activecampaign.com/platform/autonomous-marketing?utm_source=postmark&amp;utm_medium=referral&amp;utm_campaign=postmark_web&amp;utm_content=postmark_footer_nav" target="_blank" rel="noopener" class="nav_link">Autonomous Marketing</a>
+      </li>
+      <li class="nav_item">
+        <a href="https://www.activecampaign.com/platform/email-marketing?utm_source=postmark&amp;utm_medium=referral&amp;utm_campaign=postmark_web&amp;utm_content=postmark_footer_nav" target="_blank" rel="noopener" class="nav_link">Email Marketing</a>
+      </li>
+      <li class="nav_item">
+        <a href="https://www.activecampaign.com/platform/sales-crm?utm_source=postmark&amp;utm_medium=referral&amp;utm_campaign=postmark_web&amp;utm_content=postmark_footer_nav" target="_blank" rel="noopener" class="nav_link">CRM & Sales Automation</a>
+      </li>
+      <li class="nav_item">
+        <a href="https://www.activecampaign.com/platform/whatsapp-messaging?utm_source=postmark&amp;utm_medium=referral&amp;utm_campaign=postmark_web&amp;utm_content=postmark_footer_nav" target="_blank" rel="noopener" class="nav_link">WhatsApp Automation</a>
+      </li>
+      <li class="nav_item">
+        <a href="https://www.activecampaign.com/platform/sms-marketing?utm_source=postmark&amp;utm_medium=referral&amp;utm_campaign=postmark_web&amp;utm_content=postmark_footer_nav" target="_blank" rel="noopener" class="nav_link">SMS Automation</a>
+      </li>
+      <li class="nav_item">
+        <a href="https://www.activecampaign.com/platform/landing-pages?utm_source=postmark&amp;utm_medium=referral&amp;utm_campaign=postmark_web&amp;utm_content=postmark_footer_nav" target="_blank" rel="noopener" class="nav_link">Forms & Landing Pages</a>
+      </li>
+    </ul>
+  </div>
+  
+</nav>
+    <div class="u-grid u-grid--full u-grid--1of3-at-large footer_lower">
+  <div class="u-grid-cell">
+    <div class="footer_ac">
+      Made with <span class="footer_love">♥</span> at <a href="https://www.activecampaign.com?utm_source=postmark&utm_medium=referral&utm_campaign=postmark_web&utm_content=postmark_footer" class="footer_ac-logo" target="_blank" rel="noopener">ActiveCampaign</a></a>
+    </div>
+  </div>
+  <div class="u-grid-cell u-grid-cell--2of3">
+    <div class="nav nav--legal">
+      <ul class="nav_list nav_list--legal">
+        <li class="nav_item">
+          <a href="https://www.activecampaign.com/legal/privacy-policy" target="_blank" class="nav_link">Privacy Policy &#x2197;</a>
+        </li>
+        <li class="nav_item">
+          <a href="https://postmarkapp.com/terms-of-service" class="nav_link">Terms of Service</a>
+        </li>
+        <li class="nav_item">
+          <a href="https://postmarkapp.com/eu-privacy" class="nav_link">EU Data Protection</a>
+        </li>
+        <li class="nav_item">
+          <a href="https://postmarkapp.com/cookie-policy" class="nav_link">Cookie Policy</a>
+        </li>
+        <li class="nav_item">
+          <!-- OneTrust cookies settings button start -->
+          <button id="ot-sdk-btn" class="ot-sdk-show-settings">Cookie settings</button>
+          <!-- OneTrust cookies settings button end -->
+        </li>
+        <li class="nav_item">&copy; ActiveCampaign, <abbr>LLC</abbr>, 2026.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  </div>
+</footer>
+
+
+
+  <script
+  src="https://solve-widget.forethought.ai/embed.js"
+  id="forethought-widget-embed-script"
+  data-api-key="2310ff96-9b16-4a77-9601-827429c9507c"
+  data-ft-Workflow-Tag="postmark"
+></script>
+
+  <script src="https://postmarkapp.com/dist/js/landing.2614bb982ec0e14d0bf1.js"></script>
+
+<script type="text/javascript">
+  window['GoogleAnalyticsObject'] = 'ga';
+  window['ga'] = window['ga'] || function() {
+    (window['ga'].q = window['ga'].q || []).push(arguments)
+  };
+</script>
+
+<!-- Google Tag Manager -->
+<noscript><iframe src="//www.googletagmanager.com/ns.html?id=GTM-PWV3TKM" width="0" height="0" style="display:none; visibility:hidden"></iframe></noscript>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-PWV3TKM');</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Organization",
+  "url": "https://postmarkapp.com",
+  "logo": "https://postmarkapp.com/images/logo-stamp-social.png",
+  "name": "Postmark",
+  "founder": [
+    {
+      "@type": "Person",
+      "name": "Jason VandeBoom",
+      "jobTitle": "CEO"
+    }
+  ],
+  "foundingLocation": {
+    "@type": "Place",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "1 North Dearborn St, 5th Floor",
+      "addressLocality": "Chicago",
+      "addressRegion": "IL",
+      "postalCode": "60602",
+      "addressCountry": "US"
+    }
+  },
+  "location": {
+    "@type": "Place",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "1 North Dearborn St, 5th Floor",
+      "addressLocality": "Chicago",
+      "addressRegion": "IL",
+      "postalCode": "60602",
+      "addressCountry": "US"
+    }
+  },
+  "sameAs": [
+    "https://twitter.com/postmarkapp"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "WebSite",
+  "name": "Postmark",
+  "url": "https://postmarkapp.com"
+}
+</script>
+    
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "Article",
+  "headline": "IPs for Firewalls",
+  "description": "",
+  "dateModified": "2026-05-13T17:45:42-0400",
+  "datePublished": "2025-03-17T12:35:49-0400",
+  "url": "https://postmarkapp.com/support/article/800-ips-for-firewalls",
+
+  
+  
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://postmarkapp.com/support/article/800-ips-for-firewalls"
+  },
+
+    "author": {
+    "@type": "Person",
+    "name": "Matt West",
+    "url": "https://postmarkapp.com/blog/author/mattwest"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "Postmark",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://postmarkapp.com/images/logo@2x.png",
+      "width": 316,
+      "height": 50
+    }
+  }
+}
+</script>
+
+    
+        
+  
+  
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+      {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@id": "https://postmarkapp.com/support",
+        "name": "Postmark Support Center"
+      }
+    },      {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@id": "https://postmarkapp.com/support/sending-emails",
+        "name": "Sending Emails"
+      }
+    },      {
+      "@type": "ListItem",
+      "position": 3,
+      "item": {
+        "@id": "https://postmarkapp.com/support/sending-emails#common-questions",
+        "name": "https://postmarkapp.com/support/sending-emails#common-questions"
+      }
+    },      {
+      "@type": "ListItem",
+      "position": 4,
+      "item": {
+        "@id": "https://postmarkapp.com/support/article/800-ips-for-firewalls",
+        "name": "IPs for Firewalls"
+      }
+    }    ]
+}
+</script>
+
+</body>
+</html>

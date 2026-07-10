@@ -89,13 +89,13 @@ services:
     endpoints:
       - id: service-tags
         url: https://www.microsoft.com/en-us/download/details.aspx?id=56519
-        format: azure-service-tags     # resolve real JSON URL from page, then {values[{name, properties.addressPrefixes}]}
+        format: azure-service-tags     # fetcher resolves the rotating JSON URL from this page, then {values[{name, properties.addressPrefixes}]}
         detection: {poll: docs-page}
         purposes:
           - {key: all,     direction: egress, select: "tag=AzureCloud"}
           - {key: storage, direction: egress, select: "tag=Storage"}
           - {key: sql,     direction: egress, select: "tag=Sql"}
-    verified: "2026-07-04"
+    verified: "2026-07-10"
 
   - slug: microsoft-365
     name: Microsoft 365
@@ -234,9 +234,9 @@ services:
           poll: docs-page
           push: "gitlab.com/gitlab-org/gitlab commits atom feed for doc/user/gitlab_com/_index.md"
         purposes:
-          - {key: web-api,  direction: egress,  select: "web/api fleet ranges"}
-          - {key: webhooks, direction: ingress, select: "same ranges; webhook + mirroring sources"}
-    verified: "2026-07-04"
+          - {key: web-api,  direction: egress,  select: "section=IP range"}
+          - {key: webhooks, direction: ingress, select: "section=IP range"}   # same ranges; webhook + mirroring sources
+    verified: "2026-07-10"
 
   - slug: circleci
     name: CircleCI
@@ -366,10 +366,10 @@ services:
           poll: docs-page
           push: "github.com/getsentry/sentry-docs commits feed for the ip-ranges page source"
         purposes:
-          - {key: ingest,   direction: egress,  select: "event ingestion"}
-          - {key: webhooks, direction: ingress, select: "outbound/integration IPs"}
-          - {key: uptime,   direction: ingress, select: "uptime monitoring sources"}
-    verified: "2026-07-04"
+          - {key: ingest,   direction: egress,  select: "section=Event Ingestion"}
+          - {key: webhooks, direction: ingress, select: "section=Outbound Requests"}
+          - {key: uptime,   direction: ingress, select: "section=Uptime Monitoring"}
+    verified: "2026-07-10"
 
   - slug: new-relic
     name: New Relic
@@ -386,10 +386,16 @@ services:
           poll: docs-page
           push: "github.com/newrelic/docs-website commits feed for networks.mdx"
         purposes:
-          - {key: agents,     direction: egress,  select: "agent endpoint ranges"}
-          - {key: synthetics, direction: ingress, select: "synthetic minion public IPs"}
-          - {key: webhooks,   direction: ingress, select: "alert webhook sources"}
-    verified: "2026-07-04"
+          # section appears once per datacenter tab (US + EU); substring match collects both
+          - {key: agents, direction: egress, select: "section=Data ingest IP blocks"}
+          # webhook source IPs have no stable heading on this page — revisit
+      - id: synthetics
+        url: https://s3.amazonaws.com/nr-synthetics-assets/nat-ip-dnsname/production/ip-ranges.json
+        format: json-cidr-map          # {"<location>": ["cidr", ...]} — linked from the synthetics minion IPs doc
+        detection: {poll: cond-get}    # ETag + Last-Modified (verified)
+        purposes:
+          - {key: synthetics, direction: ingress, select: "*"}
+    verified: "2026-07-10"
 
   # ── Identity ──────────────────────────────────────────────────────────────
   - slug: okta
@@ -493,9 +499,9 @@ services:
         format: html-cidr-extract
         detection: {poll: docs-page}
         purposes:
-          - {key: smtp,     direction: egress,  select: "SMTP sending IPs"}
-          - {key: webhooks, direction: ingress, select: "webhook source IPs"}
-    verified: "2026-07-04"
+          - {key: smtp,     direction: egress,  select: "section=Outbound SMTP Servers"}
+          - {key: webhooks, direction: ingress, select: "section=Webhooks"}
+    verified: "2026-07-10"
 
   # ── Business SaaS ─────────────────────────────────────────────────────────
   - slug: salesforce
@@ -539,7 +545,7 @@ services:
     endpoints:
       - id: trust-center
         url: https://www.docusign.com/trust
-        format: html-cidr-extract
+        format: docs-page-todo         # parked: html-cidr-extract is live now, but the exact Trust Center subpage is unresolved
         detection: {poll: docs-page}
         purposes:
           - {key: connect-webhooks, direction: ingress, select: "Connect webhook source ranges"}
@@ -592,9 +598,9 @@ services:
         format: html-cidr-extract
         detection: {poll: docs-page}
         purposes:
-          - {key: api,      direction: egress,  select: "inbound IP addresses section"}
-          - {key: outbound, direction: ingress, select: "outbound IP addresses section"}
-    verified: "2026-07-04"
+          - {key: api,      direction: egress,  select: "section=Inbound IP addresses"}
+          - {key: outbound, direction: ingress, select: "section=Outbound IP addresses;exclude=Phased out"}
+    verified: "2026-07-10"
 
   - slug: openai
     name: OpenAI (ChatGPT egress)

@@ -1,6 +1,6 @@
 # egress feed
 
-The versioned public feed of third-party service IP ranges behind [terraform-provider-egress](https://github.com/egresshq/terraform-provider-egress): **25+ services** (Stripe, GitHub, Datadog, Okta, Cloudflare, AWS, …), built exclusively from each vendor's **official publication** — never from third-party aggregators.
+The versioned public feed of third-party service IP ranges behind [terraform-provider-egress](https://github.com/egresshq/terraform-provider-egress): **31 services** (Stripe, GitHub, Datadog, Okta, Cloudflare, AWS, Azure, Anthropic, …), built exclusively from each vendor's **official publication** — never from third-party aggregators.
 
 Feed URL: `https://egresshq.github.io/feed/v1` (`index.json` + `services/<slug>.json`).
 
@@ -33,7 +33,7 @@ Add an entry to `sources.yaml` (official vendor endpoint only, with provenance l
 
 ## Roadmap
 
-Docs-page sources (Anthropic, GitLab, Sentry, New Relic, Postmark, DocuSign), Azure Service Tags, feed signing, push-based rebuilds (AWS SNS, M365 `/version`), and the ~50-service research backlog in `sources.yaml`.
+DocuSign (Trust Center page URL unresolved), feed signing, change-detection-driven publishing (replace the cron), push-based rebuilds (AWS SNS, M365 `/version`), and the ~50-service research backlog in `sources.yaml`.
 
 ## License
 

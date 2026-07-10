@@ -124,6 +124,50 @@ func TestParserSpotChecks(t *testing.T) {
 	if len(outbound) == 0 || len(outbound) >= len(allIC) {
 		t.Errorf("intercom: outbound %d, all %d — want strict subset", len(outbound), len(allIC))
 	}
+
+	// Anthropic docs page: section scoping must isolate inbound ranges and
+	// keep phased-out addresses out of the outbound capture.
+	body, ep = get("anthropic", "docs")
+	raw, err = parsers[ep.Format](body, "section=Inbound IP addresses")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v4in, v6in := normalize(raw, func(string, ...any) {})
+	if strings.Join(v4in, ",") != "160.79.104.0/23" || strings.Join(v6in, ",") != "2607:6bc0::/48" {
+		t.Errorf("anthropic inbound = %v %v, want [160.79.104.0/23] [2607:6bc0::/48]", v4in, v6in)
+	}
+	raw, err = parsers[ep.Format](body, "section=Outbound IP addresses;exclude=Phased out")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v4out, _ := normalize(raw, func(string, ...any) {})
+	if !contains(v4out, "160.79.104.0/21") {
+		t.Errorf("anthropic outbound missing 160.79.104.0/21: %v", v4out)
+	}
+	if contains(v4out, "34.162.46.92/32") {
+		t.Errorf("anthropic outbound contains phased-out 34.162.46.92/32: %v", v4out)
+	}
+
+	// GitLab docs: the "IP range" section is exactly two dedicated ranges.
+	body, ep = get("gitlab", "docs")
+	raw, err = parsers[ep.Format](body, "section=IP range")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v4gl, _ := normalize(raw, func(string, ...any) {})
+	if strings.Join(v4gl, ",") != "34.74.90.64/28,34.74.226.0/24" {
+		t.Errorf("gitlab = %v, want [34.74.90.64/28 34.74.226.0/24]", v4gl)
+	}
+
+	// Azure service tags (reduced fixture): tag selection must resolve.
+	body, ep = get("azure", "service-tags")
+	storage, err := parsers[ep.Format](body, "tag=Storage")
+	if err != nil || len(storage) == 0 {
+		t.Errorf("azure tag=Storage: %d ranges, err=%v", len(storage), err)
+	}
+	if _, err := parsers[ep.Format](body, "tag=NoSuchTag"); err == nil {
+		t.Error("azure: expected error for unknown tag")
+	}
 }
 
 func TestNormalize(t *testing.T) {

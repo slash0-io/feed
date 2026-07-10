@@ -14,28 +14,31 @@ import (
 type parseFunc func(body []byte, sel string) ([]string, error)
 
 var parsers = map[string]parseFunc{
-	"aws-ip-ranges":     parseAWSIPRanges,
-	"google-prefixes":   parseGooglePrefixes,
-	"cloudflare-api":    parseCloudflareAPI,
-	"fastly-list":       parseFastlyList,
-	"github-meta":       parseGitHubMeta,
-	"datadog-ranges":    parseDatadogRanges,
-	"stripe-list":       parseStripeList,
-	"atlassian-ranges":  parseAtlassianRanges,
-	"okta-cells":        parseOktaCells,
-	"salesforce-ranges": parseSalesforceRanges,
-	"auth0-regions":     parseAuth0Regions,
-	"oci-ranges":        parseOCIRanges,
-	"geofeed-csv":       parseGeofeedCSV,
-	"cidr-lines":        parseLines,
-	"ip-lines":          parseLines,
-	"json-ip-array":     parseJSONIPArray,
-	"intercom-ranges":   parseIntercomRanges,
-	"circleci-list":     parseCircleCIList,
-	"braintree-ips":     parseBraintreeIPs,
-	"zscaler-cenr":      parseZscalerCENR,
-	"databricks-ranges": parseDatabricksRanges,
-	"o365-endpoints":    parseO365Endpoints,
+	"aws-ip-ranges":      parseAWSIPRanges,
+	"google-prefixes":    parseGooglePrefixes,
+	"cloudflare-api":     parseCloudflareAPI,
+	"fastly-list":        parseFastlyList,
+	"github-meta":        parseGitHubMeta,
+	"datadog-ranges":     parseDatadogRanges,
+	"stripe-list":        parseStripeList,
+	"atlassian-ranges":   parseAtlassianRanges,
+	"okta-cells":         parseOktaCells,
+	"salesforce-ranges":  parseSalesforceRanges,
+	"auth0-regions":      parseAuth0Regions,
+	"oci-ranges":         parseOCIRanges,
+	"geofeed-csv":        parseGeofeedCSV,
+	"cidr-lines":         parseLines,
+	"ip-lines":           parseLines,
+	"json-ip-array":      parseJSONIPArray,
+	"intercom-ranges":    parseIntercomRanges,
+	"circleci-list":      parseCircleCIList,
+	"braintree-ips":      parseBraintreeIPs,
+	"zscaler-cenr":       parseZscalerCENR,
+	"databricks-ranges":  parseDatabricksRanges,
+	"o365-endpoints":     parseO365Endpoints,
+	"html-cidr-extract":  parseHTMLCIDRExtract,
+	"azure-service-tags": parseAzureServiceTags,
+	"json-cidr-map":      parseJSONCIDRMap,
 }
 
 // selKV splits "service=S3" into ("service", "S3"). all=true for "*" or "".
@@ -459,6 +462,54 @@ func parseDatabricksRanges(body []byte, sel string) ([]string, error) {
 			out = append(out, p.IPv4Prefixes...)
 			out = append(out, p.IPv6Prefixes...)
 		}
+	}
+	return out, nil
+}
+
+// parseAzureServiceTags handles the ServiceTags_Public JSON (the fetcher
+// resolves the rotating download URL first). Select: "tag=AzureCloud".
+func parseAzureServiceTags(body []byte, sel string) ([]string, error) {
+	var d struct {
+		Values []struct {
+			Name       string `json:"name"`
+			Properties struct {
+				AddressPrefixes []string `json:"addressPrefixes"`
+			} `json:"properties"`
+		} `json:"values"`
+	}
+	if err := json.Unmarshal(body, &d); err != nil {
+		return nil, err
+	}
+	_, want, all := selKV(sel)
+	if all {
+		return nil, fmt.Errorf("azure-service-tags requires a tag select (e.g. \"tag=AzureCloud\")")
+	}
+	for _, v := range d.Values {
+		if strings.EqualFold(v.Name, want) {
+			return v.Properties.AddressPrefixes, nil
+		}
+	}
+	return nil, fmt.Errorf("azure-service-tags: no tag %q", want)
+}
+
+// parseJSONCIDRMap handles {"<group>": ["cidr", ...], ...} documents such as
+// New Relic's synthetics minion ranges (keyed by location).
+func parseJSONCIDRMap(body []byte, sel string) ([]string, error) {
+	var d map[string][]string
+	if err := json.Unmarshal(body, &d); err != nil {
+		return nil, err
+	}
+	key, _, all := selKV(sel)
+	if !all {
+		v, ok := d[key]
+		if !ok {
+			return nil, fmt.Errorf("json-cidr-map: no key %q", key)
+		}
+		return v, nil
+	}
+	var out []string
+	for _, v := range d {
+		out = append(out, v...)
 	}
 	return out, nil
 }
