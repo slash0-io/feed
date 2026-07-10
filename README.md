@@ -9,7 +9,8 @@ Feed URL: `https://egresshq.github.io/feed/v1` (`index.json` + `services/<slug>.
 - **[sources.yaml](sources.yaml)** is the complete registry: every vendor's official endpoint, data format, documented update cadence, and change-detection method — each verified live on the date recorded.
 - **[research/SOURCES.md](research/SOURCES.md)** documents the methodology, per-source evidence, and the change-detection architecture (push subscriptions, conditional-GET polling, content hashing, docs-page watching).
 - Every published service document carries a **provenance chain**: upstream URL, retrieval timestamp, and SHA-256 of the upstream body it was derived from.
-- **Guardrails**: private/loopback/default-route entries are dropped; a purpose that parses to zero ranges fails the build rather than publishing an empty allowlist.
+- **Guardrails**: private/loopback/default-route entries are dropped; a purpose that parses to zero ranges fails the build; and a change that removes most of a service's previously published ranges is **quarantined** — the last-good version keeps serving while the build alerts for human review.
+- **Incremental publishing**: unchanged services republish byte-for-byte (sync tokens preserved), deploys are skipped entirely when nothing changed, and every real change lands in `changelog.json` with per-purpose added/removed counts.
 - Parsers are tested against **archived upstream fixtures** (`testdata/fixtures/`), so the build runs fully offline in CI.
 
 ## What the schema models that upstreams don't
@@ -33,7 +34,7 @@ Add an entry to `sources.yaml` (official vendor endpoint only, with provenance l
 
 ## Roadmap
 
-DocuSign (Trust Center page URL unresolved), feed signing, change-detection-driven publishing (replace the cron), push-based rebuilds (AWS SNS, M365 `/version`), and the ~50-service research backlog in `sources.yaml`.
+DocuSign (Trust Center page URL unresolved), feed signing, push-based rebuilds (AWS SNS, M365 `/version`), sub-minute polling via a long-lived poller (GitHub Actions cron floors at ~5 min), and the ~50-service research backlog in `sources.yaml`.
 
 ## License
 

@@ -65,3 +65,18 @@ type Purpose struct {
 	IPv4      []string `json:"ipv4"`
 	IPv6      []string `json:"ipv6"`
 }
+
+// ChangelogEntry is one element of dist/v1/changelog.json — newest first,
+// length-capped by the publisher. Records what each publish actually changed.
+type ChangelogEntry struct {
+	PublishedAt string          `json:"publishedAt"`
+	SyncToken   string          `json:"syncToken"`
+	Changes     []ServiceChange `json:"changes"`
+}
+
+type ServiceChange struct {
+	Slug    string `json:"slug"`
+	Purpose string `json:"purpose"`
+	Added   int    `json:"added"`
+	Removed int    `json:"removed"`
+}
