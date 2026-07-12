@@ -870,11 +870,7 @@ services:
         detection: {poll: hash}
         purposes:
           - {key: all, direction: egress, select: "*"}
-    verified: "2026-07-10"
-    needs_attention: >
-      TLS chain verifies via Mozilla-derived bundles (curl/Linux) but fails Go verification on
-      macOS 13 (Sectigo R46 root absent from that trust store). Confirm green on Linux CI's
-      first live publish; fail-static keeps the last-good version serving regardless.
+    verified: "2026-07-12"
 
 # ── Services that do NOT publish pinnable ranges ─────────────────────────────
 # Verified vendor positions. These are surfaced in the feed as `pinnable: false`
