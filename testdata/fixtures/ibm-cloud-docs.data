@@ -1,0 +1,2932 @@
+<!DOCTYPE html><html lang="en"><head><meta name="google-site-verification" content="FJU6EFEZJfI5Chm8K8fXriRjSTNMFXDBuo8o5FGuBOQ" /><meta http-equiv="X-UA-Compatible" content="IE=edge" /><meta content="text/html; charset=UTF-8" http-equiv="Content-Type" /><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta name="build-version" content="3.3.0"><meta name="google-site-verification" content="jGI9fX-364BaZ4wE87D7GkX32GG8m8qsKqKEyV_Czqo" /><!-- Identify the site category and page name for Coremetrics, Medallia --><meta name="IBM.WTMSite" content="IBM_CloudDocs"><meta name="description" content="Find documentation, API &amp; SDK references, tutorials, FAQs, and more resources for IBM Cloud products and services."><link rel="canonical" href="https://cloud.ibm.com/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges"><title>IBM Cloud IP ranges (Classic infrastructure) | IBM Cloud Docs</title><link nonce="ce8efe7eb83a8f02aeb1e1c09b51092a" rel="icon" type="image/png" href="/media/docs/images/homepage/favicon.png"><link nonce="ce8efe7eb83a8f02aeb1e1c09b51092a" rel="stylesheet" href='/docs/cache/9d7e76-3972469672/css/docs.css'><script nonce="ce8efe7eb83a8f02aeb1e1c09b51092a" src="https://1.www.s81c.com/common/stats/ibm-common.js" type="text/javascript" async="async" integrity="sha384-FA/eHjS5oxO7vmDJ/2Gqk4EpauznnKP7xyOpeqHT2KAv12yPJDBlxOE5cdYmecot" crossorigin="anonymous"></script><style nonce="ce8efe7eb83a8f02aeb1e1c09b51092a">body {font-family: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;font-weight: 400;color: #161616;margin: 0;padding: 0;}.doc-ui {background-color: #f4f4f4;padding: 1rem;}</style><script nonce="ce8efe7eb83a8f02aeb1e1c09b51092a" type="text/javascript">window._ibmAnalytics = {"settings": {"name": "IBM Cloud Documentation","isSpa": true,"tealiumProfileName": "in-app-usage"},"onLoad": [["ibmStats.pageview", []]]};digitalData = {"page": {"pageInfo": {"ibm": {"siteId": "IBM_" + _ibmAnalytics.settings.name,}},"category": {"primaryCategory": "PC100"}}};</script><script nonce="ce8efe7eb83a8f02aeb1e1c09b51092a" type="text/javascript">var lang;lang = "en";if (lang) {lang = lang.toLowerCase().replace("_", "-");} else {lang = "en";}if (lang === "pt") lang = "pt-pt";</script><script nonce="ce8efe7eb83a8f02aeb1e1c09b51092a" type="text/javascript">var exampleDomainName = "cloud.ibm.com";var productKey = 'bluemix';var appRoute = '';var contextRoot = '/docs/';var aceCommonRoute = 'https://cloud.ibm.com/api/v5';var enableDownloadPDF = 'netstorage';var enableImageComponent = 'show';var appEnv = 'hide';var enableOldInternalHomepage = '';</script><!-- Analytics enable SPA --><script nonce="ce8efe7eb83a8f02aeb1e1c09b51092a" type="text/javascript">window._analytics = {autoPageEventSpa: true,autoFormEvents: true};process = {env: {},};window.headerConfig = {headerDOMLoaded: true,noChatbot: true};</script></head><body><div id="doc-ui" class="doc-ui  v5"><!-- Docs body --><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+  <meta name="DC.Publisher" content="IBM Corporation">
+  <meta name="DC.rights" content="&#xA9; Copyright IBM Corporation 2017, 2026">
+  <meta name="IBM.Country" content="ZZ">
+  <meta name="DC.Date" content="2026-06-09">
+  <meta name="keywords" content="ip, range, firewall, network, traffic, security">
+  <meta name="subcollection" content="infrastructure-hub">
+  <meta name="description" content="A frequently asked question is, &quot;What IP ranges do I allow through the firewall?&quot; The following tables contain the full range of IP addresses to use with these IBM firewalls and appliances. The most important subnets to focus on are the IBM Cloud service networks. These are private (rfc1918) subnets that require connections to and from your servers for provisioning, reloads, remote reboots, and other infrastructure services like DNS resoution, NTP (time) and network attached storage.">
+  <meta name="content.type" content="topic">
+  <meta name="tags" content="{{ services }}">
+  <meta name="account.plan" content="{{ account-plan }}">
+  <meta name="completion.time" content="{{ completion-time }}">
+  <meta name="version" content="{{ version }}">
+  <meta name="deployment.url" content="{{ deployment-url }}">
+  <meta name="industry" content="{{ industry }}">
+  <meta name="compliance" content="{{ compliance }}">
+  <meta name="use.case" content="{{ use-case }}">
+  <meta name="source.format" content="markdown">
+
+  <meta name="github.edit" content="yes" repo="https://github.com/ibm-cloud-docs/infrastructure-hub/blob/master/ips.md">
+  <meta name="github.issue" content="yes" repo="https://github.com/ibm-cloud-docs/infrastructure-hub/issues/new/choose">
+
+  <!-- Licensed Materials - Property of IBM -->
+  <!-- US Government Users Restricted Rights -->
+  <!-- Use, duplication or disclosure restricted by -->
+  <!-- GSA ADP Schedule Contract with IBM Corp. -->
+
+  <title>IBM Cloud IP ranges (Classic infrastructure)</title>
+</head>
+
+<body>
+  <main role="main">
+    <article aria-labelledby="ibm-cloud-ip-ranges" role="article">
+      <section id="section-ibm-cloud-ip-ranges">
+        <h1 id="ibm-cloud-ip-ranges">IBM Cloud IP ranges (Classic infrastructure)</h1>
+        <p>A frequently asked question is, &quot;What IP ranges do I allow through the firewall?&quot; The following tables contain the full range of IP addresses to use with these IBM firewalls and appliances. The most important subnets to focus on are
+          the <a href="/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges#service-network">IBM Cloud service networks</a>. These are private (rfc1918) subnets that require connections to and from your servers for provisioning, reloads,
+          remote reboots, and other infrastructure services like DNS resoution, NTP (time) and network attached storage.</p>
+        <ul>
+          <li>IBM Cloud Juniper vSRX Standard</li>
+          <li>IBM Cloud Ciena Virtual Router Appliance (Vyatta)</li>
+          <li>IBM Cloud Fortinet vFSA</li>
+          <li>IBM Cloud Fortinet Fortigate Security Appliance 10 Gbps</li>
+          <li>IBM Cloud Security Groups</li>
+          <li>IBM Cloud Hardware Firewall</li>
+        </ul>
+        <p class="important">To identify potential conflicts between IP ranges in your on-premises environment and IP ranges used in IBM Cloud, you can search in the <a href="https://ibm.biz/cidr-calculator">IP Ranges Calculator tool</a>. By using the tool, you can download
+          the listed IP ranges in JSON format. Disclaimer: This community tool is updated based on support availability.</p>
+        <section id="section-front-end-network">
+          <h2 id="front-end-network">Front-end (public) network</h2>
+          <p class="note">Customers must not use any IP range listed under IBM Cloud service network ranges. The restriction applies globally, not only within the referenced data center. Even unused subranges within these blocks may be used in the future and should be
+            avoided. For as list of IP ranges reserved for internal IBM Cloud use, see <a href="/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges#back-end-network">Back-end private network</a>.</p>
+          <p>Ports to allow:</p>
+          <ul>
+            <li>All TCP/UDP ports</li>
+            <li>ICMP – ping (for support troubleshooting and monitoring)</li>
+          </ul>
+          <table>
+            <caption caption-side="bottom">Front-end (public) network</caption>
+            <thead>
+              <tr>
+                <th>Data center</th>
+                <th>City</th>
+                <th>IP range</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>ams03</td>
+                <td>Amsterdam</td>
+                <td>159.8.198.0/23</td>
+              </tr>
+              <tr>
+                <td>che01</td>
+                <td>Chennai</td>
+                <td>169.38.118.0/23</td>
+              </tr>
+              <tr>
+                <td>dal08</td>
+                <td>Dallas</td>
+                <td>192.255.18.0/24</td>
+              </tr>
+              <tr>
+                <td>dal09</td>
+                <td>Dallas</td>
+                <td>198.23.118.0/23</td>
+              </tr>
+              <tr>
+                <td>dal10</td>
+                <td>Dallas</td>
+                <td>169.46.118.0/23</td>
+              </tr>
+              <tr>
+                <td>dal12</td>
+                <td>Dallas</td>
+                <td>169.47.118.0/23</td>
+              </tr>
+              <tr>
+                <td>dal13</td>
+                <td>Dallas</td>
+                <td>169.48.118.0/24</td>
+              </tr>
+              <tr>
+                <td>fra02</td>
+                <td>Frankfurt</td>
+                <td>159.122.118.0/23</td>
+              </tr>
+              <tr>
+                <td>fra04</td>
+                <td>Frankfurt</td>
+                <td>161.156.118.0/24</td>
+              </tr>
+              <tr>
+                <td>fra05</td>
+                <td>Frankfurt</td>
+                <td>149.81.118.0/23</td>
+              </tr>
+              <tr>
+                <td>lon02</td>
+                <td>London</td>
+                <td>5.10.118.0/23</td>
+              </tr>
+              <tr>
+                <td>lon04</td>
+                <td>London</td>
+                <td>158.175.127.0/24</td>
+              </tr>
+              <tr>
+                <td>lon05</td>
+                <td>London</td>
+                <td>141.125.118.0/23</td>
+              </tr>
+              <tr>
+                <td>lon06</td>
+                <td>London</td>
+                <td>158.176.118.0/23</td>
+              </tr>
+              <tr>
+                <td>mad02</td>
+                <td>Madrid</td>
+                <td>13.120.118.0/24</td>
+              </tr>
+              <tr>
+                <td>mad04</td>
+                <td>Madrid</td>
+                <td>13.121.118.0/24</td>
+              </tr>
+              <tr>
+                <td>mad05</td>
+                <td>Madrid</td>
+                <td>13.122.118.0/24</td>
+              </tr>
+              <tr>
+                <td>mil01</td>
+                <td>Milan</td>
+                <td>159.122.138.0/23</td>
+              </tr>
+              <tr>
+                <td>mon01</td>
+                <td>Montreal</td>
+                <td>169.54.118.0/23</td>
+              </tr>
+              <tr>
+                <td>osa21</td>
+                <td>Osaka</td>
+                <td>163.68.118.0/24</td>
+              </tr>
+              <tr>
+                <td>osa22</td>
+                <td>Osaka</td>
+                <td>163.69.118.0/24</td>
+              </tr>
+              <tr>
+                <td>osa23</td>
+                <td>Osaka</td>
+                <td>163.73.118.0/24</td>
+              </tr>
+              <tr>
+                <td>par01</td>
+                <td>Paris</td>
+                <td>159.8.118.0/23</td>
+              </tr>
+              <tr>
+                <td>sao01</td>
+                <td>São Paulo</td>
+                <td>169.57.138.0/23</td>
+              </tr>
+              <tr>
+                <td>sjc01</td>
+                <td>San Jose</td>
+                <td>50.23.118.0/23</td>
+              </tr>
+              <tr>
+                <td>sjc03</td>
+                <td>San Jose</td>
+                <td>169.45.118.0/23</td>
+              </tr>
+              <tr>
+                <td>sjc04</td>
+                <td>San Jose</td>
+                <td>169.62.118.0/24</td>
+              </tr>
+              <tr>
+                <td>sng01</td>
+                <td>Jurong East</td>
+                <td>174.133.118.0/23</td>
+              </tr>
+              <tr>
+                <td>syd01</td>
+                <td>Sydney</td>
+                <td>168.1.18.0/23</td>
+              </tr>
+              <tr>
+                <td>syd04</td>
+                <td>Sydney</td>
+                <td>130.198.118.0/23</td>
+              </tr>
+              <tr>
+                <td>syd05</td>
+                <td>Sydney</td>
+                <td>135.90.118.0/23</td>
+              </tr>
+              <tr>
+                <td>tok02</td>
+                <td>Tokyo</td>
+                <td>161.202.118.0/23</td>
+              </tr>
+              <tr>
+                <td>tok04</td>
+                <td>Tokyo</td>
+                <td>128.168.118.0/23</td>
+              </tr>
+              <tr>
+                <td>tok05</td>
+                <td>Tokyo</td>
+                <td>165.192.118.0/23</td>
+              </tr>
+              <tr>
+                <td>tor01</td>
+                <td>Toronto</td>
+                <td>158.85.118.0/23</td>
+              </tr>
+              <tr>
+                <td>tor04</td>
+                <td>Toronto</td>
+                <td>163.74.118.0/23</td>
+              </tr>
+              <tr>
+                <td>tor05</td>
+                <td>Toronto</td>
+                <td>163.75.118.0/23</td>
+              </tr>
+              <tr>
+                <td>wdc01</td>
+                <td>Washington D.C.</td>
+                <td>208.43.118.0/23</td>
+              </tr>
+              <tr>
+                <td>wdc03</td>
+                <td>Washington D.C.</td>
+                <td>192.255.38.0/24</td>
+              </tr>
+              <tr>
+                <td>wdc04</td>
+                <td>Washington D.C.</td>
+                <td>169.55.118.0/23</td>
+              </tr>
+              <tr>
+                <td>wdc06</td>
+                <td>Washington D.C.</td>
+                <td>169.60.118.0/23</td>
+              </tr>
+              <tr>
+                <td>wdc07</td>
+                <td>Washington D.C.</td>
+                <td>169.61.118.0/23</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+        <section id="section-load-balancer-ips">
+          <h2 id="load-balancer-ips">Load balancer IPs</h2>
+          <p>The following IPs are Classic hardware Load Balancer IPs, and do not relate to IPs associated with IBM Cloud Load Balancer. For information on IPs associated with IBM Cloud Load Balancer, refer to this <a href="/docs/loadbalancer-service?topic=loadbalancer-service-faqs-for-ibm-cloud-load-balancer#public">FAQ</a>.</p>
+          <table>
+            <caption caption-side="bottom">Load balancer IPs</caption>
+            <thead>
+              <tr>
+                <th>Data center</th>
+                <th>City</th>
+                <th>IP range</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>ams03</td>
+                <td>Amsterdam</td>
+                <td>159.8.197.0/24</td>
+              </tr>
+              <tr>
+                <td>che01</td>
+                <td>Chennai</td>
+                <td>169.38.117.0/24</td>
+              </tr>
+              <tr>
+                <td>dal05</td>
+                <td>Dallas</td>
+                <td>50.23.203.0/24<br> 108.168.157.0/24
+                  <br> 173.192.117.0/24
+                  <br> 192.155.205.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>dal09</td>
+                <td>Dallas</td>
+                <td>169.46.187.0/24<br> 198.23.117.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>dal10</td>
+                <td>Dallas</td>
+                <td>169.46.117.0/24</td>
+              </tr>
+              <tr>
+                <td>dal12</td>
+                <td>Dallas</td>
+                <td>169.47.117.0/24</td>
+              </tr>
+              <tr>
+                <td>dal13</td>
+                <td>Dallas</td>
+                <td>169.48.117.0/24</td>
+              </tr>
+              <tr>
+                <td>fra02</td>
+                <td>Frankfurt</td>
+                <td>159.122.117.0/24</td>
+              </tr>
+              <tr>
+                <td>fra04</td>
+                <td>Frankfurt</td>
+                <td>161.156.117.0/24</td>
+              </tr>
+              <tr>
+                <td>fra05</td>
+                <td>Frankfurt</td>
+                <td>149.81.117.0/24</td>
+              </tr>
+              <tr>
+                <td>lon02</td>
+                <td>London</td>
+                <td>5.10.117.0/24</td>
+              </tr>
+              <tr>
+                <td>lon04</td>
+                <td>London</td>
+                <td>158.175.117.0/24</td>
+              </tr>
+              <tr>
+                <td>lon05</td>
+                <td>London</td>
+                <td>141.125.117.0/24</td>
+              </tr>
+              <tr>
+                <td>lon06</td>
+                <td>London</td>
+                <td>158.176.117.0/24</td>
+              </tr>
+              <tr>
+                <td>mil01</td>
+                <td>Milan</td>
+                <td>159.122.137.0/24</td>
+              </tr>
+              <tr>
+                <td>mon01</td>
+                <td>Montreal</td>
+                <td>169.54.117.0/24</td>
+              </tr>
+              <tr>
+                <td>par01</td>
+                <td>Paris</td>
+                <td>159.8.117.0/24</td>
+              </tr>
+              <tr>
+                <td>sao01</td>
+                <td>São Paulo</td>
+                <td>169.57.137.0/24</td>
+              </tr>
+              <tr>
+                <td>sjc01</td>
+                <td>San Jose</td>
+                <td>50.23.117.0/24</td>
+              </tr>
+              <tr>
+                <td>sjc03</td>
+                <td>San Jose</td>
+                <td>169.45.117.0/24</td>
+              </tr>
+              <tr>
+                <td>sng01</td>
+                <td>Jurong East</td>
+                <td>174.133.117.0/24</td>
+              </tr>
+              <tr>
+                <td>syd01</td>
+                <td>Sydney</td>
+                <td>168.1.17.0/24</td>
+              </tr>
+              <tr>
+                <td>syd04</td>
+                <td>Sydney</td>
+                <td>130.198.117.0/24</td>
+              </tr>
+              <tr>
+                <td>syd05</td>
+                <td>Sydney</td>
+                <td>135.90.117.0/24</td>
+              </tr>
+              <tr>
+                <td>tok02</td>
+                <td>Tokyo</td>
+                <td>161.202.117.0/24</td>
+              </tr>
+              <tr>
+                <td>tok04</td>
+                <td>Tokyo</td>
+                <td>128.168.117.0/24</td>
+              </tr>
+              <tr>
+                <td>tok05</td>
+                <td>Tokyo</td>
+                <td>165.192.117.0/24</td>
+              </tr>
+              <tr>
+                <td>tor01</td>
+                <td>Toronto</td>
+                <td>158.85.117.0/24</td>
+              </tr>
+              <tr>
+                <td>wdc01</td>
+                <td>Washington D.C.</td>
+                <td>50.22.248.0/25<br> 169.54.27.0/24
+                  <br> 198.11.250.0/24
+                  <br> 208.43.117.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>wdc04</td>
+                <td>Washington D.C.</td>
+                <td>169.55.117.0/24</td>
+              </tr>
+              <tr>
+                <td>wdc06</td>
+                <td>Washington D.C.</td>
+                <td>169.60.117.0/24</td>
+              </tr>
+              <tr>
+                <td>wdc07</td>
+                <td>Washington D.C.</td>
+                <td>169.61.117.0/24</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+        <section id="section-back-end-network">
+          <h2 id="back-end-network">Back-end (private) network</h2>
+          <p class="note">Customers must not use any IP range listed under IBM Cloud service network ranges. The restriction applies globally, not only within the referenced data center. Even unused subranges within these blocks may be used in the future and should be
+            avoided. Reservations in a specific data center (for example, DAL10) are still relevant for hybrid connectivity (Direct Link, Transit Gateway, VPN, Azure, etc.).</p>
+          <p>IP block: Your private IP block for server-to-server communications (<code>10.X.X.X/X</code>)</p>
+          <p>Ports to allow:</p>
+          <ul>
+            <li>All TCP/UDP ports</li>
+            <li>ICMP – ping (for support troubleshooting and monitoring)</li>
+          </ul>
+          <section id="section-customer-private-network-space">
+            <h3 id="customer-private-network-space">Customer private network space</h3>
+            <table>
+              <caption caption-side="bottom">Customer private network space</caption>
+              <thead>
+                <tr>
+                  <th>City</th>
+                  <th>Data center</th>
+                  <th>Pod</th>
+                  <th>IP range</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Amsterdam</td>
+                  <td>ams03</td>
+                  <td>BCR01</td>
+                  <td>10.1.243.0/24<br> 10.3.48.0/24
+                    <br> 10.3.139.0/24
+                    <br> 10.136.0.0/15
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>ams03</td>
+                  <td>BCR02</td>
+                  <td>10.175.0.0/16<br> 10.214.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td>Chennai</td>
+                  <td>che01</td>
+                  <td>BCR01</td>
+                  <td>10.3.58.0/24<br> 10.162.0.0/15
+                    <br> 10.200.27.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>Dallas</td>
+                  <td>dal05</td>
+                  <td>BCR01</td>
+                  <td>10.0.40.0/22<br> 10.1.151.0/24
+                    <br> 10.3.60.0/24
+                    <br> 10.40.0.0/14
+                    <br> 10.251.0.0/23
+                    <br> 10.251.64.0/23
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal05</td>
+                  <td>BCR03</td>
+                  <td>10.80.0.0/14<br> 10.251.4.0/23
+                    <br> 10.251.68.0/23
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal05</td>
+                  <td>BCR04</td>
+                  <td>10.84.0.0/16<br> 10.86.0.0/16
+                    <br> 10.251.70.0/23
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal09</td>
+                  <td>BRC01</td>
+                  <td>10.2.123.0/24<br> 10.2.244.0/24
+                    <br> 10.3.16.0/24
+                    <br> 10.120.0.0/15
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal09</td>
+                  <td>BCR02</td>
+                  <td>10.142.0.0/15</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal09</td>
+                  <td>BCR03</td>
+                  <td>10.98.0.0/15<br> 10.152.0.0/15
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal09</td>
+                  <td>BCR04</td>
+                  <td>10.154.0.0/15</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal09</td>
+                  <td>BCR05</td>
+                  <td>10.172.0.0/16</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal09</td>
+                  <td>BCR06</td>
+                  <td>10.173.0.0/16</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal10</td>
+                  <td>BCR01</td>
+                  <td>10.0.192.0/26<br> 10.3.62.0/24
+                    <br> 10.3.247.0/24
+                    <br> 10.176.0.0/15
+                    <br> 10.200.91.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal10</td>
+                  <td>BCR02</td>
+                  <td>10.0.192.64/26<br> 10.171.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal10</td>
+                  <td>BCR03</td>
+                  <td>10.93.0.0/16</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal10</td>
+                  <td>BCR04</td>
+                  <td>10.5.0.0/16<br> 10.23.0.0/16
+                    <br> 10.38.0.0/16
+                    <br> 10.94.0.0/15
+                    <br> 10.221.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal12</td>
+                  <td>BCR01</td>
+                  <td>10.3.2.0/24<br> 10.184.0.0/15
+                    <br> 10.200.123.0/24
+                    <br> 10.241.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal12</td>
+                  <td>BCR02</td>
+                  <td>10.48.0.0/16<br> 10.74.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal13</td>
+                  <td>BCR01</td>
+                  <td>10.3.3.0/24<br> 10.186.0.0/15
+                    <br> 10.200.139.0/24
+                    <br> 10.208.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal13</td>
+                  <td>BCR02</td>
+                  <td>10.36.0.0/16<br> 10.73.0.0/16
+                    <br> 10.209.0.0/16
+                    <br> 10.220.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>dal13</td>
+                  <td>BCR03</td>
+                  <td>10.37.0.0/16</td>
+                </tr>
+                <tr>
+                  <td>Frankfurt</td>
+                  <td>fra02</td>
+                  <td>BCR01</td>
+                  <td>10.2.240.0/24<br> 10.3.38.0/24
+                    <br> 10.3.91.0/24
+                    <br> 10.134.0.0/15
+                    <br> 10.201.155.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>fra02</td>
+                  <td>BCR02</td>
+                  <td>10.85.0.0/16<br> 10.194.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>fra02</td>
+                  <td>BCR03</td>
+                  <td>10.20.0.0/16<br> 10.215.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>fra04</td>
+                  <td>BCR01</td>
+                  <td>10.3.13.0/24<br> 10.21.0.0/16
+                    <br> 10.75.0.0/16
+                    <br> 10.201.123.0/24
+                    <br> 10.240.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>fra05</td>
+                  <td>BCR01</td>
+                  <td>10.3.15.0/24<br> 10.13.0.0/16
+                    <br> 10.123.0.0/16
+                    <br> 10.201.139.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>fra05</td>
+                  <td>BCR02</td>
+                  <td>10.174.0.0/16</td>
+                </tr>
+                <tr>
+                  <td>London</td>
+                  <td>lon02</td>
+                  <td>BCR01</td>
+                  <td>10.1.219.0/24<br> 10.3.40.8/29
+                    <br> 10.3.40.16/28
+                    <br> 10.3.40.32/27
+                    <br> 10.3.40.64/26
+                    <br> 10.3.40.128/25
+                    <br> 10.112.0.0/15
+                    <br> 10.201.107.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>lon02</td>
+                  <td>BCR02</td>
+                  <td>10.164.0.0/15</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>lon04</td>
+                  <td>BCR01</td>
+                  <td>10.3.7.0/24<br> 10.45.0.0/16
+                    <br> 10.201.43.0/24
+                    <br> 10.222.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>lon05</td>
+                  <td>BCR01</td>
+                  <td>10.3.21.0/24<br> 10.196.0.0/15
+                    <br> 10.201.59.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>lon06</td>
+                  <td>BCR01</td>
+                  <td>10.3.11.0/24<br> 10.72.0.0/16
+                    <br> 10.201.75.0/24
+                    <br> 10.242.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td>Madrid</td>
+                  <td>mad02</td>
+                  <td>BCR01</td>
+                  <td>10.3.45.0/24<br> 10.118.0.0/18
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>mad04</td>
+                  <td>BCR01</td>
+                  <td>10.3.43.0/24<br> 10.118.64.0/18
+                    <br> 10.201.253.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>mad05</td>
+                  <td>BCR01</td>
+                  <td>10.3.41.0/24<br> 10.118.128.0/18
+                    <br> 10.201.254.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>Milan</td>
+                  <td>mil01</td>
+                  <td>BCR01</td>
+                  <td>10.1.241.0/24<br> 10.3.50.8/29
+                    <br> 10.3.50.16/28
+                    <br> 10.3.50.32/27
+                    <br> 10.3.50.64/26
+                    <br> 10.3.50.128/25
+                    <br> 10.3.155.0/24
+                    <br> 10.144.0.0/15
+                  </td>
+                </tr>
+                <tr>
+                  <td>Montreal</td>
+                  <td>mon01</td>
+                  <td>BCR01</td>
+                  <td>10.3.46.8/29<br> 10.3.46.16/28
+                    <br> 10.3.46.32/27
+                    <br> 10.3.46.64/26
+                    <br> 10.3.46.128/25
+                    <br> 10.3.123.0/24
+                    <br> 10.140.0.0/15
+                  </td>
+                </tr>
+                <tr>
+                  <td>Osaka</td>
+                  <td>osa21</td>
+                  <td>BCR01</td>
+                  <td>10.3.59.0/24<br> 10.8.0.0/16
+                    <br> 10.201.246.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>osa22</td>
+                  <td>BCR01</td>
+                  <td>10.3.57.0/24<br> 10.9.0.0/16
+                    <br> 10.201.247.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>osa23</td>
+                  <td>BCR01</td>
+                  <td>10.3.55.0/24<br> 10.10.0.0/16
+                    <br> 10.201.248.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>Paris</td>
+                  <td>par01</td>
+                  <td>BCR01</td>
+                  <td>10.2.155.0/24<br> 10.2.243.0/24
+                    <br> 10.3.26.8/29
+                    <br> 10.3.26.16/28
+                    <br> 10.3.26.32/27
+                    <br> 10.3.26.64/26
+                    <br> 10.3.26.128/25
+                    <br> 10.126.0.0/15
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>par04</td>
+                  <td>BCR01</td>
+                  <td>10.3.27.0/24<br> 10.217.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>par05</td>
+                  <td>BCR01</td>
+                  <td>10.3.25.0/24<br> 10.218.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>par06</td>
+                  <td>BCR01</td>
+                  <td>10.3.24.0/24<br> 10.219.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td>São Paulo</td>
+                  <td>sao01</td>
+                  <td>BCR01</td>
+                  <td>10.3.54.0/29<br> 10.3.54.8/29
+                    <br> 10.3.54.16/28
+                    <br> 10.3.54.32/27
+                    <br> 10.3.54.64/26
+                    <br> 10.3.54.128/25
+                    <br> 10.150.0.0/15
+                    <br> 10.200.11.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>sao04</td>
+                  <td>BCR01</td>
+                  <td>10.3.49.0/24<br> 10.14.0.0/16
+                    <br> 10.201.251.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>sao05</td>
+                  <td>BCR01</td>
+                  <td>10.3.47.0/24<br> 10.15.0.0/16
+                    <br> 10.201.252.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>San Jose</td>
+                  <td>sjc01</td>
+                  <td>BCR01</td>
+                  <td>10.1.203.0/24<br> 10.3.14.0/24
+                    <br> 10.52.0.0/14
+                    <br> 10.251.6.0/23
+                    <br> 10.251.72.0/23
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>sjc01</td>
+                  <td>BCR03</td>
+                  <td>10.122.0.0/16</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>sjc03</td>
+                  <td>BCR01</td>
+                  <td>10.3.56.0/24<br> 10.3.187.0/24
+                    <br> 10.160.0.0/15
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>sjc03</td>
+                  <td>BCR02</td>
+                  <td>10.168.0.0/15</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>sjc04</td>
+                  <td>BCR01</td>
+                  <td>10.3.9.0/24<br> 10.87.0.0/16
+                    <br> 10.201.91.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>Jurong East</td>
+                  <td>sng01</td>
+                  <td>BCR01</td>
+                  <td>10.2.43.0/24<br> 10.3.20.0/24
+                    <br> 10.64.0.0/16
+                    <br> 10.66.0.0/15
+                    <br> 10.251.12.0/23
+                    <br> 10.251.86.0/23
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>sng01</td>
+                  <td>BCR02</td>
+                  <td>10.116.0.0/15</td>
+                </tr>
+                <tr>
+                  <td>Sydney</td>
+                  <td>syd01</td>
+                  <td>BCR01</td>
+                  <td>10.3.44.0/24<br> 10.3.107.0/24
+                    <br> 10.138.0.0/15
+                    <br> 10.202.43.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>syd01</td>
+                  <td>BCR02</td>
+                  <td>10.210.0.0/16</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>syd04</td>
+                  <td>BCR01</td>
+                  <td>10.3.6.0/24<br> 10.63.0.0/16
+                    <br> 10.201.27.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>syd05</td>
+                  <td>BCR01</td>
+                  <td>10.3.23.0/24<br> 10.195.0.0/16
+                    <br> 10.207.27.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>Tokyo</td>
+                  <td>tok02</td>
+                  <td>BCR01</td>
+                  <td>10.2.241.0/24<br> 10.3.30.0/24
+                    <br> 10.3.75.0/24
+                    <br> 10.3.242.0/24
+                    <br> 10.129.0.0/16
+                    <br> 10.132.0.0/15
+                    <br> 10.201.171.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>tok02</td>
+                  <td>BCR02</td>
+                  <td>10.212.0.0/16<br> 10.44.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>tok04</td>
+                  <td>BCR01</td>
+                  <td>10.3.17.0/24<br> 10.192.0.0/16
+                    <br> 10.201.187.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>tok05</td>
+                  <td>BCR01</td>
+                  <td>10.3.19.0/24<br> 10.193.0.0/16
+                    <br> 10.201.203.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>tor01</td>
+                  <td>BCR01</td>
+                  <td>10.2.59.0/24<br> 10.3.42.0/24
+                    <br> 10.114.0.0/15
+                    <br> 10.202.107.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>tor01</td>
+                  <td>BCR02</td>
+                  <td>10.166.0.0/15</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>tor04</td>
+                  <td>BCR01</td>
+                  <td>10.1.2.0/24<br> 10.3.53.0/24
+                    <br> 10.11.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>tor05</td>
+                  <td>BCR01</td>
+                  <td>10.1.6.0/24<br> 10.3.51.0/24
+                    <br> 10.243.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td>Washington D.C.</td>
+                  <td>wdc01</td>
+                  <td>BCR05</td>
+                  <td>10.108.0.0/15</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>wdc01</td>
+                  <td>BCR06</td>
+                  <td>10.124.0.0/15</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>wdc04</td>
+                  <td>BCR01</td>
+                  <td>10.3.10.0/29<br> 10.3.52.0/24
+                    <br> 10.3.171.0/24
+                    <br> 10.3.240.0/24
+                    <br> 10.148.0.0/15
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>wdc04</td>
+                  <td>BCR02</td>
+                  <td>10.0.192.128/26<br> 10.170.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>wdc04</td>
+                  <td>BCR03</td>
+                  <td>10.183.0.0/16<br> 10.216.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>wdc04</td>
+                  <td>BCR04</td>
+                  <td>10.65.0.0/16<br> 10.201.11.0/24
+                    <br> 10.211.0.0/16
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>wdc04</td>
+                  <td>BCR05</td>
+                  <td>10.213.0.0/16</td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>wdc06</td>
+                  <td>BCR01</td>
+                  <td>10.3.4.0/24<br> 10.188.0.0/15
+                    <br> 10.200.171.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td></td>
+                  <td>wdc07</td>
+                  <td>BCR01</td>
+                  <td>10.3.5.0/24<br> 10.39.0.0/16
+                    <br> 10.190.0.0/15
+                    <br> 10.200.187.0/24
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+        </section>
+        <section id="section-service-network">
+          <h2 id="service-network">Service network (on back-end/private network)</h2>
+          <p><a href="#cloud-infrastructure-oct2622">CHANGE LOG</a></p>
+          <p>To provision and reload classic Virtual Servers and classic Bare Metal Servers, the following private service networks must be allowed through your gateway appliances and firewalls.</p>
+          <p class="important">Be sure to configure rules and verify routes for the service networks listed in the table below for &quot;All&quot;, dal10, wdc04, and the location of your server.</p>
+          <p>Additionally, complete the following steps:</p>
+          <ul>
+            <li>Allow and route the following service networks to the BCR on your gateway appliance or firewall for all Bare Metal and Virtual Server provisions and reloads: 10.0.64.0/19, 10.200.80.0/20, 161.26.13.0/24, 161.26.96.0/22, 166.9.12.0/23, 166.9.48.0/24,
+              166.9.50.0/24, 166.9.228.0/24, 166.9.250.192/27, 10.3.160.0/20, 10.201.0.0/20, 161.26.92.0/22, 161.26.132.0/22, 166.9.20.0/23, 166.9.231.0/24.</li>
+            <li>For RHEL servers, ensure the entire 161.26.0.0/16 is allowed and routed properly to the BCR. Add any additional datacenter service networks that are mentioned in the RHEL section near the bottom of the page.</li>
+            <li>Allow traffic between the service networks and your server in both directions.</li>
+            <li>By default, all classic servers and classic gateway and firewall devices are configured with a static route for the <code>10.0.0.0/8</code>, <code>161.26.0.0/16</code> and <code>166.8.0.0/14</code> networks to the Back-end Customer Router
+              (BCR). If you configure overlapping routes with those subnets, validate that you have also configured PBR or a similar service. Otherwise, consider using different IP space that doesn't overlap with our service networks for your VPNs or
+              tunnels. Failing to do so can result in the failure to provision your Virtual Servers and Bare Metal Servers.</li>
+          </ul>
+          <p>Ports to allow:</p>
+          <ul>
+            <li>All TCP/UDP ports (for access from your local workstation)</li>
+            <li>ICMP – ping (for support troubleshooting and monitoring)</li>
+          </ul>
+          <table>
+            <caption caption-side="bottom">Service network</caption>
+            <thead>
+              <tr>
+                <th>Data center</th>
+                <th>City</th>
+                <th>IP range</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>All</td>
+                <td>
+                  <ul>
+                    <li></li>
+                  </ul>
+                </td>
+                <td>10.0.64.0/19</td>
+              </tr>
+              <tr>
+                <td>ams03</td>
+                <td>Amsterdam</td>
+                <td>10.3.128.0/20<br> 161.26.28.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>che01</td>
+                <td>Chennai</td>
+                <td>10.200.16.0/20<br> 161.26.32.0/22
+                  <br> 166.9.60.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>dal05</td>
+                <td>Dallas</td>
+                <td>10.1.128.0/19<sup class="footnote-ref"><a href="#fn1" id="fnref1">[1]</a></sup><br> 161.26.12.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>dal08</td>
+                <td>Dallas</td>
+                <td>100.100.0.0/20</td>
+              </tr>
+              <tr>
+                <td>dal09</td>
+                <td>Dallas</td>
+                <td>10.2.112.0/20<br> 10.3.192.0/24
+                  <br> 161.26.4.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>dal10</td>
+                <td>Dallas</td>
+                <td>10.200.80.0/20<br> 161.26.13.0/24
+                  <br> 161.26.96.0/22
+                  <br> 166.9.12.0/23
+                  <br> 166.9.48.0/24
+                  <br> 166.9.50.0/24
+                  <br> 166.9.228.0/24
+                  <br> 166.9.250.192/27
+                </td>
+              </tr>
+              <tr>
+                <td>dal12</td>
+                <td>Dallas</td>
+                <td>10.200.112.0/20<br> 161.26.108.0/22
+                  <br> 166.9.14.0/23
+                  <br> 166.9.51.0/24
+                  <br> 166.9.229.0/24
+                  <br> 166.9.250.224/27
+                </td>
+              </tr>
+              <tr>
+                <td>dal13</td>
+                <td>Dallas</td>
+                <td>10.200.128.0/20<br> 161.26.112.0/22
+                  <br> 166.9.16.0/23
+                  <br> 166.9.58.0/24
+                  <br> 166.9.230.0/24
+                  <br> 166.9.251.0/27
+                </td>
+              </tr>
+              <tr>
+                <td>dal14</td>
+                <td>Dallas</td>
+                <td>10.203.144.0/20<br> 161.26.224.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>fra02</td>
+                <td>Frankfurt</td>
+                <td>10.3.80.0/20<br> 161.26.36.0/22
+                  <br> 166.9.28.0/23
+                </td>
+              </tr>
+              <tr>
+                <td>fra04</td>
+                <td>Frankfurt</td>
+                <td>10.201.112.0/20<br> 161.26.144.0/22
+                  <br> 166.9.30.0/23
+                </td>
+              </tr>
+              <tr>
+                <td>fra05</td>
+                <td>Frankfurt</td>
+                <td>10.201.128.0/20<br> 161.26.148.0/22
+                  <br> 166.0.32.0/23
+                </td>
+              </tr>
+              <tr>
+                <td>lon02</td>
+                <td>London</td>
+                <td>10.1.208.0/20<br> 161.26.8.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>lon04</td>
+                <td>London</td>
+                <td>10.201.32.0/20<br> 161.26.128.0/22
+                  <br> 166.9.36.0/23
+                </td>
+              </tr>
+              <tr>
+                <td>lon05</td>
+                <td>London</td>
+                <td>10.201.48.0/20<br> 161.26.140.0/22
+                  <br> 166.9.34.0/23
+                </td>
+              </tr>
+              <tr>
+                <td>lon06</td>
+                <td>London</td>
+                <td>10.201.64.0/20<br> 161.26.160.0/22
+                  <br> 166.9.38.0/23
+                </td>
+              </tr>
+              <tr>
+                <td>mad02</td>
+                <td>Madrid</td>
+                <td>10.203.96.0/20<br> 161.26.212.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>mad04</td>
+                <td>Madrid</td>
+                <td>10.203.112.0/20<br> 161.26.216.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>mad05</td>
+                <td>Madrid</td>
+                <td>10.203.128.0/20<br> 161.26.220.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>mil01</td>
+                <td>Milan</td>
+                <td>10.3.144.0/20<br> 161.26.52.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>mon01</td>
+                <td>Montreal</td>
+                <td>10.3.112.0/20<br> 161.26.56.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>osa21</td>
+                <td>Osaka</td>
+                <td>10.202.112.0/20<br> 161.26.184.0/22
+                  <br> 166.9.70.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>osa22</td>
+                <td>Osaka</td>
+                <td>10.202.144.0/20<br> 161.26.188.0/22
+                  <br> 166.9.71.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>osa23</td>
+                <td>Osaka</td>
+                <td>10.202.160.0/20<br> 161.26.192.0/22
+                  <br> 166.9.72.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>par01</td>
+                <td>Paris</td>
+                <td>10.2.144.0/20<br> 161.26.60.0/22
+                  <br> 166.9.79.0/24
+                  <br> 166.9.245.128/27
+                </td>
+              </tr>
+              <tr>
+                <td>sao01</td>
+                <td>São Paulo</td>
+                <td>10.200.0.0/20<br> 161.26.64.0/22
+                  <br> 166.9.82.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>sao04</td>
+                <td>São Paulo</td>
+                <td>10.202.208.0/20<br> 161.26.204.0/22
+                  <br> 166.9.83.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>sao05</td>
+                <td>São Paulo</td>
+                <td>10.202.240.0/20<br> 161.26.208.0/22
+                  <br> 166.9.84.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>sjc01</td>
+                <td>San Jose</td>
+                <td>10.1.192.0/20<br> 10.200.32.0/20
+                </td>
+              </tr>
+              <tr>
+                <td>sjc03</td>
+                <td>San Jose</td>
+                <td>10.3.176.0/20<br> 161.26.72.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>sjc04</td>
+                <td>San Jose</td>
+                <td>10.201.80.0/20<br> 161.26.136.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>sng01</td>
+                <td>Jurong East</td>
+                <td>10.2.32.0/20<br> 10.200.144.0/20
+                  <br> 161.26.76.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>syd01</td>
+                <td>Sydney</td>
+                <td>10.3.96.0/20<br> 10.202.32.0/20
+                  <br> 161.26.80.0/22
+                  <br> 161.26.168.0/22
+                  <br> 166.9.52.0/23
+                </td>
+              </tr>
+              <tr>
+                <td>syd04</td>
+                <td>Sydney</td>
+                <td>10.201.16.0/20<br> 161.26.124.0/22
+                  <br> 166.9.54.0/23
+                </td>
+              </tr>
+              <tr>
+                <td>syd05</td>
+                <td>Sydney</td>
+                <td>10.202.16.0/20<br> 161.26.164.0/22
+                  <br> 166.9.56.0/23
+                </td>
+              </tr>
+              <tr>
+                <td>tok02</td>
+                <td>Tokyo</td>
+                <td>10.3.64.0/20<br> 10.201.160.0/20
+                  <br> 161.26.84.0/22
+                  <br> 166.9.40.0/23
+                </td>
+              </tr>
+              <tr>
+                <td>tok04</td>
+                <td>Tokyo</td>
+                <td>10.201.176.0/20<br> 161.26.152.0/22
+                  <br> 166.9.42.0/23
+                </td>
+              </tr>
+              <tr>
+                <td>tok05</td>
+                <td>Tokyo</td>
+                <td>10.201.192.0/20<br> 161.26.156.0/22
+                  <br> 166.9.44.0/23
+                </td>
+              </tr>
+              <tr>
+                <td>tor01</td>
+                <td>Toronto</td>
+                <td>10.2.48.0/20<br> 10.202.96.0/20
+                  <br> 161.26.88.0/22
+                  <br> 166.9.76.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>tor04</td>
+                <td>Toronto</td>
+                <td>10.202.176.0/20<br> 161.26.196.0/22
+                  <br> 166.9.77.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>tor05</td>
+                <td>Toronto</td>
+                <td>10.202.192.0/20<br> 161.26.200.0/22
+                  <br> 166.9.78.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>wdc01</td>
+                <td>Washington D.C.</td>
+                <td>10.1.96.0/19<br> 161.26.16.0/22
+                </td>
+              </tr>
+              <tr>
+                <td>wdc04</td>
+                <td>Washington D.C.</td>
+                <td>10.3.160.0/20<br> 10.201.0.0/20
+                  <br> 161.26.92.0/22
+                  <br> 161.26.132.0/22
+                  <br> 166.9.20.0/23
+                  <br> 166.9.231.0/24
+                </td>
+              </tr>
+              <tr>
+                <td>wdc06</td>
+                <td>Washington D.C.</td>
+                <td>10.200.160.0/20<br> 161.26.120.0/22
+                  <br> 166.9.22.0/23
+                  <br> 166.9.232.0/24
+                  <br> 166.9.251.64/27
+                </td>
+              </tr>
+              <tr>
+                <td>wdc07</td>
+                <td>Washington D.C.</td>
+                <td>10.200.176.0/20<br> 161.26.132.0/22
+                  <br> 166.9.24.0/23
+                  <br> 166.9.233.0/24
+                  <br> 166.9.251.96/27
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <section id="section-service-by-data-center">
+            <h3 id="service-by-data-center">Service by data center</h3>
+            <table class="simple-tab-table" tab-title="eVault" tab-group="IAM-simple">
+              <caption caption-side="left">eVault by Data Center</caption>
+              <thead>
+                <tr>
+                  <th>Data center</th>
+                  <th>IP range</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <p><strong>Required Flows</strong>:</p>
+                    <ul>
+                      <li>Outbound TCP 8086 and TCP 8087 from your private<br> VLANs to IP ranges documented in dal09 and dal10 only.</li>
+                      <li>Outbound TCP 2546 from your private VLANs to IP ranges<br> documented for each DC where you need to access your vault.</li>
+                    </ul>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>ams03</td>
+                  <td>10.3.134.0/24</td>
+                </tr>
+                <tr>
+                  <td>che01</td>
+                  <td>10.200.22.0/24</td>
+                </tr>
+                <tr>
+                  <td>dal08</td>
+                  <td>100.100.6.0/24</td>
+                </tr>
+                <tr>
+                  <td>dal09</td>
+                  <td>10.2.118.0/24</td>
+                </tr>
+                <tr>
+                  <td>dal09</td>
+                  <td>10.2.126.0/24</td>
+                </tr>
+                <tr>
+                  <td>dal10</td>
+                  <td>10.200.86.0/24</td>
+                </tr>
+                <tr>
+                  <td>dal12</td>
+                  <td>10.200.118.0/24</td>
+                </tr>
+                <tr>
+                  <td>dal13</td>
+                  <td>10.200.134.0/24</td>
+                </tr>
+                <tr>
+                  <td>fra02</td>
+                  <td>10.3.86.0/24<br> 10.201.150.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>fra04</td>
+                  <td>10.201.118.0/24</td>
+                </tr>
+                <tr>
+                  <td>fra05</td>
+                  <td>10.201.134.0/24</td>
+                </tr>
+                <tr>
+                  <td>lon02</td>
+                  <td>10.1.214.0/24<br> 10.201.102.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>lon04</td>
+                  <td>10.201.38.0/24</td>
+                </tr>
+                <tr>
+                  <td>lon05</td>
+                  <td>10.201.54.0/24</td>
+                </tr>
+                <tr>
+                  <td>lon06</td>
+                  <td>10.201.70.0/24</td>
+                </tr>
+                <tr>
+                  <td>mil01</td>
+                  <td>10.3.150.0/24</td>
+                </tr>
+                <tr>
+                  <td>mon01</td>
+                  <td>10.3.118.0/24</td>
+                </tr>
+                <tr>
+                  <td>osa21</td>
+                  <td>10.202.118.0/24</td>
+                </tr>
+                <tr>
+                  <td>osa22</td>
+                  <td>10.202.150.0/24</td>
+                </tr>
+                <tr>
+                  <td>osa23</td>
+                  <td>10.202.166.0/24</td>
+                </tr>
+                <tr>
+                  <td>par01</td>
+                  <td>10.2.150.0/24</td>
+                </tr>
+                <tr>
+                  <td>sao01</td>
+                  <td>10.200.6.0/24</td>
+                </tr>
+                <tr>
+                  <td>sjc01</td>
+                  <td>10.1.198.0/24<br> 10.200.38.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>sjc03</td>
+                  <td>10.3.182.0/24</td>
+                </tr>
+                <tr>
+                  <td>sjc04</td>
+                  <td>10.201.86.0/24</td>
+                </tr>
+                <tr>
+                  <td>sng01</td>
+                  <td>10.2.38.0/24<br> 10.200.150.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>syd01</td>
+                  <td>10.3.102.0/24</td>
+                </tr>
+                <tr>
+                  <td>syd04</td>
+                  <td>10.201.22.0/24</td>
+                </tr>
+                <tr>
+                  <td>tok02</td>
+                  <td>10.201.166.0/24</td>
+                </tr>
+                <tr>
+                  <td>tok04</td>
+                  <td>10.201.182.0/24</td>
+                </tr>
+                <tr>
+                  <td>tok05</td>
+                  <td>10.201.198.0/24</td>
+                </tr>
+                <tr>
+                  <td>tor01</td>
+                  <td>10.2.54.0/24</td>
+                </tr>
+                <tr>
+                  <td>wdc01</td>
+                  <td>10.1.114.0/24</td>
+                </tr>
+                <tr>
+                  <td>wdc03</td>
+                  <td>100.100.38.0/24</td>
+                </tr>
+                <tr>
+                  <td>wdc04</td>
+                  <td>10.3.166.0/24<br> 10.201.6.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>wdc06</td>
+                  <td>10.200.166.0/24</td>
+                </tr>
+                <tr>
+                  <td>wdc07</td>
+                  <td>10.200.182.0/24</td>
+                </tr>
+              </tbody>
+            </table>
+            <table tab-title="File &amp; Block" tab-group="IAM-simple" class="simple-tab-table">
+              <caption caption-side="left">File and Block by Data Center</caption>
+              <thead>
+                <tr>
+                  <th>Data center</th>
+                  <th>IP range</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <p><strong>Required Flows</strong>:<br> File Storage for Classic:</p>
+                    <ul>
+                      <li>TCP &amp; UDP 111 (sunrpc)</li>
+                      <li>TCP &amp; UDP 2049 (nfs)</li>
+                      <li>TCP &amp; UDP 111(portmapper)</li>
+                      <li>TCP &amp; UDP 635 (nfsd)</li>
+                      <li>TCP &amp; UDP 4045-4048</li>
+                      <li>UDP 4049</li>
+                    </ul>
+                  </td>
+                  <td>
+                    <p><strong>Required Flows</strong>:<br> Block Storage for Classic:</p>
+                    <ul>
+                      <li>TCP &amp; UDP 3260 (iscsi)</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td>ams03</td>
+                  <td>10.3.142.0/24<br> 161.26.30.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>che01</td>
+                  <td>10.200.30.0/24<br> 161.26.34.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>dal05</td>
+                  <td>10.1.154.0/24<br> 10.2.110.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>dal08</td>
+                  <td>100.100.14.0/24</td>
+                </tr>
+                <tr>
+                  <td>dal09</td>
+                  <td>10.2.125.0/24<br> 10.2.126.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>dal10</td>
+                  <td>10.200.94.0/24<br> 10.202.239.0/24
+                    <br> 161.26.13.0/24
+                    <br> 161.26.98.0/24
+                    <br> 161.26.99.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>dal12</td>
+                  <td>10.200.126.0/24<br> 161.26.110.0/24
+                    <br> 161.26.111.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>dal13</td>
+                  <td>10.200.142.0/24<br> 10.200.142.0/24
+                    <br> 10.200.143.128/25
+                    <br> 161.26.114.0/24
+                    <br> 161.26.115.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>dal14</td>
+                  <td>10.203.157.0/24<br> 161.26.226.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>fra02</td>
+                  <td>10.3.94.0/24<br> 10.201.154.0/24
+                    <br> 161.26.38.0/24
+                    <br> 161.26.39.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>fra04</td>
+                  <td>10.201.110.0/24<br> 161.26.146.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>fra05</td>
+                  <td>10.201.142.0/24<br> 161.26.150.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>lon02</td>
+                  <td>10.1.222.0/24<br> 10.201.110.0/24
+                    <br> 161.26.10.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>lon04</td>
+                  <td>10.201.46.0/24<br> 161.26.130.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>lon05</td>
+                  <td>10.201.62.0/24<br> 161.26.162.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>lon06</td>
+                  <td>10.201.78.0/24<br> 161.26.142.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>mad02</td>
+                  <td>10.203.109.0/24<br> 161.26.214.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>mad04</td>
+                  <td>10.203.125.0/24<br> 161.26.218.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>mad05</td>
+                  <td>10.203.141.0/24<br> 161.26.222.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>mil01</td>
+                  <td>10.3.158.0/24<br> 161.26.54.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>mon01</td>
+                  <td>10.3.126.0/24<br> 161.26.58.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>osa21</td>
+                  <td>10.202.126.0/24<br> 161.26.186.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>osa22</td>
+                  <td>10.202.158.0/24<br> 161.26.190.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>osa23</td>
+                  <td>10.202.174.0/24<br> 161.26.194.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>par01</td>
+                  <td>10.2.158.0/24<br> 10.2.159.0/24
+                    <br> 161.26.62.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>par04</td>
+                  <td>10.202.94.0/24<br> 161.26.174.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>par05</td>
+                  <td>10.202.78.0/24<br> 161.26.178.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>par06</td>
+                  <td>10.202.62.0/24<br> 161.26.182.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>sao01</td>
+                  <td>10.200.14.0/24<br> 10.200.15.0/25
+                    <br> 10.203.78.0/24
+                    <br> 161.26.66.0/24
+                    <br> 161.26.67.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>sao04</td>
+                  <td>10.202.221.0/24<br> 161.26.206.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>sao05</td>
+                  <td>10.202.253.0/24<br> 161.26.210.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>sjc01</td>
+                  <td>10.1.206.0/24</td>
+                </tr>
+                <tr>
+                  <td>sjc03</td>
+                  <td>10.3.190.0/24<br> 161.26.74.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>sjc04</td>
+                  <td>10.201.94.0/24<br> 161.26.138.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>sng01</td>
+                  <td>10.2.46.0/24<br> 10.200.158.0/24
+                    <br> 161.26.78.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>syd01</td>
+                  <td>10.3.110.0/24<br> 10.202.46.0/24
+                    <br> 161.26.170.0/24
+                    <br> 161.26.82.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>syd04</td>
+                  <td>10.201.30.0/24<br> 130.198.64.0/18
+                    <br> 161.26.126.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>syd05</td>
+                  <td>10.202.30.0/24<br> 161.26.166.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>tok02</td>
+                  <td>10.3.78.0/24<br> 10.3.79.0/24
+                    <br> 10.201.174.0/24
+                    <br> 161.26.86.0/24
+                    <br> 161.26.87.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>tok04</td>
+                  <td>10.201.190.0/24<br> 161.26.154.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>tok05</td>
+                  <td>10.201.206.0/24<br> 161.26.158.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>tor01</td>
+                  <td>10.2.62.0/24<br> 10.202.110.0/24
+                    <br> 161.26.90.0/24
+                    <br> 161.26.91.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>tor04</td>
+                  <td>10.202.189.0/24<br> 161.26.198.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>tor05</td>
+                  <td>10.202.205.0/24<br> 161.26.202.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>wdc01</td>
+                  <td>10.1.122.0/24<br> 10.1.104.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>wdc03</td>
+                  <td>100.100.46.0/24</td>
+                </tr>
+                <tr>
+                  <td>wdc04</td>
+                  <td>10.201.10.0/24<br> 10.201.14.0/24
+                    <br> 10.3.174.0/24
+                    <br> 10.3.175.0/25
+                    <br> 161.26.134.0/24
+                    <br> 161.26.94.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>wdc06</td>
+                  <td>10.200.174.0/24<br> 161.26.118.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>wdc07</td>
+                  <td>10.200.90.0/24<br> 161.26.122.0/24
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <table tab-title="ICOS" tab-group="IAM-simple" class="simple-tab-table">
+              <caption caption-side="left">ICOS by Data Center</caption>
+              <thead>
+                <tr>
+                  <th>Data center</th>
+                  <th>IP range</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Required Flows</strong>:<br> Outbound: TCP 80, 443.<sup class="footnote-ref"><a href="#fn2" id="fnref2">[2]</a></sup></td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td>ams03</td>
+                  <td>10.3.130.0/24</td>
+                </tr>
+                <tr>
+                  <td>che01</td>
+                  <td>10.200.18.0/24</td>
+                </tr>
+                <tr>
+                  <td>dal05</td>
+                  <td>10.1.142.0/24<br> 10.1.138.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>dal08</td>
+                  <td>100.100.2.0/24</td>
+                </tr>
+                <tr>
+                  <td>dal09</td>
+                  <td>10.2.114.0/24</td>
+                </tr>
+                <tr>
+                  <td>dal10</td>
+                  <td>10.200.82.0/24</td>
+                </tr>
+                <tr>
+                  <td>dal12</td>
+                  <td>10.200.114.0/24</td>
+                </tr>
+                <tr>
+                  <td>dal13</td>
+                  <td>10.200.130.0/24</td>
+                </tr>
+                <tr>
+                  <td>fra02</td>
+                  <td>10.3.82.0/24<br> 10.201.146.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>fra04</td>
+                  <td>10.201.114.0/24</td>
+                </tr>
+                <tr>
+                  <td>fra05</td>
+                  <td>10.201.130.0/24</td>
+                </tr>
+                <tr>
+                  <td>lon02</td>
+                  <td>10.1.210.0/24<br> 10.201.98.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>lon04</td>
+                  <td>10.201.34.0/24</td>
+                </tr>
+                <tr>
+                  <td>lon05</td>
+                  <td>10.201.50.0/24</td>
+                </tr>
+                <tr>
+                  <td>lon06</td>
+                  <td>10.201.66.0/24</td>
+                </tr>
+                <tr>
+                  <td>mil01</td>
+                  <td>10.3.146.0/24</td>
+                </tr>
+                <tr>
+                  <td>mon01</td>
+                  <td>10.3.114.0/24</td>
+                </tr>
+                <tr>
+                  <td>osa21</td>
+                  <td>10.202.114.0/24</td>
+                </tr>
+                <tr>
+                  <td>osa22</td>
+                  <td>10.202.146.0/24</td>
+                </tr>
+                <tr>
+                  <td>osa23</td>
+                  <td>10.202.162.0/24</td>
+                </tr>
+                <tr>
+                  <td>par01</td>
+                  <td>10.2.146.0/24</td>
+                </tr>
+                <tr>
+                  <td>sao01</td>
+                  <td>10.200.2.0/24</td>
+                </tr>
+                <tr>
+                  <td>sjc01</td>
+                  <td>10.1.194.0/24<br> 10.200.34.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>sjc03</td>
+                  <td>10.3.178.0/24</td>
+                </tr>
+                <tr>
+                  <td>sjc04</td>
+                  <td>10.201.82.0/24</td>
+                </tr>
+                <tr>
+                  <td>sng01</td>
+                  <td>10.2.34.0/24<br> 10.200.146.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>syd01</td>
+                  <td>10.3.98.0/24</td>
+                </tr>
+                <tr>
+                  <td>syd04</td>
+                  <td>10.201.18.0/24</td>
+                </tr>
+                <tr>
+                  <td>tok02</td>
+                  <td>10.3.66.0/24<br> 10.201.162.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>tok04</td>
+                  <td>10.201.178.0/24</td>
+                </tr>
+                <tr>
+                  <td>tok05</td>
+                  <td>10.201.194.0/24</td>
+                </tr>
+                <tr>
+                  <td>tor01</td>
+                  <td>10.2.50.0/24</td>
+                </tr>
+                <tr>
+                  <td>wdc01</td>
+                  <td>10.1.110.0/24<br> 10.1.106.0/24
+                  </td>
+                </tr>
+                <tr>
+                  <td>wdc03</td>
+                  <td>100.100.34.0/24</td>
+                </tr>
+                <tr>
+                  <td>wdc04</td>
+                  <td>10.3.162.0/24</td>
+                </tr>
+                <tr>
+                  <td>wdc04</td>
+                  <td>10.201.2.0/24</td>
+                </tr>
+                <tr>
+                  <td>wdc06</td>
+                  <td>10.200.162.0/24</td>
+                </tr>
+                <tr>
+                  <td>wdc07</td>
+                  <td>10.200.178.0/24</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+          <section id="section-cloud-infrastructure-oct2622">
+            <h3 id="cloud-infrastructure-oct2622">Change log for service network IP ranges (26 October 2022)</h3>
+            <section id="section-cloud-infrastructure-removed-IP">
+              <h4 id="cloud-infrastructure-removed-IP">Removed</h4>
+              <ul>
+                <li>All address 166.8.0.0/14</li>
+                <li>ams01 address 10.2.64.0/20</li>
+                <li>ams01 address 10.2.66.0/24</li>
+                <li>ams01 address 10.2.67.0/24</li>
+                <li>ams01 address 10.2.70.0/24</li>
+                <li>ams01 address 10.2.78.0/24</li>
+                <li>ams01 address 10.200.48.0/20</li>
+                <li>ams01 address 10.200.50.0/24</li>
+                <li>ams01 address 10.200.54.0/24</li>
+                <li>ams01 address 10.200.62.0/24</li>
+                <li>dal01 address 10.0.90.0/24</li>
+                <li>dal05 address 10.1.143/139.0/24</li>
+                <li>dal05 address 10.1.159.0/24</li>
+                <li>dal06 address 10.2.128.0/20</li>
+                <li>dal06 address 10.2.130.0/24</li>
+                <li>dal06 address 10.2.131.0/24</li>
+                <li>dal06 address 10.2.142.0/24</li>
+                <li>dal06 address 10.2.134.0/24</li>
+                <li>dal07 address 10.1.176.0/20</li>
+                <li>fra02AZ address 10.201.158.0/24</li>
+                <li>hkg02 address 161.26.40.0/22</li>
+                <li>hkg02 address 10.2.162.0/24</li>
+                <li>hkg02 address 10.2.163.0/24</li>
+                <li>hkg02 address 10.2.166.0/24</li>
+                <li>hkg02 address 10.2.174.0/24</li>
+                <li>hou02 address 10.1.174.0/24</li>
+                <li>lon02AZ address 10.201.110.0/24</li>
+                <li>mel01 address 10.2.94.0/24</li>
+                <li>mel01 address 161.26.46.0/24</li>
+                <li>mex01 address 10.2.176.0/20</li>
+                <li>mex01 address 10.2.178.0/24</li>
+                <li>mex01 address 10.2.179.0/24</li>
+                <li>mex01 address 10.2.182.0/24</li>
+                <li>mex01 address 10.2.190.0/24</li>
+                <li>mex01 address 161.26.48.0/22</li>
+                <li>mex01 address 161.26.50.0/24</li>
+                <li>osl01 address 10.200.110.0/24</li>
+                <li>osl01 address 161.26.106.0/24</li>
+                <li>seo01 address 10.200.64.0/20</li>
+                <li>seo01 address 10.200.66.0/24</li>
+                <li>seo01 address 10.200.67.0/24</li>
+                <li>seo01 address 10.200.78.0/24</li>
+                <li>seo01 address 10.200.86.0/24</li>
+                <li>seo01 address 161.26.100.0/22</li>
+                <li>seo01 address 161.26.102.0/24</li>
+                <li>seo01 address 166.9.46.0/23</li>
+                <li>sjc01 address 10.200.46.0/24</li>
+                <li>tok02AZ address 10.201.174.0/24</li>
+                <li>wdc01 address 10.1.127.0/24</li>
+                <li>wdc03 address 100.100.32.0/20</li>
+              </ul>
+            </section>
+            <section id="section-cloud-infrastructure-added-ip">
+              <h4 id="cloud-infrastructure-added-ip">Added</h4>
+              <ul>
+                <li>ams03 address 161.26.28.0/22</li>
+                <li>ams03 address 161.26.30.0/24</li>
+                <li>che01 address 161.26.32.0/22</li>
+                <li>che01 address 161.26.34.0/24</li>
+                <li>che01 address 166.9.60.0/24</li>
+                <li>dal05 address 10.1.139.0/24</li>
+                <li>dal05 address 10.1.143.0/24</li>
+                <li>dal05 address 10.2.110.0/24</li>
+                <li>dal05 address 161.26.12.0/24</li>
+                <li>dal09 address 10.2.126.0/24</li>
+                <li>dal09 address 161.26.4.0/22</li>
+                <li>dal10 address 10.202.239.0/24</li>
+                <li>dal10 address 161.26.13.0/24</li>
+                <li>dal10 address 161.26.96.0/22</li>
+                <li>dal10 address 161.26.98.0/24</li>
+                <li>dal10 address 161.26.99.0/24</li>
+                <li>dal10 address 166.9.12.0/23</li>
+                <li>dal10 address 166.9.48.0/24</li>
+                <li>dal10 address 166.9.50.0/24</li>
+                <li>dal10 address 166.9.228.0/24</li>
+                <li>dal10 address 166.9.250.192/27</li>
+                <li>dal12 address 161.26.108.0/22</li>
+                <li>dal12 address 161.26.110.0/24</li>
+                <li>dal12 address 161.26.111.0/24</li>
+                <li>dal12 address 166.9.14.0/23</li>
+                <li>dal12 address 166.9.51.0/24</li>
+                <li>dal12 address 166.9.229.0/24</li>
+                <li>dal12 address 166.9.250.224/27</li>
+                <li>dal13 address 161.26.112.0/22</li>
+                <li>dal13 address 166.9.16.0/23</li>
+                <li>dal13 address 166.9.58.0/24</li>
+                <li>dal13 address 166.9.230.0/24</li>
+                <li>dal13 address 166.9.251.0/27</li>
+                <li>dal13 address 10.200.142.0/24</li>
+                <li>dal13 address 10.200.143.128/25</li>
+                <li>dal13 address 161.26.114.0/24</li>
+                <li>dal13 address 161.26.115.0/24</li>
+                <li>fra02 address 10.201.154.0/24</li>
+                <li>fra02 address 161.26.36.0/22</li>
+                <li>fra02 address 161.26.38.0/24</li>
+                <li>fra02 address 161.26.39.0/24</li>
+                <li>fra02 address 166.9.28.0/23</li>
+                <li>fra04 address 161.26.144.0/22</li>
+                <li>fra04 address 161.26.146.0/24</li>
+                <li>fra04 address 166.9.30.0/23</li>
+                <li>fra05 address 161.26.148.0/22</li>
+                <li>fra05 address 161.26.150.0/24</li>
+                <li>fra05 address 166.0.32.0/23</li>
+                <li>lon02 address 161.26.8.0/22</li>
+                <li>lon02 address 161.26.10.0/24</li>
+                <li>lon02 address 10.201.110.0/24</li>
+                <li>lon04 address 161.26.128.0/22</li>
+                <li>lon04 address 161.26.130.0/24</li>
+                <li>lon04 address 166.9.36.0/23</li>
+                <li>lon05 address 161.26.140.0/22</li>
+                <li>lon05 address 161.26.162.0/24</li>
+                <li>lon05 address 166.9.34.0/23</li>
+                <li>lon06 address 161.26.142.0/24</li>
+                <li>lon06 address 161.26.160.0/22</li>
+                <li>lon06 address 166.9.38.0/23</li>
+                <li>mil01 address 161.26.52.0/22</li>
+                <li>mil01 address 161.26.54.0/24</li>
+                <li>mon01 address 161.26.56.0/22</li>
+                <li>mon01 address 161.26.58.0/24</li>
+                <li>osa21 address 161.26.184.0/22</li>
+                <li>osa21 address 161.26.186.0/24</li>
+                <li>osa21 address 166.9.70.0/24</li>
+                <li>osa22 address 161.26.188.0/22</li>
+                <li>osa22 address 161.26.190.0/24</li>
+                <li>osa22 address 166.9.71.0/24</li>
+                <li>osa23 address 161.26.192.0/22</li>
+                <li>osa23 address 161.26.194.0/24</li>
+                <li>osa23 address 166.9.72.0/24</li>
+                <li>par01 address 10.2.159.0/24</li>
+                <li>par01 address 161.26.62.0/24</li>
+                <li>par01 address 161.26.60.0/22</li>
+                <li>par01 address 166.9.79.0/24</li>
+                <li>par01 address 166.9.245.128/27</li>
+                <li>par04 address 10.202.94.0/24</li>
+                <li>par04 address 161.26.174.0/24</li>
+                <li>par05 address 10.202.78.0/24</li>
+                <li>par05 address 161.26.178.0/24</li>
+                <li>par06 address 10.202.62.0/24</li>
+                <li>par06 address 161.26.182.0/24</li>
+                <li>sao01 address 10.200.15.0/25</li>
+                <li>sao01 address 10.203.78.0/24</li>
+                <li>sao01 address 161.26.64.0/22</li>
+                <li>sao01 address 161.26.66.0/24</li>
+                <li>sao01 address 161.26.67.0/24</li>
+                <li>sao01 address 166.9.82.0/24</li>
+                <li>sao04 address 10.202.221.0/24</li>
+                <li>sao04 address 161.26.204.0/22</li>
+                <li>sao04 address 161.26.206.0/24</li>
+                <li>sao04 address 166.9.83.0/24</li>
+                <li>sao05 address 10.202.253.0/24</li>
+                <li>sao05 address 161.26.208.0/22</li>
+                <li>sao05 address 161.26.210.0/24</li>
+                <li>sao05 address 166.9.84.0/24</li>
+                <li>sjc01 address 10.200.32.0/20</li>
+                <li>sjc03 address 161.26.72.0/22</li>
+                <li>sjc03 address 161.26.74.0/24</li>
+                <li>sjc04 address 161.26.136.0/22</li>
+                <li>sjc04 address 161.26.138.0/24</li>
+                <li>sng01 address 10.200.144.0/20</li>
+                <li>sng01 address 161.26.76.0/22</li>
+                <li>sng01 address 161.26.78.0/24</li>
+                <li>syd01 address 10.202.46.0/24</li>
+                <li>syd01 address 161.26.80.0/22</li>
+                <li>syd01 address 161.26.82.0/24</li>
+                <li>syd01 address 161.26.168.0/22</li>
+                <li>syd01 address 161.26.170.0/24</li>
+                <li>syd01 address 166.9.52.0/23</li>
+                <li>syd04 address 130.198.64.0/18</li>
+                <li>syd04 address 161.26.124.0/22</li>
+                <li>syd04 address 161.26.126.0/24</li>
+                <li>syd04 address 166.9.54.0/23</li>
+                <li>syd05 address 10.202.30.0/24</li>
+                <li>syd05 address 161.26.164.0/22</li>
+                <li>syd05 address 161.26.166.0/24</li>
+                <li>syd05 address 166.9.56.0/23</li>
+                <li>tok02 address 10.201.174.0/24</li>
+                <li>tok02 address 10.3.79.0/24</li>
+                <li>tok02 address 161.26.84.0/22</li>
+                <li>tok02 address 161.26.86.0/24</li>
+                <li>tok02 address 161.26.87.0/24</li>
+                <li>tok02 address 166.9.40.0/23</li>
+                <li>tok04 address 161.26.152.0/22</li>
+                <li>tok04 address 161.26.154.0/24</li>
+                <li>tok04 address 166.9.42.0/23</li>
+                <li>tok05 address 161.26.156.0/22</li>
+                <li>tok05 address 161.26.158.0/24</li>
+                <li>tok05 address 166.9.44.0/23</li>
+                <li>tor01 address 10.202.96.0/20</li>
+                <li>tor01 address 10.202.110.0/24</li>
+                <li>tor01 address 161.26.88.0/22</li>
+                <li>tor01 address 161.26.90.0/24</li>
+                <li>tor01 address 161.26.91.0/24</li>
+                <li>tor01 address 166.9.76.0/24</li>
+                <li>tor04 address 10.202.189.0/24</li>
+                <li>tor04 address 161.26.196.0/22</li>
+                <li>tor04 address 161.26.198.0/24</li>
+                <li>tor04 address 166.9.77.0/24</li>
+                <li>tor05 address 10.202.205.0/24</li>
+                <li>tor05 address 161.26.200.0/22</li>
+                <li>tor05 address 161.26.202.0/24</li>
+                <li>tor05 address 166.9.78.0/24</li>
+                <li>wdc01 address 161.26.16.0/22</li>
+                <li>wdc04 address 10.201.10.0/24</li>
+                <li>wdc04 address 10.3.175.0/25</li>
+                <li>wdc04 address 161.26.92.0/22</li>
+                <li>wdc04 address 161.26.94.0/24</li>
+                <li>wdc04 address 161.26.132.0/22</li>
+                <li>wdc04 address 161.26.134.0/24</li>
+                <li>wdc04 address 166.9.20.0/23</li>
+                <li>wdc04 address 166.9.231.0/24</li>
+                <li>wdc06 address 161.26.118.0/24</li>
+                <li>wdc06 address 161.26.120.0/22</li>
+                <li>wdc06 address 166.9.22.0/23</li>
+                <li>wdc06 address 166.9.232.0/24</li>
+                <li>wdc06 address 166.9.251.64/27</li>
+                <li>wdc07 address 161.26.122.0/24</li>
+                <li>wdc07 address 161.26.132.0/22</li>
+                <li>wdc07 address 166.9.24.0/23</li>
+                <li>wdc07 address 166.9.233.0/24</li>
+                <li>wdc07 address 166.9.251.96/27</li>
+              </ul>
+            </section>
+          </section>
+        </section>
+        <section id="section-ssl-vpn-network">
+          <h2 id="ssl-vpn-network">SSL VPN network (on back-end/private network)</h2>
+          <p>ICMP – ping (for support troubleshooting)</p>
+          <p>All TCP/UDP ports (for access from your local workstation)</p>
+        </section>
+        <section id="section-ssl-vpn-data-centers">
+          <h2 id="ssl-vpn-data-centers">SSL VPN data centers</h2>
+          <table>
+            <caption caption-side="bottom">SSL VPN data centers</caption>
+            <thead>
+              <tr>
+                <th>Data center</th>
+                <th>City</th>
+                <th>IP range</th>
+                <th>Endpoint</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>ams03</td>
+                <td>Amsterdam</td>
+                <td>10.3.220.0/24</td>
+                <td>vpn.ams03.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>che01</td>
+                <td>Chennai</td>
+                <td>10.200.232.0/24</td>
+                <td>vpn.che01.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>dal08</td>
+                <td>Dallas</td>
+                <td>100.101.128.0/24</td>
+                <td>vpn.dal08.ibmcloudforgov.com</td>
+              </tr>
+              <tr>
+                <td>dal10</td>
+                <td>Dallas</td>
+                <td>10.200.228.0/24</td>
+                <td>vpn.dal.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>dal12</td>
+                <td>Dallas</td>
+                <td>10.200.216.0/22</td>
+                <td>vpn.dal.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>dal13</td>
+                <td>Dallas</td>
+                <td>10.200.212.0/22</td>
+                <td>vpn.dal.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>fra02</td>
+                <td>Frankfurt</td>
+                <td>10.2.236.0/24</td>
+                <td>vpn.fra.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>fra04</td>
+                <td>Frankfurt</td>
+                <td>10.3.196.0/24</td>
+                <td>vpn.fra.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>lon04</td>
+                <td>London</td>
+                <td>10.200.196.0/24</td>
+                <td>vpn.lon.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>lon06</td>
+                <td>London</td>
+                <td>10.3.200.0/24</td>
+                <td>vpn.lon.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>mad02</td>
+                <td>Madrid</td>
+                <td>10.1.56.0/24</td>
+                <td>vpn.mad.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>mad04</td>
+                <td>Madrid</td>
+                <td>10.1.60.0/24</td>
+                <td>vpn.mad.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>mil01</td>
+                <td>Milan</td>
+                <td>10.3.216.0/24</td>
+                <td>vpn.mil01.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>mon01</td>
+                <td>Montreal</td>
+                <td>10.3.224.0/24</td>
+                <td>vpn.mon01.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>osa22</td>
+                <td>Osaka</td>
+                <td>10.202.132.0/24</td>
+                <td>vpn.osa.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>osa23</td>
+                <td>Osaka</td>
+                <td>10.202.136.0/24</td>
+                <td>vpn.osa.softalyer.com</td>
+              </tr>
+              <tr>
+                <td>par01</td>
+                <td>Paris</td>
+                <td>10.3.236.0/24</td>
+                <td>vpn.par01.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>par04</td>
+                <td>Paris</td>
+                <td>10.201.236.0/24</td>
+                <td>vpn.par.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>par06</td>
+                <td>Paris</td>
+                <td>10.201.220.0/24</td>
+                <td>vpn.par.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>sao04</td>
+                <td>São Paulo</td>
+                <td>10.202.8.0/24</td>
+                <td>vpn.sao.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>sao05</td>
+                <td>São Paulo</td>
+                <td>10.202.12.0/24</td>
+                <td>vpn.sao.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>sjc03</td>
+                <td>San Jose</td>
+                <td>10.3.204.0/24</td>
+                <td>vpn.sjc.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>sjc04</td>
+                <td>San Jose</td>
+                <td>10.200.192.0/24</td>
+                <td>vpn.sjc.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>sng01</td>
+                <td>Jurong East</td>
+                <td>10.2.192.0/23</td>
+                <td>vpn.sng01.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>syd01</td>
+                <td>Sydney</td>
+                <td>10.3.228.0/24</td>
+                <td>vpn.syd.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>syd04</td>
+                <td>Sydney</td>
+                <td>10.200.200.0/24</td>
+                <td>vpn.syd.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>tok04</td>
+                <td>Tokyo</td>
+                <td>10.201.228.0/24</td>
+                <td>vpn.tok.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>tok05</td>
+                <td>Tokyo</td>
+                <td>10.201.224.0/24</td>
+                <td>vpn.tok.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>tor04</td>
+                <td>Toronto</td>
+                <td>10.1.0.0/24</td>
+                <td>vpn.tor.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>tor05</td>
+                <td>Toronto</td>
+                <td>10.1.4.0/24</td>
+                <td>vpn.tor.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>wdc03</td>
+                <td>Washington D.C.</td>
+                <td>100.101.132.0/24</td>
+                <td>vpn.wdc03.ibmcloudforgov.com</td>
+              </tr>
+              <tr>
+                <td>wdc04</td>
+                <td>Washington D.C.</td>
+                <td>10.3.212.0/24</td>
+                <td>vpn.wdc.softlayer.com</td>
+              </tr>
+              <tr>
+                <td>wdc07</td>
+                <td>Washington D.C.</td>
+                <td>10.200.204.0/24</td>
+                <td>vpn.wdc.softlayer.com</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+        <section id="section-legacy-networks">
+          <h2 id="legacy-networks">Legacy networks</h2>
+          <table>
+            <caption caption-side="bottom">Legacy networks</caption>
+            <thead>
+              <tr>
+                <th>IP range</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>12.96.160.0/24</td>
+              </tr>
+              <tr>
+                <td>66.98.240.192/26</td>
+              </tr>
+              <tr>
+                <td>67.18.139.0/24</td>
+              </tr>
+              <tr>
+                <td>70.84.160.0/24</td>
+              </tr>
+              <tr>
+                <td>70.85.125.0/24</td>
+              </tr>
+              <tr>
+                <td>209.85.4.0/26</td>
+              </tr>
+              <tr>
+                <td>216.12.193.9</td>
+              </tr>
+              <tr>
+                <td>216.40.193.0/24</td>
+              </tr>
+              <tr>
+                <td>216.234.234.0/24</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+        <section id="section-red-hat-enterprise-linux-server">
+          <h2 id="red-hat-enterprise-linux-server">Red Hat Enterprise Linux server requirements</h2>
+          <p>If your server uses a Red Hat Enterprise Linux (RHEL) license provided by IBM Cloud infrastructure, provisioning is dependent on completing the following actions:</p>
+          <ul>
+            <li>Complete the SSL VPN requirements listed in <a href="/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges#service-network">Service network (on back-end/private network)</a>.</li>
+            <li>Open the RHEL endpoint rhha01.updates.us-south.iaas.service.networklayer.com. This requires adding the IP 161.26.112.28 to the firewall rules. Since DNS round robin is involved, this endpoint is not a single endpoint and could be moved as
+              needed.</li>
+            <li>Allow access to the service network as follows. Otherwise, updates and licensing do not function properly.</li>
+          </ul>
+          <table>
+            <caption caption-side="bottom">Red Hat Enterprise Linux server requirements</caption>
+            <thead>
+              <tr>
+                <th>Server location</th>
+                <th>Permitted data centers</th>
+                <th>IP ranges</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Amsterdam (ams03)</td>
+                <td>fra02</td>
+                <td>161.26.36.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>fra04</td>
+                <td>161.26.144.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>fra05</td>
+                <td>161.26.148.0/22</td>
+              </tr>
+              <tr>
+                <td>Chennai (che01)</td>
+                <td>tok02</td>
+                <td>161.26.84.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>tok04</td>
+                <td>161.26.152.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>tok05</td>
+                <td>161.26.156.0/22</td>
+              </tr>
+              <tr>
+                <td>Dallas (dal05, dal09, dal10, dal12, dal13)</td>
+                <td>dal10</td>
+                <td>161.26.96.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>dal12</td>
+                <td>161.26.108.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>dal13</td>
+                <td>161.26.112.0/22</td>
+              </tr>
+              <tr>
+                <td>Frankfurt (fra02, fra04, fra05)</td>
+                <td>fra02</td>
+                <td>161.26.36.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>fra04</td>
+                <td>161.26.144.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>fra05</td>
+                <td>161.26.148.0/22</td>
+              </tr>
+              <tr>
+                <td>London (lon02, lon04, lon05, lon06)</td>
+                <td>lon04</td>
+                <td>161.26.128.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>lon05</td>
+                <td>161.26.160.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>lon06</td>
+                <td>161.26.140.0/22</td>
+              </tr>
+              <tr>
+                <td>Milan (mil01)</td>
+                <td>fra02</td>
+                <td>161.26.36.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>fra04</td>
+                <td>161.26.144.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>fra05</td>
+                <td>161.26.148.0/22</td>
+              </tr>
+              <tr>
+                <td>Montreal (mon01)</td>
+                <td>tor01</td>
+                <td>161.26.88.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>tor04</td>
+                <td>161.26.196.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>tor05</td>
+                <td>161.26.200.0/22</td>
+              </tr>
+              <tr>
+                <td>Paris (par01)</td>
+                <td>fra02</td>
+                <td>161.26.36.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>fra04</td>
+                <td>161.26.144.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>fra05</td>
+                <td>161.26.148.0/22</td>
+              </tr>
+              <tr>
+                <td>San Jose (sjc01, sjc03, sjc04)</td>
+                <td>dal10</td>
+                <td>161.26.96.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>dal12</td>
+                <td>161.26.108.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>dal13</td>
+                <td>161.26.112.0/22</td>
+              </tr>
+              <tr>
+                <td>Sao Paulo (sao01)</td>
+                <td>sao01</td>
+                <td>161.26.64.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>sao04</td>
+                <td>161.26.204.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>sao05</td>
+                <td>161.26.208.0/22</td>
+              </tr>
+              <tr>
+                <td>Singapore (sng01)</td>
+                <td>syd01</td>
+                <td>161.26.80.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>syd04</td>
+                <td>161.26.124.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>syd05</td>
+                <td>161.26.164.0/22</td>
+              </tr>
+              <tr>
+                <td>Sydney (syd01, syd04, syd05)</td>
+                <td>syd01</td>
+                <td>161.26.80.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>syd04</td>
+                <td>161.26.124.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>syd05</td>
+                <td>161.26.164.0/22</td>
+              </tr>
+              <tr>
+                <td>Tokyo (tok02, tok04, tok05)</td>
+                <td>tok02</td>
+                <td>161.26.84.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>tok04</td>
+                <td>161.26.152.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>tok05</td>
+                <td>161.26.156.0/22</td>
+              </tr>
+              <tr>
+                <td>Toronto (tor01)</td>
+                <td>tor01</td>
+                <td>161.26.88.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>tor04</td>
+                <td>161.26.196.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>tor05</td>
+                <td>161.26.200.0/22</td>
+              </tr>
+              <tr>
+                <td>Washington DC (wdc01, wdc04, wdc06, wdc07)</td>
+                <td>wdc04</td>
+                <td>161.26.92.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>wdc06</td>
+                <td>161.26.116.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>wdc07</td>
+                <td>161.26.120.0/22</td>
+              </tr>
+              <tr>
+                <td>Osaka</td>
+                <td>osa21</td>
+                <td>161.26.184.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>osa22</td>
+                <td>161.26.188.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>osa23</td>
+                <td>161.26.192.0/22</td>
+              </tr>
+              <tr>
+                <td>Any data center not listed</td>
+                <td>dal10</td>
+                <td>161.26.96.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>dal12</td>
+                <td>161.26.108.0/22</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td>dal13</td>
+                <td>161.26.112.0/22</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="important">To resolve common provisioning issues, permit access to the entire service network by allowing the IP 161.26.0.0/16.</p>
+        </section>
+        <section id="section-windows-vsi-server">
+          <h2 id="windows-vsi-server">Windows virtual server instance requirements</h2>
+          <p>If you have a firewall, you must allow your Windows virtual server instance to access to WSUS server IP address ranges as follows; otherwise, updates and licensing do not function properly.</p>
+          <ul>
+            <li>wsustok0401.service.softlayer.com is 10.201.177.200</li>
+            <li>wsustok0201.service.softlayer.com is 10.3.65.50</li>
+            <li>wsustok0501.service.softlayer.com is 10.201.193.200</li>
+          </ul>
+          <table>
+            <caption caption-side="bottom">Windows virtual server instance server requirements</caption>
+            <thead>
+              <tr>
+                <th>Data Center</th>
+                <th>City</th>
+                <th>BCR IP Range</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>tok04</td>
+                <td>Tokyo</td>
+                <td>10.3.17.0/24<br> 10.192.0.0/16
+                  <br> 10.201.187.0/24
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p>For more information about locating your WSUS server in the Windows registry by using a registration key, see <a href="https://learn.microsoft.com/en-us/windows/deployment/update/waas-wu-settings#configuring-automatic-updates-by-editing-the-registry"
+              target="_blank" class="external">Configuring Automatic Updates by editing the registry</a> or <a href="https://learn.microsoft.com/de-de/security-updates/windowsupdateservices/21669493" target="_blank" class="external">Configure Clients in a Non–Active Directory Environment</a>.</p>
+          <hr class="footnotes-sep">
+          <section class="footnotes">
+            <ol class="footnotes-list">
+              <li id="fn1" class="footnote-item">
+                <p>The 10.1.129.0/24 subnet, within the 10.1.128.0/19 master subnet, is used for Global service virtual IPs, which are not located in dal05. <a href="#fnref1" class="footnote-backref">↩︎</a></p>
+              </li>
+              <li id="fn2" class="footnote-item">
+                <p class="note">Directionality is from the customer compute perspective. Outbound means leaving your account towards the service. Inbound means service reaching out to compute. <a href="#fnref2" class="footnote-backref">↩︎</a></p>
+              </li>
+            </ol>
+          </section>
+        </section>
+      </section>
+    </article>
+  </main>
+<script type="text/javascript"  src="/wZzsu2hkqpIusckQNmT6-mfc/OSYrcptNhfJQGk1k/UWM9Uw/a0F/0dDQzVA4C"></script></body>
+</html></div></body></html>

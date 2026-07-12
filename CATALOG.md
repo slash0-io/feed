@@ -29,6 +29,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `digitalocean` | DigitalOcean | dedicated | `all` (egress) | [official ↗](https://www.digitalocean.com/geo/google.csv) |
 | `google` | Google (all services) | dedicated | `all` (egress) | [official ↗](https://support.google.com/a/answer/10026322) |
 | `google-cloud` | Google Cloud Platform | dedicated | `all` (egress) | [official ↗](https://support.google.com/a/answer/10026322) |
+| `ibm-cloud` | IBM Cloud (Classic infrastructure) | dedicated | `frontend` (egress), `load-balancers` (egress) | [official ↗](https://cloud.ibm.com/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges) |
 | `linode` | Akamai Connected Cloud (Linode) | dedicated | `all` (egress) | [official ↗](https://geoip.linode.com/) |
 | `oracle-cloud` | Oracle Cloud Infrastructure | dedicated | `all` (egress), `object-storage` (egress) | [official ↗](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/addressranges.htm) |
 | `vultr` | Vultr (Constant, AS20473) | dedicated | `all` (egress) | [official ↗](https://geofeed.constant.com/) |
@@ -46,6 +47,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 |---|---|---|---|---|
 | `braintree` | Braintree (PayPal) | dedicated | `api` (egress), `sandbox` (egress) | [official ↗](https://developer.paypal.com/braintree/docs/reference/general/braintree-ip-addresses) |
 | `paypal` | PayPal | dedicated | `all` (both) | [official ↗](https://www.paypal.com/us/cshelp/article/what-are-the-internet-protocol-ip-addresses-for-paypal-server-endpoints-ts1056) |
+| `plaid` | Plaid | dedicated | `webhooks` (ingress) | [official ↗](https://plaid.com/docs/api/webhooks/) |
 | `stripe` | Stripe | dedicated | `api` (egress), `terminal` (egress), `webhooks` (ingress) | [official ↗](https://docs.stripe.com/ips) |
 
 ## Observability
@@ -106,6 +108,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
+| `netskope` | Netskope (NewEdge) | dedicated | `dataplane` (both) | [official ↗](https://docs.netskope.com/en/newedge-ip-ranges-for-allowlisting) |
 | `rapid7` | Rapid7 (InsightAppSec cloud engines) | dedicated | `appsec-engines` (ingress) | [official ↗](https://docs.rapid7.com/insightappsec/allowlist-cloud-engine-ips/) |
 | `tenable` | Tenable (Vulnerability Management) | dedicated | `scanners` (ingress) | [official ↗](https://docs.tenable.com/vulnerability-management/Content/Settings/Sensors/CloudSensors.htm) |
 | `zscaler` | Zscaler (zscaler.net cloud) | dedicated | `enforcement-nodes` (egress) | [official ↗](https://config.zscaler.com/) |
@@ -129,6 +132,7 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 | SendGrid (webhooks/parse) | Dynamic cloud infra; use signed webhooks, not IP allowlists. |
 | Slack | No published egress IPs; their allowlisting feature restricts YOUR IPs calling THEM. |
 | Shopify (webhooks) | Webhook source IPs not published; verify HMAC signatures instead. |
+| Square (webhooks) | No webhook source-IP list published; validate notifications via the documented HMAC-SHA256 signature flow. |
 | Duo Security | Explicitly discourages IP-based egress rules; may change to maintain availability. |
 | Snowflake | Deployment-specific hostnames/IPs per account; no global list. |
 | MongoDB Atlas (data plane) | Cluster IPs are per-project/dynamic; control-plane IPs only via authenticated Admin API. Use private endpoints (PrivateLink) — which is itself the strategy's Tier-2 story. |

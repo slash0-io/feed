@@ -148,6 +148,28 @@ services:
           - {key: all, direction: egress, select: "*"}
     verified: "2026-07-04"
 
+  - slug: ibm-cloud
+    name: IBM Cloud (Classic infrastructure)
+    category: cloud
+    classification: dedicated
+    provenance: https://cloud.ibm.com/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges
+    cadence: "irregular; page carries an in-page change log"
+    notes: >
+      Classic-infrastructure ranges only (no published VPC set). Front-end = public
+      network of classic data centers; load balancer IPs published separately. The page's
+      back-end/service-network sections are RFC1918 space — normalization drops private
+      ranges by design so those sections are not selectable purposes. Page moved from
+      docs/cloud-infrastructure to docs/infrastructure-hub (old URL 410s, 2026-07-11).
+    endpoints:
+      - id: docs
+        url: https://cloud.ibm.com/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: frontend,       direction: egress, select: "section=Front-end (public) network"}
+          - {key: load-balancers, direction: egress, select: "section=Load balancer IPs"}
+    verified: "2026-07-11"
+
   - slug: linode
     name: Akamai Connected Cloud (Linode)
     category: cloud
@@ -313,6 +335,24 @@ services:
           - {key: api,     direction: egress, select: "production"}
           - {key: sandbox, direction: egress, select: "sandbox"}
     verified: "2026-07-04"
+
+  - slug: plaid
+    name: Plaid
+    category: payments
+    classification: dedicated
+    provenance: https://plaid.com/docs/api/webhooks/
+    cadence: "rare; four static webhook source IPs; 'subject to change' (documented)"
+    notes: >
+      Webhook source IPs only (Plaid POSTing to your webhook URL). The API destination is
+      not IP-pinned; Plaid documents JWT webhook verification alongside allowlisting.
+    endpoints:
+      - id: docs
+        url: https://plaid.com/docs/api/webhooks/
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: webhooks, direction: ingress, select: "section=Configuring webhooks"}
+    verified: "2026-07-11"
 
   # ── Observability ─────────────────────────────────────────────────────────
   - slug: datadog
@@ -625,6 +665,27 @@ services:
           - {key: enforcement-nodes, direction: egress, select: "*"}
     verified: "2026-07-04"
 
+  - slug: netskope
+    name: Netskope (NewEdge)
+    category: security
+    classification: dedicated
+    provenance: https://docs.netskope.com/en/newedge-ip-ranges-for-allowlisting
+    cadence: "irregular; dataplane ranges are stable NewEdge-owned blocks"
+    notes: >
+      Public NewEdge dataplane ranges — destinations for traffic to Netskope POPs and the
+      source ranges Netskope egresses from toward IP-restricted apps (hence both). The
+      page lists each range's boundary addresses too; they fold into the CIDRs losslessly.
+      AI Red Team ranges excluded (separate product, own section). The fuller per-feature
+      consolidated list is customer-login gated (tier D).
+    endpoints:
+      - id: docs
+        url: https://docs.netskope.com/en/newedge-ip-ranges-for-allowlisting
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: dataplane, direction: both, select: "section=NewEdge IP Ranges for Allowlisting;exclude=AI Red Team"}
+    verified: "2026-07-11"
+
   - slug: tenable
     name: Tenable (Vulnerability Management)
     category: security
@@ -839,6 +900,10 @@ non_publishers:
     name: Shopify (webhooks)
     evidence: "Shopify community threads; no official ranges page"
     vendor_position: "Webhook source IPs not published; verify HMAC signatures instead."
+  - slug: square
+    name: Square (webhooks)
+    evidence: https://developer.squareup.com/docs/webhooks/step3validate
+    vendor_position: "No webhook source-IP list published; validate notifications via the documented HMAC-SHA256 signature flow."
   - slug: duo
     name: Duo Security
     evidence: https://duo.com/docs (KB 1337)
@@ -882,9 +947,9 @@ non_publishers:
 
 # ── Researched but not yet sourced — candidate backlog (v2+) ─────────────────
 backlog:
-  needs_research: [ibm-cloud, alibaba-cloud, workday, servicenow, netsuite,
-                   crowdstrike, sentinelone, netskope, palo-alto,
-                   plaid, square, checkout-com, wise,
+  needs_research: [alibaba-cloud, workday, servicenow, netsuite,
+                   crowdstrike, sentinelone, palo-alto,
+                   checkout-com, wise,
                    jfrog, docker-hub, confluent, aiven,
                    redis-cloud, planetscale, cockroachdb, supabase,
                    vonage, mailchimp-mandrill, appdynamics, honeycomb,

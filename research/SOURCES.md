@@ -68,6 +68,9 @@ Direction: **E** = ranges you connect *to* (egress allowlists) · **I** = ranges
 | Neon | docs page | none | n/a | **docs-repo commit feed** (`neondatabase/website`) | with region buildout | I |
 | Klaviyo | help-center page | none | n/a | — | rare; two dedicated blocks | I |
 | Twilio SIP Trunking | docs page | none | n/a | — | rare; regional /30s + media /18 | E/I |
+| Plaid | docs page | none | n/a | — | rare; four webhook source IPs | I |
+| Netskope (NewEdge) | docs page | none | n/a | — | irregular; stable NewEdge-owned blocks | E/I |
+| IBM Cloud (Classic) | docs page | in-page change log | n/a | — | irregular | E |
 
 ## How we know about updates fast (detection architecture)
 
@@ -113,6 +116,7 @@ The honest-catalog list — published in the feed as `pinnable: false` with the 
 | Akamai | customer-specific maps, auth-gated | Site Shield per customer |
 | Box | "IP addresses can change frequently and without notice" | domain allowlisting |
 | Sumo Logic | no own ranges published | AWS `ip-ranges.json` (Amazon/EC2, your deployment region) — covered by our `aws` service |
+| Square (webhooks) | no source-IP list published | HMAC-SHA256 signature validation (documented flow) |
 
 ## Notable findings
 
@@ -127,6 +131,8 @@ The honest-catalog list — published in the feed as `pinnable: false` with the 
 ~27 candidates remain (IBM Cloud, Alibaba, Workday, ServiceNow, CrowdStrike, SentinelOne, Netskope, Plaid, Square, JFrog, Confluent, Aiven, …) — full list in `sources.yaml` under `backlog`. Researched 2026-07-10 and resolved: Zendesk, PayPal, Vultr, DocuSign integrated as publishers; Box and Sumo Logic documented as non-publishers; Dynatrace is tier D (per-tenant authenticated API only); Segment/Amplitude/Mixpanel have no public range documentation (vendor-outreach candidates); Scaleway/OVH/Hetzner expose no geofeeds at standard URLs.
 
 Second pass (2026-07-10, same day): **Buildkite, Tenable, Rapid7, Elastic Cloud, Neon, Klaviyo, and Twilio SIP Trunking integrated as publishers** (all endpoints fetched live; 304 support verified for the three JSON feeds). Dead ends recorded in `sources.yaml → backlog.partially_verified`: Qualys *does* publish scanner ranges but only on client-rendered pages; Iterable's help center bot-blocks all non-browser fetchers (403); RingCentral's supernets live in an SPA-only support portal; Braze's IP page moved (docs are open source — locate the successor page). ServiceNow, Workday, NetSuite, CrowdStrike, and SentinelOne publish only behind customer login per prior research notes — still unverified.
+
+Third pass (2026-07-11): **Plaid, Netskope (NewEdge), and IBM Cloud (Classic infrastructure) integrated as publishers**; **Square documented as a non-publisher** (HMAC signature validation is the vendor mechanism). IBM's IP-ranges page silently moved from `docs/cloud-infrastructure` to `docs/infrastructure-hub` (old URL now 410s) — a live reminder that docs-page sources need URL-health monitoring, not just content hashing.
 
 ## Verification artifacts
 

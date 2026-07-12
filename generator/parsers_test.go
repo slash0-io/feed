@@ -229,6 +229,38 @@ func TestParserSpotChecks(t *testing.T) {
 	if strings.Join(v4tm, ",") != "168.86.128.0/18" {
 		t.Errorf("twilio-sip media = %v, want [168.86.128.0/18]", v4tm)
 	}
+
+	// Plaid: exactly the four published webhook source IPs.
+	body, ep = get("plaid", "docs")
+	raw, _ = parsers[ep.Format](body, "section=Configuring webhooks")
+	v4pl, _ := normalize(raw, func(string, ...any) {})
+	if want := "52.21.26.131/32,52.21.47.157/32,52.41.247.19/32,52.88.82.239/32"; strings.Join(v4pl, ",") != want {
+		t.Errorf("plaid webhooks = %v, want %s", v4pl, want)
+	}
+
+	// Netskope: boundary addresses fold into the five dataplane blocks and the
+	// AI Red Team subsection stays excluded.
+	body, ep = get("netskope", "docs")
+	raw, _ = parsers[ep.Format](body, "section=NewEdge IP Ranges for Allowlisting;exclude=AI Red Team")
+	v4ns, _ := normalize(raw, func(string, ...any) {})
+	if want := "8.36.116.0/24,8.39.144.0/24,31.186.239.0/24,162.10.0.0/17,163.116.128.0/17"; strings.Join(v4ns, ",") != want {
+		t.Errorf("netskope dataplane = %v, want %s", v4ns, want)
+	}
+
+	// IBM Cloud: the front-end selection is public space only — the page's
+	// RFC1918 back-end sections must not bleed into the output.
+	body, ep = get("ibm-cloud", "docs")
+	raw, _ = parsers[ep.Format](body, "section=Front-end (public) network")
+	v4ib, _ := normalize(raw, func(string, ...any) {})
+	if len(v4ib) < 30 {
+		t.Errorf("ibm-cloud frontend: %d ranges, want >= 30", len(v4ib))
+	}
+	for _, c := range v4ib {
+		p := netip.MustParsePrefix(c)
+		if p.Addr().IsPrivate() {
+			t.Errorf("ibm-cloud frontend: private range %s in output", c)
+		}
+	}
 }
 
 func TestNormalize(t *testing.T) {
