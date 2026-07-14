@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "*/10 * * * *"
   workflow_dispatch:
+    inputs:
+      force_deploy:
+        description: "Deploy even if content is unchanged (e.g. first signed publish)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -35,18 +40,22 @@ jobs:
       - name: Build feed incrementally against the published version
         # Unchanged services republish byte-for-byte; mass removals are
         # quarantined (nonzero exit) with the last-good version still served.
+        # FEED_SIGNING_KEY signs v1/index.json (ed25519, deterministic — the
+        # .sig is byte-stable too); absent secret publishes unsigned.
         run: go run ./generator -out dist -previous https://egresshq.github.io/feed/v1
+        env:
+          FEED_SIGNING_KEY: ${{ secrets.FEED_SIGNING_KEY }}
       - name: Detect content change
         id: diff
         run: echo "changed=$(head -c5 dist/BUILD_CHANGED | tr -d '\n')" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-pages-artifact@v3
-        if: steps.diff.outputs.changed == 'true' && steps.vis.outputs.public == 'true'
+        if: (steps.diff.outputs.changed == 'true' || inputs.force_deploy) && steps.vis.outputs.public == 'true'
         with:
           path: dist
 
   deploy:
     needs: build
-    if: needs.build.outputs.changed == 'true' && needs.build.outputs.public == 'true'
+    if: (needs.build.outputs.changed == 'true' || inputs.force_deploy) && needs.build.outputs.public == 'true'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

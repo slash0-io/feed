@@ -41,6 +41,7 @@ type buildOptions struct {
 	Previous       string
 	MaxRemovedFrac float64
 	MinGuardCount  int
+	SigningKeyHex  string
 }
 
 type buildStats struct {
@@ -57,8 +58,17 @@ func main() {
 	flag.StringVar(&opts.Previous, "previous", "", "published feed (http(s):// URL or directory) to publish incrementally against")
 	flag.Float64Var(&opts.MaxRemovedFrac, "max-removed-frac", 0.5, "quarantine a change removing more than this fraction of a purpose's ranges")
 	flag.IntVar(&opts.MinGuardCount, "min-guard-count", 8, "apply the removal guardrail only when the purpose previously had at least this many ranges")
+	flag.StringVar(&opts.SigningKeyHex, "signing-key", os.Getenv("FEED_SIGNING_KEY"), "hex ed25519 seed; signs v1/index.json into v1/index.json.sig (empty: skip signing)")
 	catalogPath := flag.String("catalog", "", "write the human-readable catalog markdown to this path and exit (no fetching)")
+	keygen := flag.Bool("keygen", false, "mint a fresh signing keypair and exit")
 	flag.Parse()
+
+	if *keygen {
+		if err := printKeygen(); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
 
 	if *catalogPath != "" {
 		reg, err := LoadRegistry(opts.SourcesPath)
@@ -246,6 +256,20 @@ func runBuild(opts buildOptions) (buildStats, error) {
 	}
 	if err := os.WriteFile(filepath.Join(v1Dir, "index.json"), indexBytes, 0o644); err != nil {
 		return stats, err
+	}
+	// Detached signature over the exact index bytes (deterministic, so
+	// byte-stable republishes keep a byte-stable signature). Absent key =
+	// unsigned build; the workflow only has the key on trusted runs.
+	if opts.SigningKeyHex != "" {
+		sig, err := signIndex(opts.SigningKeyHex, indexBytes)
+		if err != nil {
+			return stats, fmt.Errorf("sign index: %w", err)
+		}
+		if err := os.WriteFile(filepath.Join(v1Dir, "index.json.sig"), sig, 0o644); err != nil {
+			return stats, err
+		}
+	} else {
+		log.Printf("FEED_SIGNING_KEY not set — publishing unsigned")
 	}
 	if err := os.WriteFile(filepath.Join(v1Dir, "changelog.json"), changelogBytes, 0o644); err != nil {
 		return stats, err

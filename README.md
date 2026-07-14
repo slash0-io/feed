@@ -13,6 +13,7 @@ Feed URL: `https://egresshq.github.io/feed/v1` (`index.json` + `services/<slug>.
 - Every published service document carries a **provenance chain**: upstream URL, retrieval timestamp, and SHA-256 of the upstream body it was derived from.
 - **Guardrails**: private/loopback/default-route entries are dropped; a purpose that parses to zero ranges fails the build; and a change that removes most of a service's previously published ranges is **quarantined** — the last-good version keeps serving while the build alerts for human review.
 - **Incremental publishing**: unchanged services republish byte-for-byte (sync tokens preserved), deploys are skipped entirely when nothing changed, and every real change lands in `changelog.json` with per-purpose added/removed counts.
+- **Signed**: `v1/index.json.sig` is an ed25519 detached signature over the exact bytes of `index.json` (format `keyid:base64`). Service documents are covered transitively via their SHA-256 in the index — verify the signature, then verify each document's hash. Public key `ec91decd19bce7b9eb1d99748aaf7e99e9a1d702b845c9dc65fecc0425189763` (keyid `96b1d6e2`).
 - Parsers are tested against **archived upstream fixtures** (`testdata/fixtures/`), so the build runs fully offline in CI.
 
 ## What the schema models that upstreams don't
@@ -40,7 +41,7 @@ Add an entry to `sources.yaml` (official vendor endpoint only, with provenance l
 
 ## Roadmap
 
-DocuSign (Trust Center page URL unresolved), feed signing, push-based rebuilds (AWS SNS, M365 `/version`), sub-minute polling via a long-lived poller (GitHub Actions cron floors at ~5 min), and the ~50-service research backlog in `sources.yaml`.
+DocuSign (Trust Center page URL unresolved), push-based rebuilds (AWS SNS, M365 `/version`), sub-minute polling via a long-lived poller (GitHub Actions cron floors at ~5 min), and the ~50-service research backlog in `sources.yaml`.
 
 ## License
 
