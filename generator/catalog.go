@@ -131,8 +131,8 @@ a{color:#1d4ed8;text-decoration:none}
 <p>
 <a href="v1/index.json">v1/index.json</a> ·
 <a href="v1/changelog.json">changelog</a> ·
-<a href="https://github.com/egresshq/feed">source &amp; methodology</a> ·
-<a href="https://github.com/egresshq/terraform-provider-egress">Terraform provider</a>
+<a href="https://github.com/slash0-io/feed">source &amp; methodology</a> ·
+<a href="https://github.com/slash0-io/terraform-provider-egress">Terraform provider</a>
 </p>
 <p>Use with Terraform: <code>data "egress_ranges" "x" { service = "&lt;slug&gt;"  purpose = "&lt;purpose&gt;" }</code>.
 <b>egress</b> purposes are ranges you connect to; <b>ingress</b> purposes are webhook/agent sources.</p>

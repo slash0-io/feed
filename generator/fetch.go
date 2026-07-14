@@ -50,7 +50,7 @@ func (f *Fetcher) Get(svc SourceService, ep Endpoint) ([]byte, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
-	req.Header.Set("User-Agent", "egress-feed-generator/0.1 (+https://github.com/egresshq/feed)")
+	req.Header.Set("User-Agent", "slash0-feed-generator/0.1 (+https://github.com/slash0-io/feed)")
 	resp, err := f.Client.Do(req)
 	if err != nil {
 		return nil, "", err
@@ -91,7 +91,7 @@ func (f *Fetcher) rawGet(url string) ([]byte, string, error) {
 	if err != nil {
 		return nil, "", err
 	}
-	req.Header.Set("User-Agent", "egress-feed-generator/0.1 (+https://github.com/egresshq/feed)")
+	req.Header.Set("User-Agent", "slash0-feed-generator/0.1 (+https://github.com/slash0-io/feed)")
 	resp, err := f.Client.Do(req)
 	if err != nil {
 		return nil, "", err

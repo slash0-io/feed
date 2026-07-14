@@ -1,10 +1,10 @@
 # egress feed
 
-The versioned public feed of third-party service IP ranges behind [terraform-provider-egress](https://github.com/egresshq/terraform-provider-egress): **45 services** (Stripe, GitHub, Datadog, Okta, Cloudflare, AWS, Azure, Anthropic, PayPal, Zendesk, …) plus **16 documented non-publishers**, built exclusively from each vendor's **official publication** — never from third-party aggregators.
+The versioned public feed of third-party service IP ranges behind [terraform-provider-egress](https://github.com/slash0-io/terraform-provider-egress): **45 services** (Stripe, GitHub, Datadog, Okta, Cloudflare, AWS, Azure, Anthropic, PayPal, Zendesk, …) plus **16 documented non-publishers**, built exclusively from each vendor's **official publication** — never from third-party aggregators.
 
-Feed URL: `https://egresshq.github.io/feed/v1` (`index.json` + `services/<slug>.json`).
+Feed URL: `https://feed.slash0.io/v1` (`index.json` + `services/<slug>.json`).
 
-**→ [Browse the full service catalog](CATALOG.md)** — every slug, purpose, direction, and classification. Auto-generated from `sources.yaml` and CI-enforced to never drift; also served human-readable at the [feed root](https://egresshq.github.io/feed/).
+**→ [Browse the full service catalog](CATALOG.md)** — every slug, purpose, direction, and classification. Auto-generated from `sources.yaml` and CI-enforced to never drift; also served human-readable at the [feed root](https://feed.slash0.io/).
 
 ## Why trust it
 
@@ -33,7 +33,7 @@ go test ./...
 
 ## Hosted tier
 
-Want these ranges as AWS-managed prefix lists kept current in your account — no `terraform apply` required? The hosted tier is in development with design partners: [request early access](https://github.com/egresshq/terraform-provider-egress/issues/new?template=early-access.yml).
+Want these ranges as AWS-managed prefix lists kept current in your account — no `terraform apply` required? The hosted tier is in development with design partners: [request early access](https://github.com/slash0-io/terraform-provider-egress/issues/new?template=early-access.yml).
 
 ## Contributing a source
 

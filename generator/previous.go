@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/egresshq/feed/feedschema"
+	"github.com/slash0-io/feed/feedschema"
 )
 
 // previousFeed is the currently published feed, loaded for incremental

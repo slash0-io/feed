@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/egresshq/feed/feedschema"
+	"github.com/slash0-io/feed/feedschema"
 )
 
 func buildOpts(t *testing.T, fixtures, out, previous string) buildOptions {

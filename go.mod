@@ -1,4 +1,4 @@
-module github.com/egresshq/feed
+module github.com/slash0-io/feed
 
 go 1.26
 

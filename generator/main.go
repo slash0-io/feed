@@ -4,7 +4,7 @@
 //
 //	go run ./generator                                 # live fetch, fresh publish
 //	go run ./generator -fixtures testdata/fixtures     # offline
-//	go run ./generator -previous https://egresshq.github.io/feed/v1
+//	go run ./generator -previous https://feed.slash0.io/v1
 //	go run ./generator -services stripe,github         # dev subset (don't combine with -previous)
 //
 // With -previous, publishing is incremental: services whose normalized range
@@ -30,7 +30,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/egresshq/feed/feedschema"
+	"github.com/slash0-io/feed/feedschema"
 )
 
 type buildOptions struct {
