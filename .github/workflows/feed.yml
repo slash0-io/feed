@@ -48,6 +48,31 @@ jobs:
       - name: Detect content change
         id: diff
         run: echo "changed=$(head -c5 dist/BUILD_CHANGED | tr -d '\n')" >> "$GITHUB_OUTPUT"
+      # KMS-held signing key (non-exportable; sign-only OIDC role). This
+      # overwrites the ed25519 signature written by the generator while both
+      # keys are pinned by consumers; inert until the AWS_SIGN_ROLE_ARN repo
+      # variable is set. Runs only on deploying builds: ECDSA signatures are
+      # not deterministic, so re-signing an unchanged index would defeat
+      # deploy-skipping.
+      - name: Configure AWS credentials for signing
+        if: (steps.diff.outputs.changed == 'true' || inputs.force_deploy) && steps.vis.outputs.public == 'true' && vars.AWS_SIGN_ROLE_ARN != ''
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_SIGN_ROLE_ARN }}
+          aws-region: us-east-1
+      - name: Sign index with KMS
+        if: (steps.diff.outputs.changed == 'true' || inputs.force_deploy) && steps.vis.outputs.public == 'true' && vars.AWS_SIGN_ROLE_ARN != ''
+        run: |
+          set -euo pipefail
+          KEYID=$(aws kms get-public-key --key-id "${{ vars.FEED_KMS_KEY_ARN }}" \
+            --query PublicKey --output text | openssl base64 -d -A | shasum -a 256 | cut -c1-8)
+          openssl dgst -sha256 -binary dist/v1/index.json > index.digest
+          SIG=$(aws kms sign --key-id "${{ vars.FEED_KMS_KEY_ARN }}" \
+            --message fileb://index.digest --message-type DIGEST \
+            --signing-algorithm ECDSA_SHA_256 --query Signature --output text)
+          rm index.digest
+          printf '%s:%s\n' "$KEYID" "$SIG" > dist/v1/index.json.sig
+          echo "signed dist/v1/index.json with key $KEYID"
       - uses: actions/upload-pages-artifact@v3
         if: (steps.diff.outputs.changed == 'true' || inputs.force_deploy) && steps.vis.outputs.public == 'true'
         with:
