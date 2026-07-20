@@ -1,0 +1,26 @@
+name: "Vendor partnership"
+description: "You work at a service whose customers ask what to allowlist."
+title: "vendor: "
+labels: ["vendor-partner"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If your customers file tickets asking which IPs to allowlist, we can help:
+        we publish your official ranges in a standard machine-readable format,
+        keep them current for every consumer, and deliver them natively into AWS
+        security groups. No cost, no obligation, and you stay the source of truth.
+  - type: input
+    id: company
+    attributes:
+      label: Company and your role
+    validations:
+      required: true
+  - type: input
+    id: current
+    attributes:
+      label: Where do you publish IP ranges today, if anywhere?
+  - type: input
+    id: contact
+    attributes:
+      label: Best contact (email), if different from your GitHub profile

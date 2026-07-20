@@ -1,0 +1,22 @@
+name: "Service request"
+description: "Ask for a vendor to be added to the catalog."
+title: "service request: "
+labels: ["service-request"]
+body:
+  - type: input
+    id: service
+    attributes:
+      label: Which service?
+      placeholder: "e.g. Snowflake"
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: Where does the vendor publish its IP ranges, if you know?
+      placeholder: "link to the vendor's docs page or JSON endpoint"
+  - type: input
+    id: use
+    attributes:
+      label: What do you connect to it for?
+      placeholder: "e.g. API egress from ECS tasks, webhook ingress"
