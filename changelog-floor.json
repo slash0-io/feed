@@ -1,0 +1,932 @@
+[
+  {
+    "publishedAt": "2026-07-25T15:40:59Z",
+    "syncToken": "1784994059",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 0,
+        "removed": 1
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 4,
+        "removed": 2
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-25T14:24:38Z",
+    "syncToken": "1784989478",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 1,
+        "removed": 3
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-25T12:50:03Z",
+    "syncToken": "1784983803",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 2,
+        "removed": 2
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-25T11:47:59Z",
+    "syncToken": "1784980079",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 0,
+        "removed": 1
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 3,
+        "removed": 2
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-25T10:35:30Z",
+    "syncToken": "1784975730",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "slug": "google-cloud",
+        "purpose": "all",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 1,
+        "removed": 2
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-25T08:50:24Z",
+    "syncToken": "1784969424",
+    "changes": [
+      {
+        "slug": "intercom",
+        "purpose": "all",
+        "added": 26,
+        "removed": 19
+      },
+      {
+        "slug": "intercom",
+        "purpose": "all-eu",
+        "added": 9,
+        "removed": 7
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 6,
+        "removed": 5
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-25T06:38:35Z",
+    "syncToken": "1784961515",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 0,
+        "removed": 1
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 2,
+        "removed": 5
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-25T04:25:03Z",
+    "syncToken": "1784953503",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 5,
+        "removed": 4
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-25T01:04:42Z",
+    "syncToken": "1784941482",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 5,
+        "removed": 0
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 3,
+        "removed": 4
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-24T23:29:10Z",
+    "syncToken": "1784935750",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 5,
+        "removed": 3
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-24T22:16:32Z",
+    "syncToken": "1784931392",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 1,
+        "removed": 0
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-24T21:06:08Z",
+    "syncToken": "1784927168",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 2,
+        "removed": 2
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-24T19:52:14Z",
+    "syncToken": "1784922734",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 4,
+        "removed": 2
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 3,
+        "removed": 2
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-24T18:19:30Z",
+    "syncToken": "1784917170",
+    "changes": [
+      {
+        "slug": "digitalocean",
+        "purpose": "all",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 2,
+        "removed": 2
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-24T16:55:22Z",
+    "syncToken": "1784912122",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 7,
+        "removed": 3
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-24T15:02:33Z",
+    "syncToken": "1784905353",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 1,
+        "removed": 3
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-24T12:58:49Z",
+    "syncToken": "1784897929",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 18,
+        "removed": 3
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 1,
+        "removed": 0
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-24T11:25:01Z",
+    "syncToken": "1784892301",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 0,
+        "removed": 1
+      },
+      {
+        "slug": "linode",
+        "purpose": "all",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 5,
+        "removed": 4
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-24T09:38:57Z",
+    "syncToken": "1784885937",
+    "changes": [
+      {
+        "slug": "intercom",
+        "purpose": "all",
+        "added": 23,
+        "removed": 17
+      },
+      {
+        "slug": "intercom",
+        "purpose": "all-eu",
+        "added": 8,
+        "removed": 8
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 4,
+        "removed": 8
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-24T07:12:54Z",
+    "syncToken": "1784877174",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 10,
+        "removed": 10
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-24T04:29:54Z",
+    "syncToken": "1784867394",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 17,
+        "removed": 18
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-23T23:35:53Z",
+    "syncToken": "1784849753",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 2,
+        "removed": 3
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-23T22:36:01Z",
+    "syncToken": "1784846161",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 1,
+        "removed": 2
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 4,
+        "removed": 7
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-23T20:14:20Z",
+    "syncToken": "1784837660",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 0,
+        "removed": 1
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 8,
+        "removed": 3
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-23T18:52:46Z",
+    "syncToken": "1784832766",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 2,
+        "removed": 1
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-23T17:44:55Z",
+    "syncToken": "1784828695",
+    "changes": [
+      {
+        "slug": "databricks",
+        "purpose": "all",
+        "added": 361,
+        "removed": 2
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 3,
+        "removed": 4
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-23T16:08:09Z",
+    "syncToken": "1784822889",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "slug": "github",
+        "purpose": "actions",
+        "added": 114,
+        "removed": 37
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 6,
+        "removed": 7
+      },
+      {
+        "slug": "sentry",
+        "purpose": "webhooks",
+        "added": 0,
+        "removed": 3
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-23T14:24:38Z",
+    "syncToken": "1784816678",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 0,
+        "removed": 1
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 5,
+        "removed": 3
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-23T11:57:56Z",
+    "syncToken": "1784807876",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 4,
+        "removed": 3
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-23T09:59:16Z",
+    "syncToken": "1784800756",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 4,
+        "removed": 6
+      },
+      {
+        "slug": "intercom",
+        "purpose": "all",
+        "added": 12,
+        "removed": 10
+      },
+      {
+        "slug": "intercom",
+        "purpose": "all-eu",
+        "added": 1,
+        "removed": 1
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 8,
+        "removed": 10
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-23T07:24:27Z",
+    "syncToken": "1784791467",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 0,
+        "removed": 1
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 8,
+        "removed": 7
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-23T04:41:57Z",
+    "syncToken": "1784781717",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 3,
+        "removed": 1
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 6,
+        "removed": 8
+      },
+      {
+        "slug": "openai",
+        "purpose": "connectors",
+        "added": 1,
+        "removed": 1
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-23T01:18:14Z",
+    "syncToken": "1784769494",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 8,
+        "removed": 9
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T22:46:27Z",
+    "syncToken": "1784760387",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 5,
+        "removed": 4
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T21:53:29Z",
+    "syncToken": "1784757209",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 2,
+        "removed": 3
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T20:42:59Z",
+    "syncToken": "1784752979",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 0,
+        "removed": 1
+      },
+      {
+        "slug": "aws",
+        "purpose": "cloudfront",
+        "added": 0,
+        "removed": 1
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 2,
+        "removed": 2
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T19:35:10Z",
+    "syncToken": "1784748910",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 2,
+        "removed": 2
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T17:56:39Z",
+    "syncToken": "1784742999",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 13,
+        "removed": 9
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T16:42:16Z",
+    "syncToken": "1784738536",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 4,
+        "removed": 3
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 2,
+        "removed": 1
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T15:05:50Z",
+    "syncToken": "1784732750",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 5,
+        "removed": 5
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T12:51:06Z",
+    "syncToken": "1784724666",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 5,
+        "removed": 5
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T11:17:43Z",
+    "syncToken": "1784719063",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 15,
+        "removed": 1
+      },
+      {
+        "slug": "google-cloud",
+        "purpose": "all",
+        "added": 0,
+        "removed": 2
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 2,
+        "removed": 3
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T09:03:51Z",
+    "syncToken": "1784711031",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 0,
+        "removed": 1
+      },
+      {
+        "slug": "intercom",
+        "purpose": "all",
+        "added": 16,
+        "removed": 20
+      },
+      {
+        "slug": "intercom",
+        "purpose": "all-eu",
+        "added": 7,
+        "removed": 6
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 8,
+        "removed": 8
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T06:17:15Z",
+    "syncToken": "1784701035",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 11,
+        "removed": 12
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T03:43:27Z",
+    "syncToken": "1784691807",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 3,
+        "removed": 3
+      },
+      {
+        "slug": "google-cloud",
+        "purpose": "all",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 7,
+        "removed": 6
+      },
+      {
+        "slug": "vultr",
+        "purpose": "all",
+        "added": 0,
+        "removed": 1
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-22T00:07:15Z",
+    "syncToken": "1784678835",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "slug": "aws",
+        "purpose": "cloudfront",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 3,
+        "removed": 3
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-21T23:09:29Z",
+    "syncToken": "1784675369",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 6,
+        "removed": 1
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-21T22:05:05Z",
+    "syncToken": "1784671505",
+    "changes": [
+      {
+        "slug": "google-cloud",
+        "purpose": "all",
+        "added": 0,
+        "removed": 2
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 5,
+        "removed": 5
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-21T20:54:42Z",
+    "syncToken": "1784667282",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 4,
+        "removed": 7
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-21T19:48:29Z",
+    "syncToken": "1784663309",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 3,
+        "removed": 2
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-21T18:04:31Z",
+    "syncToken": "1784657071",
+    "changes": [
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 7,
+        "removed": 5
+      }
+    ]
+  },
+  {
+    "publishedAt": "2026-07-21T16:49:11Z",
+    "syncToken": "1784652551",
+    "changes": [
+      {
+        "slug": "aws",
+        "purpose": "all",
+        "added": 1,
+        "removed": 0
+      },
+      {
+        "slug": "google-cloud",
+        "purpose": "all",
+        "added": 2,
+        "removed": 0
+      },
+      {
+        "slug": "okta",
+        "purpose": "all",
+        "added": 3,
+        "removed": 2
+      }
+    ]
+  }
+]

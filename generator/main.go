@@ -39,6 +39,7 @@ type buildOptions struct {
 	FixturesDir    string
 	Only           string
 	Previous       string
+	ChangelogFloor string
 	MaxRemovedFrac float64
 	MinGuardCount  int
 	SigningKeyHex  string
@@ -56,6 +57,7 @@ func main() {
 	flag.StringVar(&opts.FixturesDir, "fixtures", "", "offline mode: read bodies from this fixtures directory")
 	flag.StringVar(&opts.Only, "services", "", "comma-separated slugs to build (default: all)")
 	flag.StringVar(&opts.Previous, "previous", "", "published feed (http(s):// URL or directory) to publish incrementally against")
+	flag.StringVar(&opts.ChangelogFloor, "changelog-floor", "", "checked-in changelog JSON merged into every publish as a durable history floor")
 	flag.Float64Var(&opts.MaxRemovedFrac, "max-removed-frac", 0.5, "quarantine a change removing more than this fraction of a purpose's ranges")
 	flag.IntVar(&opts.MinGuardCount, "min-guard-count", 8, "apply the removal guardrail only when the purpose previously had at least this many ranges")
 	flag.StringVar(&opts.SigningKeyHex, "signing-key", os.Getenv("FEED_SIGNING_KEY"), "hex ed25519 seed; signs v1/index.json into v1/index.json.sig (empty: skip signing)")
@@ -106,6 +108,10 @@ func runBuild(opts buildOptions) (buildStats, error) {
 	}
 
 	prev, err := loadPrevious(opts.Previous)
+	if err != nil {
+		return stats, err
+	}
+	floor, err := loadChangelogFloor(opts.ChangelogFloor)
 	if err != nil {
 		return stats, err
 	}
@@ -217,25 +223,28 @@ func runBuild(opts buildOptions) (buildStats, error) {
 		})
 	}
 
-	// Publish the index and changelog. If the catalog is identical to the
-	// previous publish, reuse its bytes verbatim so the whole dist tree is
-	// byte-stable and CI can skip deployment.
-	stats.BuildChanged = prev == nil || len(changes) > 0 || !indexEquivalent(&index, &prev.index)
+	// Publish the index and changelog. The changelog is the live feed's
+	// entries merged with the checked-in floor, so lost history repairs
+	// itself on the next publish; a changelog restore alone is a deployable
+	// change but not a catalog publish (index bytes stay verbatim). If
+	// nothing differs from the previous publish, all previous bytes are
+	// reused so the whole dist tree is byte-stable and CI can skip
+	// deployment.
+	prevChangelog := orEmpty(nil)
+	if prev != nil {
+		prevChangelog = orEmpty(prev.changelog)
+	}
+	changelog := mergeChangelog(prevChangelog, floor)
+	catalogChanged := prev == nil || len(changes) > 0 || !indexEquivalent(&index, &prev.index)
+	stats.BuildChanged = catalogChanged || !changelogEqual(changelog, prevChangelog)
 	var indexBytes, changelogBytes []byte
-	if !stats.BuildChanged {
+	if !catalogChanged {
 		indexBytes = prev.indexBytes
-		if changelogBytes, err = marshalPretty(orEmpty(prev.changelog)); err != nil {
-			return stats, err
-		}
 	} else {
 		index.GeneratedAt = generatedAt
 		index.SyncToken = syncToken
 		if indexBytes, err = marshalPretty(index); err != nil {
 			return stats, err
-		}
-		changelog := orEmpty(nil)
-		if prev != nil {
-			changelog = orEmpty(prev.changelog)
 		}
 		if len(changes) > 0 {
 			sort.Slice(changes, func(i, j int) bool {
@@ -249,13 +258,13 @@ func runBuild(opts buildOptions) (buildStats, error) {
 				SyncToken:   syncToken,
 				Changes:     changes,
 			}}, changelog...)
-			if len(changelog) > 500 {
-				changelog = changelog[:500]
+			if len(changelog) > changelogCap {
+				changelog = changelog[:changelogCap]
 			}
 		}
-		if changelogBytes, err = marshalPretty(changelog); err != nil {
-			return stats, err
-		}
+	}
+	if changelogBytes, err = marshalPretty(changelog); err != nil {
+		return stats, err
 	}
 	if err := os.WriteFile(filepath.Join(v1Dir, "index.json"), indexBytes, 0o644); err != nil {
 		return stats, err

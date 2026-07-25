@@ -42,7 +42,7 @@ jobs:
         # quarantined (nonzero exit) with the last-good version still served.
         # FEED_SIGNING_KEY signs v1/index.json (ed25519, deterministic — the
         # .sig is byte-stable too); absent secret publishes unsigned.
-        run: go run ./generator -out dist -previous https://feed.slash0.io/v1
+        run: go run ./generator -out dist -previous https://feed.slash0.io/v1 -changelog-floor changelog-floor.json
         env:
           FEED_SIGNING_KEY: ${{ secrets.FEED_SIGNING_KEY }}
       - name: Detect content change
