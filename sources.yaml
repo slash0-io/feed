@@ -891,12 +891,12 @@ services:
 
 # ── Services that do NOT publish pinnable ranges ─────────────────────────────
 # Verified vendor positions. These are surfaced in the feed as `pinnable: false`
-# with the vendor's recommended alternative — the honest-catalog differentiator.
+# with the vendor's recommended alternative: the catalog covers what you cannot pin, too.
 non_publishers:
   - slug: twilio
     name: Twilio (REST API + webhooks)
     evidence: https://support.twilio.com/hc/en-us/articles/115015934048-All-About-Twilio-IP-Addresses
-    vendor_position: "IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking IS pinnable — see the twilio-sip service."
+    vendor_position: "IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking IS pinnable, see the twilio-sip service."
   - slug: adyen
     name: Adyen
     evidence: https://help.adyen.com/knowledge/ecommerce-integrations/webhooks/what-ip-addresses-does-adyen-use-to-send-webhook-events
@@ -928,7 +928,7 @@ non_publishers:
   - slug: mongodb-atlas
     name: MongoDB Atlas (data plane)
     evidence: https://www.mongodb.com/docs/atlas/reference/faq/networking/
-    vendor_position: "Cluster IPs are per-project/dynamic; control-plane IPs only via authenticated Admin API. Use private endpoints (PrivateLink) — which is itself the strategy's Tier-2 story."
+    vendor_position: "Cluster IPs are per-project/dynamic; control-plane IPs only via authenticated Admin API. Vendor directs users to private endpoints (PrivateLink)."
   - slug: vercel
     name: Vercel (function egress)
     evidence: https://vercel.com/docs/networking/static-ips
@@ -940,11 +940,11 @@ non_publishers:
   - slug: hubspot
     name: HubSpot
     evidence: https://developers.hubspot.com/docs/api-reference (ip-ranges guide)
-    vendor_position: "No static publication ('change too frequently'); offers an API returning current ranges — could be integrated later as an authed source."
+    vendor_position: "No static publication ('change too frequently'); an API returning the current ranges is available to authenticated callers."
   - slug: openai-api
     name: OpenAI API (api.openai.com)
     evidence: "Cloudflare-fronted endpoint; no inbound range publication"
-    vendor_position: "Egress to api.openai.com resolves to shared Cloudflare ranges — pinning would allowlist the whole CDN."
+    vendor_position: "Egress to api.openai.com resolves to shared Cloudflare ranges; pinning would allowlist the whole CDN."
   - slug: akamai
     name: Akamai (CDN)
     evidence: "Site Shield / Origin IP ACL docs (auth required)"
@@ -956,7 +956,7 @@ non_publishers:
   - slug: sumo-logic
     name: Sumo Logic
     evidence: https://support.sumologic.com/hc/en-us/articles/360012685393-How-to-allow-or-enable-IP-ranges-for-Sumo-Logic-endpoints
-    vendor_position: "No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region) — covered by our aws service."
+    vendor_position: "No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region), covered by the aws service."
 
 # ── Researched but not yet sourced — candidate backlog (v2+) ─────────────────
 backlog:

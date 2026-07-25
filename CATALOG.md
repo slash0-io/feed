@@ -127,7 +127,7 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 
 | Service | Vendor position |
 |---|---|
-| Twilio (REST API + webhooks) | IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking IS pinnable — see the twilio-sip service. |
+| Twilio (REST API + webhooks) | IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking IS pinnable, see the twilio-sip service. |
 | Adyen | No IP list; allowlist out.adyen.com or resolve it via DNS hourly (their words). |
 | SendGrid (webhooks/parse) | Dynamic cloud infra; use signed webhooks, not IP allowlists. |
 | Slack | No published egress IPs; their allowlisting feature restricts YOUR IPs calling THEM. |
@@ -135,13 +135,13 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 | Square (webhooks) | No webhook source-IP list published; validate notifications via the documented HMAC-SHA256 signature flow. |
 | Duo Security | Explicitly discourages IP-based egress rules; may change to maintain availability. |
 | Snowflake | Deployment-specific hostnames/IPs per account; no global list. |
-| MongoDB Atlas (data plane) | Cluster IPs are per-project/dynamic; control-plane IPs only via authenticated Admin API. Use private endpoints (PrivateLink) — which is itself the strategy's Tier-2 story. |
+| MongoDB Atlas (data plane) | Cluster IPs are per-project/dynamic; control-plane IPs only via authenticated Admin API. Vendor directs users to private endpoints (PrivateLink). |
 | Vercel (function egress) | Dynamic by default; static IPs are a paid per-customer feature, not a public range. |
 | Netlify (function egress) | No published IPs; any circulating list 'is a guess or outdated'. |
-| HubSpot | No static publication ('change too frequently'); offers an API returning current ranges — could be integrated later as an authed source. |
-| OpenAI API (api.openai.com) | Egress to api.openai.com resolves to shared Cloudflare ranges — pinning would allowlist the whole CDN. |
+| HubSpot | No static publication ('change too frequently'); an API returning the current ranges is available to authenticated callers. |
+| OpenAI API (api.openai.com) | Egress to api.openai.com resolves to shared Cloudflare ranges; pinning would allowlist the whole CDN. |
 | Akamai (CDN) | Customer-specific maps behind login; no public global ranges. |
 | Box | Use domain names; 'IP addresses can change frequently and without notice' (their wording). No webhook source ranges published. |
-| Sumo Logic | No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region) — covered by our aws service. |
+| Sumo Logic | No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region), covered by the aws service. |
 
 Evidence links for every row: [`sources.yaml`](sources.yaml) · methodology: [`research/SOURCES.md`](research/SOURCES.md)
