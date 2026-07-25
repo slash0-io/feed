@@ -20,8 +20,46 @@ type IndexService struct {
 	Category       string        `json:"category"`
 	Classification string        `json:"classification"`
 	Purposes       []PurposeMeta `json:"purposes"`
+	Publication    *Publication  `json:"publication,omitempty"`
 	Path           string        `json:"path"`
 	SHA256         string        `json:"sha256"`
+}
+
+// Publication describes how a vendor publishes its ranges, as distinct from
+// what the ranges are: the shape of the upstream document, whether change can
+// be detected cheaply, whether the vendor commits to advance notice, and
+// whether any out-of-band change signal exists. A service with several
+// endpoints reports its weakest one, since integration difficulty is set by
+// the hardest source to track.
+type Publication struct {
+	// DocumentType is the upstream body's shape: json, csv, text, or html.
+	// html means the ranges are only available embedded in a documentation
+	// page and must be extracted from it.
+	DocumentType string `json:"documentType"`
+	// PollMode is how change is detected. cond-get means the server honors
+	// If-None-Match / If-Modified-Since, so an unchanged check is nearly
+	// free. hash means no cache validators, so the full body is fetched and
+	// content-hashed. docs-page means an HTML page is fetched and the ranges
+	// extracted before comparison.
+	PollMode string `json:"pollMode"`
+	// Cadence is the vendor's documented or observed update rhythm.
+	Cadence string `json:"cadence,omitempty"`
+	// Notice is the advance warning the vendor commits to before newly
+	// published ranges carry traffic. Set only where the vendor documents a
+	// period; absent means no committed lead time, which is the common case.
+	Notice string `json:"notice,omitempty"`
+	// ChangeSignal is an out-of-band way to learn about a change instead of
+	// discovering it by polling.
+	ChangeSignal *ChangeSignal `json:"changeSignal,omitempty"`
+}
+
+type ChangeSignal struct {
+	// Kind is vendor for a signal the vendor operates (a notification topic,
+	// a status-page subscription, a version endpoint), or docs-repo for a
+	// commit feed on the public repository behind the vendor's documentation
+	// page. A docs-repo signal is derived, not offered.
+	Kind   string `json:"kind"`
+	Detail string `json:"detail"`
 }
 
 type PurposeMeta struct {

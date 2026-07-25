@@ -195,12 +195,17 @@ func runBuild(opts buildOptions) (buildStats, error) {
 			})
 		}
 		sort.Slice(purposes, func(i, j int) bool { return purposes[i].Key < purposes[j].Key })
+		pub, err := publicationFor(svc)
+		if err != nil {
+			return stats, err
+		}
 		index.Services = append(index.Services, feedschema.IndexService{
 			Slug:           svc.Slug,
 			Name:           svc.Name,
 			Category:       svc.Category,
 			Classification: svc.Classification,
 			Purposes:       purposes,
+			Publication:    pub,
 			Path:           filepath.ToSlash(rel),
 			SHA256:         sha256hex(docBytes),
 		})
