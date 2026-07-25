@@ -105,7 +105,10 @@ func runBuild(opts buildOptions) (buildStats, error) {
 		}
 	}
 
-	prev := loadPrevious(opts.Previous)
+	prev, err := loadPrevious(opts.Previous)
+	if err != nil {
+		return stats, err
+	}
 	fetcher := NewFetcher(opts.FixturesDir)
 	now := time.Now().UTC()
 	generatedAt := now.Format(time.RFC3339)

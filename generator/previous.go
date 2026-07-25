@@ -2,8 +2,10 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
+	"io/fs"
 	"log"
 	"net/http"
 	"os"
@@ -15,7 +17,7 @@ import (
 )
 
 // previousFeed is the currently published feed, loaded for incremental
-// comparison. Nil means "no usable previous feed" and the build publishes
+// comparison. Nil means "no previous feed exists" and the build publishes
 // fresh.
 type previousFeed struct {
 	index        feedschema.Index
@@ -26,19 +28,31 @@ type previousFeed struct {
 	changelog    []feedschema.ChangelogEntry
 }
 
+// previousRetryDelays paces retries of transient previous-feed fetch
+// failures (transport errors, 5xx). Tests shorten it.
+var previousRetryDelays = []time.Duration{2 * time.Second, 4 * time.Second}
+
 // loadPrevious fetches base (an http(s):// URL or a local directory holding
-// index.json). Any failure is logged and returns nil — an unreachable
-// previous feed must degrade to a fresh publish, never fail the build.
-func loadPrevious(base string) *previousFeed {
+// index.json). A previous feed that genuinely does not exist (404 / absent
+// path) is bootstrap and returns (nil, nil): the build publishes fresh. Any
+// other failure fails the build. Publishing fresh against a feed that does
+// exist resets every sync token, wipes the changelog, and disables the
+// mass-removal guardrail (nothing to compare against), so a transient fetch
+// failure must never degrade into it. (2026-07-25: a connection reset on
+// this path wiped the published changelog.)
+func loadPrevious(base string) (*previousFeed, error) {
 	if base == "" {
-		return nil
+		return nil, nil
 	}
 	get := previousGetter(base)
 
 	ib, err := get("index.json")
+	if errors.Is(err, fs.ErrNotExist) {
+		log.Printf("no previous feed at %s — bootstrap publish", base)
+		return nil, nil
+	}
 	if err != nil {
-		log.Printf("previous feed unavailable (%v) — publishing fresh", err)
-		return nil
+		return nil, fmt.Errorf("previous feed unreachable: %w", err)
 	}
 	prev := &previousFeed{
 		indexBytes:   ib,
@@ -46,45 +60,76 @@ func loadPrevious(base string) *previousFeed {
 		serviceBytes: map[string][]byte{},
 		fingerprints: map[string]string{},
 	}
-	if err := json.Unmarshal(ib, &prev.index); err != nil || prev.index.SchemaVersion != feedschema.SchemaVersion {
-		log.Printf("previous index unusable (err=%v, schema=%d) — publishing fresh", err, prev.index.SchemaVersion)
-		return nil
+	if err := json.Unmarshal(ib, &prev.index); err != nil {
+		return nil, fmt.Errorf("previous index unparseable: %w", err)
+	}
+	if prev.index.SchemaVersion != feedschema.SchemaVersion {
+		return nil, fmt.Errorf("previous index schema %d, want %d", prev.index.SchemaVersion, feedschema.SchemaVersion)
 	}
 	for _, entry := range prev.index.Services {
 		b, err := get(entry.Path)
 		if err != nil {
-			log.Printf("previous %s unavailable (%v) — publishing fresh", entry.Slug, err)
-			return nil
+			return nil, fmt.Errorf("previous %s: %w", entry.Slug, err)
 		}
 		var svc feedschema.Service
 		if err := json.Unmarshal(b, &svc); err != nil {
-			log.Printf("previous %s unparseable (%v) — publishing fresh", entry.Slug, err)
-			return nil
+			return nil, fmt.Errorf("previous %s unparseable: %w", entry.Slug, err)
 		}
 		prev.services[entry.Slug] = &svc
 		prev.serviceBytes[entry.Slug] = b
 		prev.fingerprints[entry.Slug] = purposesFingerprint(svc.Purposes)
 	}
-	if cb, err := get("changelog.json"); err == nil {
-		_ = json.Unmarshal(cb, &prev.changelog) // best-effort; absent on older feeds
+	cb, err := get("changelog.json")
+	switch {
+	case errors.Is(err, fs.ErrNotExist):
+		log.Printf("previous changelog absent — starting empty")
+	case err != nil:
+		return nil, fmt.Errorf("previous changelog: %w", err)
+	default:
+		if err := json.Unmarshal(cb, &prev.changelog); err != nil {
+			return nil, fmt.Errorf("previous changelog unparseable: %w", err)
+		}
 	}
-	return prev
+	return prev, nil
 }
 
 func previousGetter(base string) func(rel string) ([]byte, error) {
 	if strings.HasPrefix(base, "http://") || strings.HasPrefix(base, "https://") {
 		client := &http.Client{Timeout: 30 * time.Second}
 		base = strings.TrimSuffix(base, "/")
-		return func(rel string) ([]byte, error) {
+		// getOnce reports whether a failure is transient (transport error,
+		// 5xx, truncated read) and worth retrying. 404 maps to fs.ErrNotExist
+		// so callers can tell "does not exist" from "could not fetch".
+		getOnce := func(rel string) (body []byte, retryable bool, err error) {
 			resp, err := client.Get(base + "/" + rel)
 			if err != nil {
-				return nil, err
+				return nil, true, err
 			}
 			defer resp.Body.Close()
-			if resp.StatusCode != http.StatusOK {
-				return nil, fmt.Errorf("GET %s/%s: %s", base, rel, resp.Status)
+			switch {
+			case resp.StatusCode == http.StatusOK:
+				b, err := io.ReadAll(io.LimitReader(resp.Body, maxBodyBytes))
+				return b, true, err
+			case resp.StatusCode == http.StatusNotFound:
+				return nil, false, fmt.Errorf("GET %s/%s: %w", base, rel, fs.ErrNotExist)
+			case resp.StatusCode >= 500:
+				return nil, true, fmt.Errorf("GET %s/%s: %s", base, rel, resp.Status)
+			default:
+				return nil, false, fmt.Errorf("GET %s/%s: %s", base, rel, resp.Status)
 			}
-			return io.ReadAll(io.LimitReader(resp.Body, maxBodyBytes))
+		}
+		return func(rel string) ([]byte, error) {
+			for attempt := 0; ; attempt++ {
+				b, retryable, err := getOnce(rel)
+				if err == nil {
+					return b, nil
+				}
+				if !retryable || attempt >= len(previousRetryDelays) {
+					return nil, err
+				}
+				log.Printf("previous %s: %v — retrying", rel, err)
+				time.Sleep(previousRetryDelays[attempt])
+			}
 		}
 	}
 	root := strings.TrimPrefix(base, "file://")
