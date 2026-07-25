@@ -22,6 +22,7 @@ type SourceService struct {
 	Provenance     string     `yaml:"provenance"`
 	Cadence        string     `yaml:"cadence"`
 	Notice         string     `yaml:"notice"`
+	NoticeEvidence string     `yaml:"notice_evidence"`
 	Notes          string     `yaml:"notes"`
 	Endpoints      []Endpoint `yaml:"endpoints"`
 	Verified       string     `yaml:"verified"`
@@ -43,6 +44,8 @@ type Detection struct {
 	// PushKind qualifies Push: "vendor" for a signal the vendor operates,
 	// "docs-repo" for a commit feed on the repository behind their docs page.
 	PushKind string `yaml:"push_kind"`
+	// PushEvidence is the vendor page documenting the signal.
+	PushEvidence string `yaml:"push_evidence"`
 }
 
 type PurposeDecl struct {

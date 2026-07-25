@@ -17,6 +17,8 @@
 #                        docs-repo = commit feed on the public repo behind their docs page (derived, not offered)
 #   notice:         advance warning the vendor commits to before newly published ranges carry
 #                   traffic; set only where the vendor documents a period
+#   notice_evidence / detection.push_evidence: REQUIRED alongside notice / push. The vendor page
+#                   stating the claim. Every public claim about a named vendor cites its source.
 
 schema_version: 1
 
@@ -42,6 +44,7 @@ services:
           poll: cond-get
           push: "SNS arn:aws:sns:us-east-1:806199016981:AmazonIpSpaceChanged (us-east-1 subscription required)"
           push_kind: vendor
+          push_evidence: https://docs.aws.amazon.com/vpc/latest/userguide/subscribe-notifications.html
         purposes:
           - {key: all,        direction: egress, select: "*"}
           - {key: s3,         direction: egress, select: "service=S3"}
@@ -87,7 +90,8 @@ services:
     classification: dedicated
     provenance: https://learn.microsoft.com/en-us/azure/virtual-network/service-tags-overview
     cadence: "weekly publication; new IPs unused for >=1 week after publication (documented grace window)"
-    notice: "1 week before newly published IPs are used"
+    notice: "1 week before new IPs are used"
+    notice_evidence: https://learn.microsoft.com/en-us/azure/virtual-network/service-tags-overview
     notes: >
       Weekly ServiceTags_Public_YYYYMMDD.json; per-tag changeNumber for diffing. The download
       URL rotates weekly behind a confirmation page (id=56519), so the fetcher must resolve the
@@ -109,6 +113,8 @@ services:
     classification: mixed
     provenance: https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service
     cadence: "monthly planned (start of month) plus out-of-band; /version endpoint is the purpose-built change signal"
+    notice: "30 days before new endpoints are used"
+    notice_evidence: https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service
     endpoints:
       - id: worldwide
         url: https://endpoints.office.com/endpoints/worldwide?clientrequestid=<uuid>
@@ -117,6 +123,7 @@ services:
           poll: hash
           push: "poll https://endpoints.office.com/version (tiny response; version string bumps on change)"
           push_kind: vendor
+          push_evidence: https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service
         purposes:
           - {key: exchange,   direction: egress, select: "serviceArea=Exchange"}
           - {key: sharepoint, direction: egress, select: "serviceArea=SharePoint"}
@@ -221,8 +228,9 @@ services:
         format: fastly-list            # {addresses[], ipv6_addresses[]}
         detection:
           poll: hash                   # no cache headers (verified)
-          push: "status.fastly.com subscription ('IP address announcement')"
+          push: "fastlystatus.com subscription ('IP address announcement' category)"
           push_kind: vendor
+          push_evidence: https://www.fastly.com/documentation/reference/api/utils/public-ip-list/
         purposes:
           - {key: edge, direction: both, select: "*"}
     verified: "2026-07-04"
@@ -264,6 +272,7 @@ services:
           poll: docs-page
           push: "gitlab.com/gitlab-org/gitlab commits atom feed for doc/user/gitlab_com/_index.md"
           push_kind: docs-repo
+          push_evidence: https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/user/gitlab_com/_index.md
         purposes:
           - {key: web-api,  direction: egress,  select: "section=IP range"}
           - {key: webhooks, direction: ingress, select: "section=IP range"}   # same ranges; webhook + mirroring sources
@@ -275,11 +284,17 @@ services:
     classification: dedicated
     provenance: https://circleci.com/docs/guides/security/ip-ranges/
     cadence: "irregular; list is small (~30 IPs); feature requires Performance/Scale plan on the job side"
+    notice: "30 days"
+    notice_evidence: https://circleci.com/docs/guides/security/ip-ranges/
     endpoints:
       - id: jobs
         url: https://circleci.com/docs/ip-ranges-list.json
         format: circleci-list          # {IPRanges: {jobs: [], core: [], macOS: []}}
-        detection: {poll: hash}        # no cache headers (verified)
+        detection:
+          poll: hash                   # no cache headers (verified)
+          push: "email to customers with a job opted into the IP ranges feature"
+          push_kind: vendor
+          push_evidence: https://circleci.com/docs/guides/security/ip-ranges/
         purposes:
           - {key: jobs, direction: ingress, select: "jobs"}   # CI jobs reaching YOUR systems
           - {key: core, direction: egress,  select: "core"}   # CircleCI cloud service IPs
@@ -291,7 +306,8 @@ services:
     classification: dedicated
     provenance: https://buildkite.com/docs/apis/rest-api/meta
     cadence: "irregular; docs recommend daily checks; new addresses advertised >=7 days before use (documented)"
-    notice: "7 days before new addresses are used"
+    notice: "7 days, vendor says it will try"
+    notice_evidence: https://buildkite.com/docs/apis/rest-api/meta
     notes: "Unauthenticated meta API. webhook_ips = sources of webhooks and commit statuses Buildkite sends you."
     endpoints:
       - id: meta
@@ -309,11 +325,17 @@ services:
     classification: dedicated
     provenance: https://docs.stripe.com/ips
     cadence: "irregular; Stripe documents advance notice for webhook IP changes"
+    notice: "7 days, by mailing list"
+    notice_evidence: https://docs.stripe.com/ips
     endpoints:
       - id: api
         url: https://stripe.com/files/ips/ips_api.json
         format: stripe-list            # {"API": [bare IPs]} -> normalize to /32
-        detection: {poll: hash}        # no cache headers (verified)
+        detection:
+          poll: hash                   # no cache headers (verified)
+          push: "stripe.com/ips mailing list (seven days notice before changes)"
+          push_kind: vendor
+          push_evidence: https://docs.stripe.com/ips
         purposes:
           - {key: api, direction: egress, select: "*"}
       - id: webhooks
@@ -432,6 +454,7 @@ services:
           poll: docs-page
           push: "github.com/getsentry/sentry-docs commits feed for the ip-ranges page source"
           push_kind: docs-repo
+          push_evidence: https://github.com/getsentry/sentry-docs/blob/master/docs/security-legal-pii/security/ip-ranges.mdx
         purposes:
           - {key: ingest,   direction: egress,  select: "section=Event Ingestion"}
           - {key: webhooks, direction: ingress, select: "section=Outbound Requests"}
@@ -453,6 +476,7 @@ services:
           poll: docs-page
           push: "github.com/newrelic/docs-website commits feed for networks.mdx"
           push_kind: docs-repo
+          push_evidence: https://github.com/newrelic/docs-website/blob/develop/src/content/docs/new-relic-solutions/get-started/networks.mdx
         purposes:
           # section appears once per datacenter tab (US + EU); substring match collects both
           - {key: agents, direction: egress, select: "section=Data ingest IP blocks"}
@@ -487,7 +511,8 @@ services:
     classification: dedicated
     provenance: https://auth0.com/docs/secure/security-guidance/data-security/allowlist
     cadence: "rare; notification 'several months' before changes (documented); changelog embedded in the file"
-    notice: "several months, vendor wording, by email"
+    notice: "several months, by email"
+    notice_evidence: https://auth0.com/docs/secure/security-guidance/data-security/allowlist
     endpoints:
       - id: main
         url: https://cdn.auth0.com/ip-ranges.json
@@ -638,7 +663,11 @@ services:
       - id: main
         url: https://ip-ranges.atlassian.com/
         format: atlassian-ranges       # {creationDate, syncToken, items[{cidr, product[], direction[], region[]}]}
-        detection: {poll: cond-get}
+        detection:
+          poll: cond-get
+          push: "SNS arn:aws:sns:us-east-1:745490931007:atlassian-public-ip-changes"
+          push_kind: vendor
+          push_evidence: https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/
         purposes:
           - {key: all,       direction: both,    select: "*"}
           - {key: egress,    direction: ingress, select: "direction=egress"}   # Atlassian's egress = your ingress
@@ -743,7 +772,8 @@ services:
     classification: dedicated
     provenance: https://docs.databricks.com/aws/en/resources/ip-domain-region
     cadence: "can change as often as every 30 days; updated IPs active >=60 days after publication (documented grace window)"
-    notice: "60 days before updated IPs become active"
+    notice: "60 days before updated IPs activate"
+    notice_evidence: https://docs.databricks.com/aws/en/resources/ip-domain-region
     endpoints:
       - id: main
         url: https://www.databricks.com/networking/v1/ip-ranges.json
@@ -760,6 +790,7 @@ services:
     provenance: https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips
     cadence: "changes announced >=8 weeks in advance on the Elastic status page (documented)"
     notice: "8 weeks before static IPs change"
+    notice_evidence: https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips
     notes: >
       Regional static IPs; not every region supports both directions, and Serverless is
       excluded (documented). ingress_to_elastic = deployment endpoints you connect TO;
@@ -772,6 +803,7 @@ services:
           poll: cond-get               # ETag honored (verified 304)
           push: "status.elastic.co subscription (static IP changes announced >=8 weeks ahead)"
           push_kind: vendor
+          push_evidence: https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips
         purposes:
           - {key: api,      direction: egress,  select: "key=ingress_to_elastic"}
           - {key: outbound, direction: ingress, select: "key=egress_from_elastic"}
@@ -795,6 +827,7 @@ services:
           poll: docs-page
           push: "github.com/neondatabase/website commits feed for content/docs/introduction/regions.md"
           push_kind: docs-repo
+          push_evidence: https://github.com/neondatabase/website/blob/main/content/docs/introduction/regions.md
         purposes:
           - {key: outbound, direction: ingress, select: "section=NAT Gateway IP addresses"}
     verified: "2026-07-10"

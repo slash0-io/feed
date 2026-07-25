@@ -51,7 +51,16 @@ func publicationFor(svc SourceService) (*feedschema.Publication, error) {
 	if len(svc.Endpoints) == 0 {
 		return nil, fmt.Errorf("%s: no endpoints", svc.Slug)
 	}
-	pub := feedschema.Publication{Cadence: svc.Cadence, Notice: svc.Notice}
+	// A notice period is a public claim about a named vendor, so it does not
+	// ship without the vendor page that states it.
+	if svc.Notice != "" && svc.NoticeEvidence == "" {
+		return nil, fmt.Errorf("%s: notice set without notice_evidence", svc.Slug)
+	}
+	pub := feedschema.Publication{
+		Cadence:        svc.Cadence,
+		Notice:         svc.Notice,
+		NoticeEvidence: svc.NoticeEvidence,
+	}
 	for _, e := range svc.Endpoints {
 		dt, ok := documentTypes[e.Format]
 		if !ok {
@@ -75,9 +84,16 @@ func publicationFor(svc SourceService) (*feedschema.Publication, error) {
 			return nil, fmt.Errorf("%s: detection.push set without a valid push_kind (got %q)",
 				svc.Slug, e.Detection.PushKind)
 		}
+		if e.Detection.PushEvidence == "" {
+			return nil, fmt.Errorf("%s: detection.push set without push_evidence", svc.Slug)
+		}
 		// A vendor-operated signal outranks a docs-repo commit feed.
 		if pub.ChangeSignal == nil || (pub.ChangeSignal.Kind == "docs-repo" && e.Detection.PushKind == "vendor") {
-			pub.ChangeSignal = &feedschema.ChangeSignal{Kind: e.Detection.PushKind, Detail: e.Detection.Push}
+			pub.ChangeSignal = &feedschema.ChangeSignal{
+				Kind:     e.Detection.PushKind,
+				Detail:   e.Detection.Push,
+				Evidence: e.Detection.PushEvidence,
+			}
 		}
 	}
 	return &pub, nil

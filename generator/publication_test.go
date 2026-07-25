@@ -3,7 +3,12 @@ package main
 import "testing"
 
 func ep(format, poll, push, kind string) Endpoint {
-	return Endpoint{Format: format, Detection: Detection{Poll: poll, Push: push, PushKind: kind}}
+	ev := ""
+	if push != "" {
+		ev = "https://vendor.example/docs"
+	}
+	return Endpoint{Format: format, Detection: Detection{
+		Poll: poll, Push: push, PushKind: kind, PushEvidence: ev}}
 }
 
 func TestPublicationReportsWeakestEndpoint(t *testing.T) {
@@ -66,6 +71,26 @@ func TestPublicationRejectsUnmappedFormat(t *testing.T) {
 	}
 }
 
+func TestPublicationRejectsNoticeWithoutEvidence(t *testing.T) {
+	if _, err := publicationFor(SourceService{
+		Slug:      "uncited",
+		Notice:    "30 days",
+		Endpoints: []Endpoint{ep("json-cidr-map", "cond-get", "", "")},
+	}); err == nil {
+		t.Fatal("want an error for notice without notice_evidence, got nil")
+	}
+}
+
+func TestPublicationRejectsPushWithoutEvidence(t *testing.T) {
+	if _, err := publicationFor(SourceService{
+		Slug: "uncited-signal",
+		Endpoints: []Endpoint{{Format: "json-cidr-map", Detection: Detection{
+			Poll: "cond-get", Push: "some signal", PushKind: "vendor"}}},
+	}); err == nil {
+		t.Fatal("want an error for push without push_evidence, got nil")
+	}
+}
+
 func TestPublicationRejectsPushWithoutKind(t *testing.T) {
 	if _, err := publicationFor(SourceService{
 		Slug:      "sloppy",
@@ -91,6 +116,12 @@ func TestEveryRegistryServiceHasAPublication(t *testing.T) {
 		}
 		if pub.DocumentType == "" || pub.PollMode == "" {
 			t.Errorf("%s: incomplete publication %+v", svc.Slug, pub)
+		}
+		if pub.Notice != "" && pub.NoticeEvidence == "" {
+			t.Errorf("%s: notice with no evidence URL", svc.Slug)
+		}
+		if pub.ChangeSignal != nil && pub.ChangeSignal.Evidence == "" {
+			t.Errorf("%s: change signal with no evidence URL", svc.Slug)
 		}
 	}
 }

@@ -48,6 +48,9 @@ type Publication struct {
 	// published ranges carry traffic. Set only where the vendor documents a
 	// period; absent means no committed lead time, which is the common case.
 	Notice string `json:"notice,omitempty"`
+	// NoticeEvidence is the vendor page stating that period. Always present
+	// when Notice is, so a consumer can check the claim at its source.
+	NoticeEvidence string `json:"noticeEvidence,omitempty"`
 	// ChangeSignal is an out-of-band way to learn about a change instead of
 	// discovering it by polling.
 	ChangeSignal *ChangeSignal `json:"changeSignal,omitempty"`
@@ -60,6 +63,9 @@ type ChangeSignal struct {
 	// page. A docs-repo signal is derived, not offered.
 	Kind   string `json:"kind"`
 	Detail string `json:"detail"`
+	// Evidence is the vendor page documenting the signal, or the docs source
+	// file for a docs-repo signal.
+	Evidence string `json:"evidence"`
 }
 
 type PurposeMeta struct {
