@@ -39,6 +39,21 @@ func TestFetcherRetriesTransient5xx(t *testing.T) {
 	}
 }
 
+// The CI token goes to the GitHub API and to no other vendor.
+func TestGitHubAuthIsHostScoped(t *testing.T) {
+	t.Setenv("GITHUB_TOKEN", "tok123")
+	gh, _ := http.NewRequest(http.MethodGet, "https://api.github.com/meta", nil)
+	maybeAuthGitHub(gh)
+	if got := gh.Header.Get("Authorization"); got != "Bearer tok123" {
+		t.Fatalf("api.github.com auth = %q", got)
+	}
+	other, _ := http.NewRequest(http.MethodGet, "https://docs.stripe.com/ips", nil)
+	maybeAuthGitHub(other)
+	if got := other.Header.Get("Authorization"); got != "" {
+		t.Fatalf("token leaked to %s: %q", other.URL.Host, got)
+	}
+}
+
 // 4xx means the vendor moved or blocked us: fail immediately, no retries.
 func TestFetcherDoesNotRetry4xx(t *testing.T) {
 	fastFetchRetries(t)

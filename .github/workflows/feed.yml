@@ -41,8 +41,12 @@ jobs:
         # Unchanged services republish byte-for-byte; mass removals are
         # quarantined (nonzero exit) with the last-good version still served.
         # The checked-in changelog floor is merged in so history survives a
-        # bad publish.
+        # bad publish. GITHUB_TOKEN authenticates only the github service's
+        # api.github.com/meta fetch (unauthenticated runner IPs get 403
+        # rate limits).
         run: go run ./generator -out dist -previous https://feed.slash0.io/v1 -changelog-floor changelog-floor.json
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
       - name: Detect content change
         id: diff
         run: echo "changed=$(head -c5 dist/BUILD_CHANGED | tr -d '\n')" >> "$GITHUB_OUTPUT"

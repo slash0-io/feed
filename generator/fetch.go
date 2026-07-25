@@ -82,6 +82,7 @@ func (f *Fetcher) getOnce(url string) (body []byte, retryable bool, err error) {
 		return nil, false, err
 	}
 	req.Header.Set("User-Agent", "slash0-feed-generator/0.1 (+https://github.com/slash0-io/feed)")
+	maybeAuthGitHub(req)
 	resp, err := f.Client.Do(req)
 	if err != nil {
 		return nil, true, err
@@ -113,6 +114,17 @@ func (f *Fetcher) getAzureServiceTags(ep Endpoint) ([]byte, string, error) {
 		return nil, "", err
 	}
 	return body, jsonURL, nil
+}
+
+// maybeAuthGitHub authenticates requests to the GitHub API and nothing
+// else. Unauthenticated calls share a 60/hour rate limit per IP, and
+// Actions runners share IPs, so the github service's meta endpoint 403s
+// routinely without this. The token never accompanies other vendors'
+// requests.
+func maybeAuthGitHub(req *http.Request) {
+	if tok := os.Getenv("GITHUB_TOKEN"); tok != "" && req.URL.Host == "api.github.com" {
+		req.Header.Set("Authorization", "Bearer "+tok)
+	}
 }
 
 func newUUID() string {
