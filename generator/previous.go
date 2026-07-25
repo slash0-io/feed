@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"time"
 
@@ -97,11 +98,16 @@ func previousGetter(base string) func(rel string) ([]byte, error) {
 	if strings.HasPrefix(base, "http://") || strings.HasPrefix(base, "https://") {
 		client := &http.Client{Timeout: 30 * time.Second}
 		base = strings.TrimSuffix(base, "/")
+		// One cache-busting token per build: a query string gives a distinct
+		// CDN cache key (the origin ignores it), so the previous feed is what
+		// is published right now rather than a stale cached copy from before
+		// the last deploy, and the whole run reads one coherent snapshot.
+		bust := "?fresh=" + strconv.FormatInt(time.Now().Unix(), 10)
 		// getOnce reports whether a failure is transient (transport error,
 		// 5xx, truncated read) and worth retrying. 404 maps to fs.ErrNotExist
 		// so callers can tell "does not exist" from "could not fetch".
 		getOnce := func(rel string) (body []byte, retryable bool, err error) {
-			resp, err := client.Get(base + "/" + rel)
+			resp, err := client.Get(base + "/" + rel + bust)
 			if err != nil {
 				return nil, true, err
 			}
