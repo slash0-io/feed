@@ -40,17 +40,14 @@ jobs:
       - name: Build feed incrementally against the published version
         # Unchanged services republish byte-for-byte; mass removals are
         # quarantined (nonzero exit) with the last-good version still served.
-        # FEED_SIGNING_KEY signs v1/index.json (ed25519, deterministic — the
-        # .sig is byte-stable too); absent secret publishes unsigned.
+        # The checked-in changelog floor is merged in so history survives a
+        # bad publish.
         run: go run ./generator -out dist -previous https://feed.slash0.io/v1 -changelog-floor changelog-floor.json
-        env:
-          FEED_SIGNING_KEY: ${{ secrets.FEED_SIGNING_KEY }}
       - name: Detect content change
         id: diff
         run: echo "changed=$(head -c5 dist/BUILD_CHANGED | tr -d '\n')" >> "$GITHUB_OUTPUT"
-      # KMS-held signing key (non-exportable; sign-only OIDC role). This
-      # overwrites the ed25519 signature written by the generator while both
-      # keys are pinned by consumers; inert until the AWS_SIGN_ROLE_ARN repo
+      # KMS-held signing key (non-exportable; sign-only OIDC role) writes
+      # the only index signature; inert until the AWS_SIGN_ROLE_ARN repo
       # variable is set. Runs only on deploying builds: ECDSA signatures are
       # not deterministic, so re-signing an unchanged index would defeat
       # deploy-skipping.
