@@ -60,6 +60,7 @@ func main() {
 	flag.Float64Var(&opts.MaxRemovedFrac, "max-removed-frac", 0.5, "quarantine a change removing more than this fraction of a purpose's ranges")
 	flag.IntVar(&opts.MinGuardCount, "min-guard-count", 8, "apply the removal guardrail only when the purpose previously had at least this many ranges")
 	catalogPath := flag.String("catalog", "", "write the human-readable catalog markdown to this path and exit (no fetching)")
+	sourcesDocPath := flag.String("sources-doc", "", "refresh the generated tables in this research document in place and exit (no fetching)")
 	flag.Parse()
 
 	if *catalogPath != "" {
@@ -71,6 +72,26 @@ func main() {
 			log.Fatal(err)
 		}
 		log.Printf("wrote %s", *catalogPath)
+		return
+	}
+
+	if *sourcesDocPath != "" {
+		reg, err := LoadRegistry(opts.SourcesPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		body, err := os.ReadFile(*sourcesDocPath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		out, err := rewriteSourcesDoc(string(body), reg)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if err := os.WriteFile(*sourcesDocPath, []byte(out), 0o644); err != nil {
+			log.Fatal(err)
+		}
+		log.Printf("wrote %s", *sourcesDocPath)
 		return
 	}
 
