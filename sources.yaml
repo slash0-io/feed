@@ -114,7 +114,7 @@ services:
     provenance: https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service
     cadence: "monthly planned (start of month) plus out-of-band; /version endpoint is the purpose-built change signal"
     notice: "30 days before new endpoints are used"
-    notice_evidence: https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service
+    notice_evidence: https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service?view=o365-worldwide
     endpoints:
       - id: worldwide
         url: https://endpoints.office.com/endpoints/worldwide?clientrequestid=<uuid>
@@ -123,7 +123,7 @@ services:
           poll: hash
           push: "poll https://endpoints.office.com/version (tiny response; version string bumps on change)"
           push_kind: vendor
-          push_evidence: https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service
+          push_evidence: https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service?view=o365-worldwide
         purposes:
           - {key: exchange,   direction: egress, select: "serviceArea=Exchange"}
           - {key: sharepoint, direction: egress, select: "serviceArea=SharePoint"}
@@ -527,7 +527,7 @@ services:
     name: Zoom
     category: comms
     classification: dedicated
-    provenance: "Zoom support KB: network firewall or web security gateway settings"
+    provenance: https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060548
     cadence: "irregular"
     endpoints:
       - id: all
@@ -587,6 +587,11 @@ services:
     classification: dedicated
     provenance: https://postmarkapp.com/support/article/800-ips-for-firewalls
     cadence: "rare; fixed published IPs for SMTP/webhooks"
+    notes: >
+      Postmark retired IP allowlisting for calls INTO their API, which is a different
+      feature from the ranges published here: smtp is their outbound sending space and
+      webhooks is their webhook source space, both still published for firewall rules
+      (re-checked 2026-07-26). Neither purpose is affected by that deprecation.
     endpoints:
       - id: docs
         url: https://postmarkapp.com/support/article/800-ips-for-firewalls

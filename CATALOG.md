@@ -92,7 +92,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `pagerduty` | PagerDuty | dedicated | `webhooks-eu` (ingress), `webhooks` (ingress) | [official ↗](https://support.pagerduty.com/main/docs/safelist-ips) |
 | `postmark` | Postmark | dedicated | `smtp` (egress), `webhooks` (ingress) | [official ↗](https://postmarkapp.com/support/article/800-ips-for-firewalls) |
 | `twilio-sip` | Twilio Elastic SIP Trunking | dedicated | `sip-media` (both), `sip-signaling` (both) | [official ↗](https://www.twilio.com/docs/sip-trunking/ip-addresses) |
-| `zoom` | Zoom | dedicated | `all` (egress) | [official ↗](Zoom support KB: network firewall or web security gateway settings) |
+| `zoom` | Zoom | dedicated | `all` (egress) | [official ↗](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060548) |
 
 ## Business SaaS
 
