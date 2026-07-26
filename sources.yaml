@@ -1,4 +1,4 @@
-# Machine registry of upstream IP-range sources — consumed by the feed generator.
+# Machine registry of upstream IP-range sources, consumed by the feed generator.
 #
 # Every `endpoints[].url` in this file was fetched and verified live on the date in
 # `verified`. Human-readable research, evidence, and methodology: research/SOURCES.md
@@ -171,7 +171,7 @@ services:
     notes: >
       Classic-infrastructure ranges only (no published VPC set). Front-end = public
       network of classic data centers; load balancer IPs published separately. The page's
-      back-end/service-network sections are RFC1918 space — normalization drops private
+      back-end/service-network sections are RFC1918 space, and normalization drops private
       ranges by design so those sections are not selectable purposes. Page moved from
       docs/cloud-infrastructure to docs/infrastructure-hub (old URL 410s, 2026-07-11).
     endpoints:
@@ -206,7 +206,7 @@ services:
     classification: cdn-shared
     provenance: https://www.cloudflare.com/ips/
     cadence: "rare; new ranges staged on the list before production use (documented)"
-    notes: "Shared edge ranges. Publishing these as 'pinnable' for a Cloudflare-fronted SaaS would allowlist the entire CDN — surfaced in the feed as cdn-shared so consumers can make that call explicitly."
+    notes: "Shared edge ranges. Publishing these as 'pinnable' for a Cloudflare-fronted SaaS would allowlist the entire CDN, so it is surfaced in the feed as cdn-shared and consumers can make that call explicitly."
     endpoints:
       - id: api
         url: https://api.cloudflare.com/client/v4/ips
@@ -263,7 +263,7 @@ services:
     classification: mixed
     provenance: https://docs.gitlab.com/user/gitlab_com/
     cadence: "stable dedicated ranges for web/API; runners have NO static IPs (documented)"
-    notes: "34.74.90.64/28 and 34.74.226.0/24 solely allocated to GitLab (web/API/webhooks/mirroring). Docs are open source — watch the docs repo file via commit feed for near-instant change detection."
+    notes: "34.74.90.64/28 and 34.74.226.0/24 solely allocated to GitLab (web/API/webhooks/mirroring). Docs are open source: watch the docs repo file via commit feed for near-instant change detection."
     endpoints:
       - id: docs
         url: https://docs.gitlab.com/user/gitlab_com/
@@ -445,7 +445,7 @@ services:
     classification: dedicated
     provenance: https://docs.sentry.io/security-legal-pii/security/ip-ranges/
     cadence: "rare; static ingest/outbound IPs documented"
-    notes: "Docs are open source (getsentry/sentry-docs) — watch the page's source file commits."
+    notes: "Docs are open source (getsentry/sentry-docs): watch the page's source file commits."
     endpoints:
       - id: docs
         url: https://docs.sentry.io/security-legal-pii/security/ip-ranges/
@@ -467,7 +467,7 @@ services:
     classification: dedicated
     provenance: https://docs.newrelic.com/docs/new-relic-solutions/get-started/networks/
     cadence: "occasional; changes announced in advance via what's-new posts (e.g. synthetics range change)"
-    notes: "Docs are open source (newrelic/docs-website, networks.mdx) — watch file commits for near-instant detection."
+    notes: "Docs are open source (newrelic/docs-website, networks.mdx): watch file commits for near-instant detection."
     endpoints:
       - id: docs
         url: https://docs.newrelic.com/docs/new-relic-solutions/get-started/networks/
@@ -480,10 +480,10 @@ services:
         purposes:
           # section appears once per datacenter tab (US + EU); substring match collects both
           - {key: agents, direction: egress, select: "section=Data ingest IP blocks"}
-          # webhook source IPs have no stable heading on this page — revisit
+          # webhook source IPs have no stable heading on this page; revisit
       - id: synthetics
         url: https://s3.amazonaws.com/nr-synthetics-assets/nat-ip-dnsname/production/ip-ranges.json
-        format: json-cidr-map          # {"<location>": ["cidr", ...]} — linked from the synthetics minion IPs doc
+        format: json-cidr-map          # {"<location>": ["cidr", ...]}, linked from the synthetics minion IPs doc
         detection: {poll: cond-get}    # ETag + Last-Modified (verified)
         purposes:
           - {key: synthetics, direction: ingress, select: "*"}
@@ -611,7 +611,7 @@ services:
     notes: >
       Integration traffic sources (Klaviyo connecting TO your systems). Flow-triggered
       webhook traffic uses different, unpublished IPs (documented). The page also lists a
-      /24 decomposition of the /20 for restrictive firewalls — subsumed losslessly.
+      /24 decomposition of the /20 for restrictive firewalls, subsumed losslessly.
     endpoints:
       - id: docs
         url: https://help.klaviyo.com/hc/en-us/articles/19143781289115
@@ -628,7 +628,7 @@ services:
     provenance: https://www.twilio.com/docs/sip-trunking/ip-addresses
     cadence: "rare; stable regional signaling /30s + global media 168.86.128.0/18 (Twilio-owned)"
     notes: >
-      The ONLY Twilio product with pinnable published ranges — REST API and webhooks are
+      The ONLY Twilio product with pinnable published ranges. REST API and webhooks are
       explicitly dynamic (see non_publishers). SIP signaling and RTP media flow both ways.
       The page lists each /30 alongside its constituent IPs; aggregation restores the /30s
       losslessly.
@@ -719,7 +719,7 @@ services:
     provenance: https://docs.netskope.com/en/newedge-ip-ranges-for-allowlisting
     cadence: "irregular; dataplane ranges are stable NewEdge-owned blocks"
     notes: >
-      Public NewEdge dataplane ranges — destinations for traffic to Netskope POPs and the
+      Public NewEdge dataplane ranges, the destinations for traffic to Netskope POPs and the
       source ranges Netskope egresses from toward IP-restricted apps (hence both). The
       page lists each range's boundary addresses too; they fold into the CIDRs losslessly.
       AI Red Team ranges excluded (separate product, own section). The fuller per-feature
@@ -740,9 +740,9 @@ services:
     provenance: https://docs.tenable.com/vulnerability-management/Content/Settings/Sensors/CloudSensors.htm
     cadence: "irregular; AWS-style syncToken/createDate in file"
     notes: >
-      Cloud-scanner source ranges (Tenable scanning YOUR assets — ingress). File carries
+      Cloud-scanner source ranges (Tenable scanning YOUR assets, so ingress). File carries
       per-sensor-group regional detail. Egress side is hostname-based (*.cloud.tenable.com,
-      documented) — no pinnable destination list.
+      documented), leaving no pinnable destination list.
     endpoints:
       - id: ip-ranges
         url: https://docs.tenable.com/ip-ranges/data.json
@@ -760,7 +760,7 @@ services:
     cadence: "irregular; per-region engine IPs on a docs page"
     notes: >
       Cloud-engine source IPs that scan YOUR applications (ingress). Insight platform
-      *destination* endpoints are region-specific hostnames — no pinnable egress list.
+      *destination* endpoints are region-specific hostnames, so no pinnable egress list.
     endpoints:
       - id: docs
         url: https://docs.rapid7.com/insightappsec/allowlist-cloud-engine-ips/
@@ -821,9 +821,9 @@ services:
     provenance: https://neon.com/docs/introduction/regions
     cadence: "changes with region buildout; 3-6 NAT addresses per region (documented)"
     notes: >
-      NAT-gateway egress IPs per region — sources of Neon connecting OUT to your systems
+      NAT-gateway egress IPs per region, the sources of Neon connecting OUT to your systems
       (e.g. logical replication to external Postgres). Docs are open source
-      (neondatabase/website) — watch the regions.md source file for changes.
+      (neondatabase/website): watch the regions.md source file for changes.
     endpoints:
       - id: docs
         url: https://neon.com/docs/introduction/regions
@@ -844,7 +844,7 @@ services:
     classification: dedicated
     provenance: https://platform.claude.com/docs/en/api/ip-addresses
     cadence: "'will not change without notice' (documented); dedicated address space"
-    notes: "Rare among AI APIs: inbound API endpoint is IP-pinnable (160.79.104.0/23 v4, 2607:6bc0::/48 v6); outbound tool-call traffic from 160.79.104.0/21. No JSON feed — docs page."
+    notes: "Rare among AI APIs: inbound API endpoint is IP-pinnable (160.79.104.0/23 v4, 2607:6bc0::/48 v6); outbound tool-call traffic from 160.79.104.0/21. No JSON feed, docs page only."
     endpoints:
       - id: docs
         url: https://platform.claude.com/docs/en/api/ip-addresses
@@ -861,7 +861,7 @@ services:
     classification: mixed
     provenance: https://developers.openai.com/api/docs/guides/ip-addresses
     cadence: "irregular; creationTime in each file; docs say fetch regularly"
-    notes: "These files cover OpenAI's egress to YOUR systems (connectors/actions/agents). api.openai.com itself is Cloudflare-fronted — NOT IP-pinnable for your egress; see non_publishers."
+    notes: "These files cover OpenAI's egress to YOUR systems (connectors/actions/agents). api.openai.com itself is Cloudflare-fronted and NOT IP-pinnable for your egress; see non_publishers."
     endpoints:
       - id: connectors
         url: https://openai.com/chatgpt-connectors.json
@@ -882,8 +882,8 @@ services:
     provenance: https://developer.zendesk.com/api-reference/ticketing/account-configuration/public_ips/
     cadence: "irregular; Zendesk documents a daily scheduled fetch as best practice"
     notes: >
-      Served per-subdomain at https://<subdomain>.zendesk.com/ips (unauthenticated; global list —
-      we poll Zendesk's own support subdomain). Zendesk's "ingress" = ranges you connect TO;
+      Served per-subdomain at https://<subdomain>.zendesk.com/ips (unauthenticated; global list,
+      so we poll Zendesk's own support subdomain). Zendesk's "ingress" = ranges you connect TO;
       their "egress" = ranges they connect FROM. The ingress list includes Cloudflare-shared
       /32s, hence classification mixed. IPv6 unsupported (documented).
     endpoints:
@@ -996,7 +996,7 @@ non_publishers:
     evidence: https://support.sumologic.com/hc/en-us/articles/360012685393-How-to-allow-or-enable-IP-ranges-for-Sumo-Logic-endpoints
     vendor_position: "No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region), covered by the aws service."
 
-# ── Researched but not yet sourced — candidate backlog (v2+) ─────────────────
+# ── Researched but not yet sourced: candidate backlog (v2+) ─────────────────
 backlog:
   needs_research: [alibaba-cloud, workday, servicenow, netsuite,
                    crowdstrike, sentinelone, palo-alto,
@@ -1009,16 +1009,16 @@ backlog:
     - slug: mailgun
       note: "publishes account-specific sending IPs via authenticated API only."
     - slug: dynatrace
-      note: "synthetic location IPs only via per-tenant authenticated API; public-locations docs page is client-rendered (verified 2026-07-10) — tier D / partner candidate."
+      note: "synthetic location IPs only via per-tenant authenticated API; public-locations docs page is client-rendered (verified 2026-07-10); tier D / partner candidate."
     - slug: segment-amplitude-mixpanel
-      note: "no public range documentation found (2026-07-10); segment.com/docs bot-blocks fetches — candidates for vendor outreach."
+      note: "no public range documentation found (2026-07-10); segment.com/docs bot-blocks fetches; candidates for vendor outreach."
     - slug: scaleway-ovh-hetzner
-      note: "no geofeeds at standard URLs (2026-07-10); announced space visible only via BGP — low priority for SaaS-egress use case."
+      note: "no geofeeds at standard URLs (2026-07-10); announced space visible only via BGP; low priority for SaaS-egress use case."
     - slug: qualys
-      note: "DOES publish scanner ranges (www.qualys.com/platform-identification/) but the page is client-rendered (verified 2026-07-10); success.qualys.com KB is Salesforce-community JS too. Needs a static per-platform source or headless fetch — revisit."
+      note: "DOES publish scanner ranges (www.qualys.com/platform-identification/) but the page is client-rendered (verified 2026-07-10); success.qualys.com KB is Salesforce-community JS too. Needs a static per-platform source or a headless fetch; revisit."
     - slug: iterable
-      note: "help-center article 'Allowing Iterable IP Addresses' exists but support.iterable.com returns 403 to non-browser fetchers, browser UA included (verified 2026-07-10) — vendor outreach candidate."
+      note: "help-center article 'Allowing Iterable IP Addresses' exists but support.iterable.com returns 403 to non-browser fetchers, browser UA included (verified 2026-07-10); vendor outreach candidate."
     - slug: ringcentral
-      note: "publishes supernets in support articles but support.ringcentral.com is client-rendered/SPA (verified 2026-07-10) — revisit if a static source appears."
+      note: "publishes supernets in support articles but support.ringcentral.com is client-rendered/SPA (verified 2026-07-10); revisit if a static source appears."
     - slug: braze
-      note: "publishes per-cluster IPs but the docs page moved (2026-07-10, prior URL 404s); docs are open source (braze-inc/braze-docs) — locate the current page or source from the repo."
+      note: "publishes per-cluster IPs but the docs page moved (2026-07-10, prior URL 404s); docs are open source (braze-inc/braze-docs); locate the current page or source from the repo."

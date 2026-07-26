@@ -26,7 +26,7 @@ jobs:
       changed: ${{ steps.diff.outputs.changed }}
       public: ${{ steps.vis.outputs.public }}
     steps:
-      # Pages can't serve from a private repo (free plan) — skip deploys, not
+      # Pages can't serve from a private repo (free plan), so skip deploys, not
       # builds, until the repo goes public.
       - name: Check repo visibility
         id: vis
