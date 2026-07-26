@@ -8,7 +8,7 @@ import (
 )
 
 // Human-readable catalog rendering. Everything here derives from sources.yaml
-// (slugs, purposes, directions, classifications) — not from fetched ranges —
+// (slugs, purposes, directions, classifications) rather than from fetched ranges,
 // so output is deterministic and CI can enforce that the committed CATALOG.md
 // never drifts from the registry.
 
@@ -57,7 +57,7 @@ func renderCatalogMarkdown(reg *Registry) string {
 	var b strings.Builder
 	b.WriteString(`# Service catalog
 
-<!-- GENERATED from sources.yaml — do not edit by hand.
+<!-- GENERATED from sources.yaml. Do not edit by hand.
      Regenerate: go run ./generator -catalog CATALOG.md -->
 
 Every service below publishes official IP ranges, verified against the vendor's own
@@ -72,7 +72,7 @@ data "egress_ranges" "stripe_api" {
 
 **Direction** is read from your workload's point of view: ` + "`egress`" + ` ranges are what you
 connect *to* (security-group egress rules); ` + "`ingress`" + ` ranges are what the service
-connects *from* — webhook and agent sources that belong in ingress rules.
+connects *from*, meaning webhook and agent sources that belong in ingress rules.
 
 **Classification**: ` + "`dedicated`" + ` = vendor-owned space, safe to pin · ` + "`mixed`" + ` = partly
 shared or dynamic · ` + "`cdn-shared`" + ` = shared CDN ranges (pinning allowlists the whole CDN).
@@ -115,7 +115,7 @@ func renderCatalogHTML(reg *Registry, counts map[string]map[string]string) strin
 	var b strings.Builder
 	b.WriteString(`<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>egress feed — service IP range catalog</title>
+<title>slash0 feed · service IP range catalog</title>
 <style>
 body{font-family:-apple-system,system-ui,sans-serif;max-width:960px;margin:2rem auto;padding:0 1rem;line-height:1.5;color:#1a1f26}
 table{border-collapse:collapse;width:100%;margin:.75rem 0 1.5rem;font-size:.9rem}
@@ -126,19 +126,20 @@ h1{margin-bottom:.25rem} .sub{color:#5b6572;margin-top:0}
 a{color:#1d4ed8;text-decoration:none}
 @media(prefers-color-scheme:dark){body{background:#111418;color:#e6e9ee}th{background:#1c2128}th,td{border-color:#30363d}code{background:#1c2128}a{color:#6ea8fe}}
 </style></head><body>
-<h1>egress feed</h1>
-<p class="sub">Official, verified IP ranges for third-party services — machine-readable, with provenance.</p>
+<h1>slash0 feed</h1>
+<p class="sub">Official, verified IP ranges for third-party services. Machine-readable, with provenance.</p>
 <p>
 <a href="v1/index.json">v1/index.json</a> ·
 <a href="v1/changelog.json">changelog</a> ·
+<a href="https://slash0.io/">slash0.io</a> ·
 <a href="https://github.com/slash0-io/feed">source &amp; methodology</a> ·
 <a href="https://github.com/slash0-io/terraform-provider-egress">Terraform provider</a>
 </p>
 <p>Use with Terraform: <code>data "egress_ranges" "x" { service = "&lt;slug&gt;"  purpose = "&lt;purpose&gt;" }</code>.
 <b>egress</b> purposes are ranges you connect to; <b>ingress</b> purposes are webhook/agent sources.</p>
 <p><b>Entry counts matter:</b> every CIDR consumes one security-group rule (default quota: 60 per SG,
-IPv4 and IPv6 counted separately). Ranges are losslessly aggregated — published coverage is
-preserved exactly, never widened. Purposes with hundreds+ of entries belong in prefix lists or
+IPv4 and IPv6 counted separately). Aggregation is lossless: published coverage is preserved
+exactly and never widened. Purposes with hundreds+ of entries belong in prefix lists or
 firewall rule groups, not security groups.</p>
 `)
 	byCat := servicesByCategory(reg)

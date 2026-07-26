@@ -1,6 +1,6 @@
 # Service catalog
 
-<!-- GENERATED from sources.yaml — do not edit by hand.
+<!-- GENERATED from sources.yaml. Do not edit by hand.
      Regenerate: go run ./generator -catalog CATALOG.md -->
 
 Every service below publishes official IP ranges, verified against the vendor's own
@@ -15,7 +15,7 @@ data "egress_ranges" "stripe_api" {
 
 **Direction** is read from your workload's point of view: `egress` ranges are what you
 connect *to* (security-group egress rules); `ingress` ranges are what the service
-connects *from* — webhook and agent sources that belong in ingress rules.
+connects *from*, meaning webhook and agent sources that belong in ingress rules.
 
 **Classification**: `dedicated` = vendor-owned space, safe to pin · `mixed` = partly
 shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the whole CDN).
