@@ -684,17 +684,32 @@ services:
     category: business-saas
     classification: mixed
     provenance: https://www.docusign.com/trust/security/esignature
-    cadence: "changes published with release notes"
-    notes: "Inbound to DocuSign is Akamai-fronted (NOT pinnable, documented). Page publishes some entries with host bits set (e.g. 162.248.184.1/22); normalization masks them."
+    cadence: "changes published with release notes; JSON carries syncToken + createDate"
+    notes: >
+      Inbound to DocuSign is Akamai-fronted (NOT pinnable, documented). Upgraded
+      2026-07-28 from scraping the trust page to the JSON the page itself links
+      for automation, which is versioned and covers products, regions and
+      environments the page sections missed. The JSON serves a stable ETag but
+      does NOT honor If-None-Match (verified 2026-07-28, three runs, all 200),
+      and offers no Last-Modified, so detection stays a content hash.
+      Environments prod/demo/uat are intentionally not split: the trust page
+      already bundles demo into the sections we publish, so filtering here
+      would drop coverage consumers have today.
+      The page and the JSON disagree: the page still lists 52.233.23.116/32,
+      which the JSON omits. The JSON wins. DocuSign directs automation to it
+      ("To automate your network allowlisting, you can programmatically fetch
+      our latest IP ranges in JSON format") and it is versioned and dated,
+      while the page tables carry no version at all. Switching sources
+      therefore retires that /32 through the normal 72h grace window.
     endpoints:
-      - id: trust-center
-        url: https://www.docusign.com/trust/security/esignature
-        format: html-cidr-extract
-        detection: {poll: docs-page}
+      - id: ip-ranges
+        url: https://www.docusign.com/trust/ip-ranges.json
+        format: docusign-ranges
+        detection: {poll: hash}
         purposes:
-          - {key: connect-webhooks, direction: ingress, select: "section=Connections from Docusign"}
-          - {key: email,            direction: ingress, select: "section=Docusign email IP addresses"}
-    verified: "2026-07-10"
+          - {key: connect-webhooks, direction: ingress, select: "usage=connect_outbound"}
+          - {key: email,            direction: ingress, select: "usage=email_outbound"}
+    verified: "2026-07-28"
 
   # ── Security ──────────────────────────────────────────────────────────────
   - slug: zscaler

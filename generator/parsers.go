@@ -41,6 +41,7 @@ var parsers = map[string]parseFunc{
 	"json-cidr-map":      parseJSONCIDRMap,
 	"zendesk-ips":        parseZendeskIPs,
 	"elastic-ips":        parseElasticIPs,
+	"docusign-ranges":    parseDocuSignRanges,
 }
 
 // selKV splits "service=S3" into ("service", "S3"). all=true for "*" or "".
@@ -580,6 +581,51 @@ func parseO365Endpoints(body []byte, sel string) ([]string, error) {
 		if all || strings.EqualFold(e.ServiceArea, want) {
 			out = append(out, e.IPs...)
 		}
+	}
+	return out, nil
+}
+
+// parseDocuSignRanges reads DocuSign's trust-center JSON, which carries a
+// syncToken and splits ranges into two top-level arrays: `ranges` (Connect
+// webhook sources) and `email_ranges` (sending IPs). Both are arrays of
+// objects whose `cidrs` list is qualified by product, region, environment and
+// usage.
+//
+// Select is "usage=<value>", matching the JSON's own vocabulary
+// (connect_outbound, email_outbound), and it searches both arrays so a usage
+// never has to know which one it lives in. The `domains` key is ignored: it
+// lists hostnames for the Akamai-fronted inbound side, which is not pinnable.
+//
+// Environments (prod, demo, uat) are deliberately NOT filtered. The trust
+// page bundles demo ranges into the same sections we already publish, so
+// splitting them here would silently drop coverage consumers have today.
+func parseDocuSignRanges(body []byte, sel string) ([]string, error) {
+	type group struct {
+		Product     string   `json:"product"`
+		Environment string   `json:"environment"`
+		Region      string   `json:"region"`
+		Usage       string   `json:"usage"`
+		CIDRs       []string `json:"cidrs"`
+	}
+	var d struct {
+		Ranges      []group `json:"ranges"`
+		EmailRanges []group `json:"email_ranges"`
+	}
+	if err := json.Unmarshal(body, &d); err != nil {
+		return nil, err
+	}
+	key, want, all := selKV(sel)
+	if !all && key != "usage" {
+		return nil, fmt.Errorf("docusign-ranges: select must be usage=<value>, got %q", sel)
+	}
+	var out []string
+	for _, g := range append(append([]group{}, d.Ranges...), d.EmailRanges...) {
+		if all || strings.EqualFold(g.Usage, want) {
+			out = append(out, g.CIDRs...)
+		}
+	}
+	if !all && len(out) == 0 {
+		return nil, fmt.Errorf("docusign-ranges: no group has usage %q", want)
 	}
 	return out, nil
 }

@@ -20,6 +20,7 @@ var documentTypes = map[string]string{
 	"cloudflare-api":     "json",
 	"databricks-ranges":  "json",
 	"datadog-ranges":     "json",
+	"docusign-ranges":    "json",
 	"elastic-ips":        "json",
 	"fastly-list":        "json",
 	"github-meta":        "json",

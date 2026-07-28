@@ -79,7 +79,7 @@ published here, so it scores none.
 | [Databricks](https://docs.databricks.com/aws/en/resources/ip-domain-region) | JSON | full download | [60 days before updated IPs activate](https://docs.databricks.com/aws/en/resources/ip-domain-region) | none | egress + ingress |
 | [Datadog](https://docs.datadoghq.com/api/latest/ip-ranges/) | JSON | conditional GET | none documented | none | egress + ingress |
 | [DigitalOcean](https://www.digitalocean.com/geo/google.csv) | CSV | full download | none documented | none | egress |
-| [DocuSign](https://www.docusign.com/trust/security/esignature) | docs page | page extraction | none documented | none | ingress |
+| [DocuSign](https://www.docusign.com/trust/security/esignature) | JSON | full download | none documented | none | ingress |
 | [Elastic Cloud](https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips) | JSON | conditional GET | [8 weeks before static IPs change](https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips) | [status.elastic.co subscription (static IP changes announced >=8 weeks ahead)](https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips) | egress + ingress |
 | [Fastly](https://www.fastly.com/documentation/reference/api/utils/public-ip-list/) | JSON | full download | none documented | [fastlystatus.com subscription ('IP address announcement' category)](https://www.fastly.com/documentation/reference/api/utils/public-ip-list/) | egress + ingress |
 | [GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-githubs-ip-addresses) | JSON | conditional GET | none documented | none | egress + ingress |
