@@ -607,19 +607,27 @@ services:
     category: comms
     classification: dedicated
     provenance: https://help.klaviyo.com/hc/en-us/articles/19143781289115
-    cadence: "rare; two dedicated blocks (207.211.192.0/20, 207.186.206.0/24)"
+    cadence: "rare; JSON carries a sync_token and a created date"
     notes: >
       Integration traffic sources (Klaviyo connecting TO your systems). Flow-triggered
-      webhook traffic uses different, unpublished IPs (documented). The page also lists a
-      /24 decomposition of the /20 for restrictive firewalls, subsumed losslessly.
+      webhook traffic uses different, unpublished IPs (documented). Upgraded 2026-07-28
+      from scraping the help-center article to the JSON:API resource that article
+      directs automation at. The endpoint sits under /client/ and its reference
+      mentions a company_id (public Site ID) query parameter, but it is NOT required:
+      an unauthenticated GET returns 200 (verified 2026-07-28), and the payload is a
+      global singleton at the fixed id integration-egress rather than per-account.
+      Klaviyo pins its API contract to a revision header, so one is sent explicitly;
+      leaving it off works today but lets the vendor change the shape under us.
+      No ETag and no Last-Modified, so detection is a content hash.
     endpoints:
-      - id: docs
-        url: https://help.klaviyo.com/hc/en-us/articles/19143781289115
-        format: html-cidr-extract
-        detection: {poll: docs-page}
+      - id: allowlist
+        url: https://a.klaviyo.com/client/ip-allowlists/integration-egress
+        format: klaviyo-allowlist
+        headers: {revision: "2026-07-15"}
+        detection: {poll: hash}
         purposes:
-          - {key: integrations, direction: ingress, select: "section=What IP addresses does Klaviyo use"}
-    verified: "2026-07-10"
+          - {key: integrations, direction: ingress}
+    verified: "2026-07-28"
 
   - slug: twilio-sip
     name: Twilio Elastic SIP Trunking

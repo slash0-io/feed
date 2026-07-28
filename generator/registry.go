@@ -36,6 +36,10 @@ type Endpoint struct {
 	Region    string        `yaml:"region"`
 	Detection Detection     `yaml:"detection"`
 	Purposes  []PurposeDecl `yaml:"purposes"`
+	// Headers are sent verbatim with the request. Used for APIs that pin
+	// their contract to a version header, where relying on the server's
+	// default would let the vendor change the payload shape under us.
+	Headers map[string]string `yaml:"headers"`
 }
 
 type Detection struct {

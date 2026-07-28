@@ -28,6 +28,7 @@ var documentTypes = map[string]string{
 	"intercom-ranges":    "json",
 	"json-cidr-map":      "json",
 	"json-ip-array":      "json",
+	"klaviyo-allowlist":  "json",
 	"o365-endpoints":     "json",
 	"oci-ranges":         "json",
 	"okta-cells":         "json",

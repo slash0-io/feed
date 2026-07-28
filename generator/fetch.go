@@ -47,7 +47,7 @@ func (f *Fetcher) Get(svc SourceService, ep Endpoint) ([]byte, string, error) {
 	}
 
 	url := strings.ReplaceAll(ep.URL, "<uuid>", newUUID())
-	body, err := f.doGet(url)
+	body, err := f.doGet(url, ep.Headers)
 	if err != nil {
 		return nil, "", err
 	}
@@ -62,9 +62,9 @@ var fetchRetryDelays = []time.Duration{2 * time.Second, 4 * time.Second}
 
 // doGet fetches url, retrying transport errors, 5xx, and 429. Other
 // statuses (403, 404: the vendor moved or blocked us) fail immediately.
-func (f *Fetcher) doGet(url string) ([]byte, error) {
+func (f *Fetcher) doGet(url string, headers map[string]string) ([]byte, error) {
 	for attempt := 0; ; attempt++ {
-		body, retryable, err := f.getOnce(url)
+		body, retryable, err := f.getOnce(url, headers)
 		if err == nil {
 			return body, nil
 		}
@@ -76,12 +76,15 @@ func (f *Fetcher) doGet(url string) ([]byte, error) {
 	}
 }
 
-func (f *Fetcher) getOnce(url string) (body []byte, retryable bool, err error) {
+func (f *Fetcher) getOnce(url string, headers map[string]string) (body []byte, retryable bool, err error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return nil, false, err
 	}
 	req.Header.Set("User-Agent", "slash0-feed-generator/0.1 (+https://github.com/slash0-io/feed)")
+	for k, v := range headers {
+		req.Header.Set(k, v)
+	}
 	maybeAuthGitHub(req)
 	resp, err := f.Client.Do(req)
 	if err != nil {
@@ -101,7 +104,7 @@ var reAzureTagsURL = regexp.MustCompile(`https://download\.microsoft\.com/[^"'<>
 // getAzureServiceTags resolves Azure's weekly-rotating download URL from the
 // Download Center details page, then fetches the ServiceTags JSON itself.
 func (f *Fetcher) getAzureServiceTags(ep Endpoint) ([]byte, string, error) {
-	page, err := f.doGet(ep.URL)
+	page, err := f.doGet(ep.URL, ep.Headers)
 	if err != nil {
 		return nil, "", fmt.Errorf("azure details page: %w", err)
 	}
@@ -109,7 +112,7 @@ func (f *Fetcher) getAzureServiceTags(ep Endpoint) ([]byte, string, error) {
 	if jsonURL == "" {
 		return nil, "", fmt.Errorf("azure details page: no ServiceTags_Public JSON link found")
 	}
-	body, err := f.doGet(jsonURL)
+	body, err := f.doGet(jsonURL, ep.Headers)
 	if err != nil {
 		return nil, "", err
 	}

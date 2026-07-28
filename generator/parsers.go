@@ -42,6 +42,7 @@ var parsers = map[string]parseFunc{
 	"zendesk-ips":        parseZendeskIPs,
 	"elastic-ips":        parseElasticIPs,
 	"docusign-ranges":    parseDocuSignRanges,
+	"klaviyo-allowlist":  parseKlaviyoAllowlist,
 }
 
 // selKV splits "service=S3" into ("service", "S3"). all=true for "*" or "".
@@ -628,4 +629,30 @@ func parseDocuSignRanges(body []byte, sel string) ([]string, error) {
 		return nil, fmt.Errorf("docusign-ranges: no group has usage %q", want)
 	}
 	return out, nil
+}
+
+// parseKlaviyoAllowlist reads Klaviyo's JSON:API ip-allowlist resource, a
+// singleton addressed at the fixed id "integration-egress". The endpoint is
+// unauthenticated despite living under /client/ (the company_id query
+// parameter its docs mention is not required, verified 2026-07-28) and the
+// payload is global rather than per-account.
+func parseKlaviyoAllowlist(body []byte, _ string) ([]string, error) {
+	var d struct {
+		Data struct {
+			ID         string `json:"id"`
+			Attributes struct {
+				Prefixes []string `json:"prefixes"`
+			} `json:"attributes"`
+		} `json:"data"`
+	}
+	if err := json.Unmarshal(body, &d); err != nil {
+		return nil, err
+	}
+	if d.Data.ID != "integration-egress" {
+		return nil, fmt.Errorf("klaviyo-allowlist: unexpected resource id %q", d.Data.ID)
+	}
+	if len(d.Data.Attributes.Prefixes) == 0 {
+		return nil, fmt.Errorf("klaviyo-allowlist: no prefixes in response")
+	}
+	return d.Data.Attributes.Prefixes, nil
 }

@@ -205,16 +205,54 @@ func TestParserSpotChecks(t *testing.T) {
 		t.Error("elastic-cloud: expected error for unknown key")
 	}
 
-	// Klaviyo: the page's /24 decomposition and range-boundary IPs must fold
-	// back into exactly the two published blocks — nothing more.
-	body, ep = get("klaviyo", "docs")
-	raw, err = parsers[ep.Format](body, "section=What IP addresses does Klaviyo use")
+	// DocuSign: usage= selects across BOTH top-level arrays, so email_outbound
+	// resolves even though it lives in email_ranges rather than ranges. The two
+	// usages legitimately overlap (192.103.120.0/22 carries EU Connect traffic
+	// and CLM email), so they are not asserted disjoint.
+	body, ep = get("docusign", "ip-ranges")
+	connect, err := parsers[ep.Format](body, "usage=connect_outbound")
+	if err != nil {
+		t.Fatal(err)
+	}
+	email, err := parsers[ep.Format](body, "usage=email_outbound")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(connect) == 0 || len(email) == 0 {
+		t.Fatalf("docusign: connect=%d email=%d, want both non-empty", len(connect), len(email))
+	}
+	// email_ranges is the second array; proving one of its entries resolves is
+	// what distinguishes this from a parser that only ever reads `ranges`.
+	inConnect := map[string]bool{}
+	for _, c := range connect {
+		inConnect[c] = true
+	}
+	onlyEmail := 0
+	for _, c := range email {
+		if !inConnect[c] {
+			onlyEmail++
+		}
+	}
+	if onlyEmail == 0 {
+		t.Error("docusign: no email_outbound range is unique to email_ranges; is the second array being read?")
+	}
+	if _, err := parsers[ep.Format](body, "region=EU"); err == nil {
+		t.Error("docusign-ranges: expected error for a non-usage select")
+	}
+
+	// Klaviyo: the JSON:API singleton yields exactly the two published blocks.
+	body, ep = get("klaviyo", "allowlist")
+	raw, err = parsers[ep.Format](body, "")
 	if err != nil {
 		t.Fatal(err)
 	}
 	v4kl, _ := normalize(raw, func(string, ...any) {})
 	if strings.Join(v4kl, ",") != "207.186.206.0/24,207.211.192.0/20" {
 		t.Errorf("klaviyo = %v, want [207.186.206.0/24 207.211.192.0/20]", v4kl)
+	}
+	// A payload for any other resource id is not the allowlist we asked for.
+	if _, err := parsers[ep.Format]([]byte(`{"data":{"id":"other"}}`), ""); err == nil {
+		t.Error("klaviyo-allowlist: expected error for unexpected resource id")
 	}
 
 	// Twilio SIP: signaling folds to the eight regional /30s; media is the /18.

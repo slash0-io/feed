@@ -1,0 +1,1 @@
+{"data":{"type":"ip-allowlist","id":"integration-egress","attributes":{"prefixes":["207.211.192.0/20","207.186.206.0/24"],"sync_token":"e1ccc194a521a754","created":"2026-07-01T00:00:00+00:00"},"links":{"self":"https://a.klaviyo.com/api/ip-allowlists/integration-egress/"}},"links":{"self":"https://a.klaviyo.com/client/ip-allowlists/integration-egress"}}
