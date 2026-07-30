@@ -70,13 +70,18 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `circleci` | CircleCI | dedicated | `core` (egress), `jobs` (ingress) | [official ↗](https://circleci.com/docs/guides/security/ip-ranges/) |
 | `github` | GitHub | dedicated | `actions` (ingress), `api` (egress), `git` (egress), `hooks` (ingress), `packages` (egress), `pages` (egress), `web` (egress) | [official ↗](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-githubs-ip-addresses) |
 | `gitlab` | GitLab.com | mixed | `web-api` (egress), `webhooks` (ingress) | [official ↗](https://docs.gitlab.com/user/gitlab_com/) |
+| `launchdarkly` | LaunchDarkly | dedicated | `service` (egress), `webhooks` (ingress) | [official ↗](https://launchdarkly.com/docs/home/infrastructure/ip-list) |
 
 ## Data platforms
 
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
+| `airbyte` | Airbyte Cloud | dedicated | `all` (ingress) | [official ↗](https://docs.airbyte.com/platform/operating-airbyte/ip-allowlist) |
 | `databricks` | Databricks | dedicated | `all` (both) | [official ↗](https://docs.databricks.com/aws/en/resources/ip-domain-region) |
+| `dbt-cloud` | dbt Cloud | dedicated | `all` (ingress) | [official ↗](https://docs.getdbt.com/docs/cloud/about-cloud/access-regions-ip-addresses) |
 | `elastic-cloud` | Elastic Cloud | dedicated | `api` (egress), `outbound` (ingress) | [official ↗](https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips) |
+| `fivetran` | Fivetran | dedicated | `sync` (ingress), `webhooks` (ingress) | [official ↗](https://fivetran.com/docs/using-fivetran/ips) |
+| `hightouch` | Hightouch | dedicated | `all` (ingress) | [official ↗](https://hightouch.com/docs/security/networking) |
 | `neon` | Neon (Serverless Postgres) | dedicated | `outbound` (ingress) | [official ↗](https://neon.com/docs/introduction/regions) |
 
 ## Identity & auth

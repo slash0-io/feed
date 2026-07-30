@@ -325,6 +325,35 @@ services:
           - {key: webhooks, direction: ingress, select: "webhook_ips"}
     verified: "2026-07-10"
 
+  - slug: launchdarkly
+    name: LaunchDarkly
+    category: devtools
+    classification: dedicated
+    provenance: https://launchdarkly.com/docs/home/infrastructure/ip-list
+    cadence: "irregular; changes posted to the status page ahead of taking effect"
+    notice: "2 weeks, posted on the status page"
+    notice_evidence: https://launchdarkly.com/docs/home/infrastructure/ip-list
+    notes: >
+      Direction is split and the vendor states each one explicitly. `addresses` are where
+      "these IP addresses receive HTTPS connections your SDKs initiate through port 443",
+      so an SDK reaching LaunchDarkly is egress. `outboundAddresses` are what
+      "LaunchDarkly uses when making calls to your network", so webhooks and integrations
+      are ingress. The notice is qualified by the vendor: "in certain exceptional
+      circumstances the notification window may be shorter".
+    endpoints:
+      - id: api
+        url: https://app.launchdarkly.com/api/v2/public-ip-list
+        format: json-cidr-map          # {"addresses": [...], "outboundAddresses": [...]}
+        detection:
+          poll: hash                   # no ETag or Last-Modified (verified)
+          push: "status.launchdarkly.com posts IP list changes ahead of the change"
+          push_kind: vendor
+          push_evidence: https://launchdarkly.com/docs/home/infrastructure/ip-list
+        purposes:
+          - {key: service,  direction: egress,  select: "addresses"}
+          - {key: webhooks, direction: ingress, select: "outboundAddresses"}
+    verified: "2026-07-30"
+
   # ── Payments / fintech ────────────────────────────────────────────────────
   - slug: stripe
     name: Stripe
@@ -1030,6 +1059,79 @@ services:
         purposes:
           - {key: outbound, direction: ingress, select: "section=NAT Gateway IP addresses"}
     verified: "2026-07-10"
+
+  - slug: fivetran
+    name: Fivetran
+    category: data-platform
+    classification: dedicated
+    provenance: https://fivetran.com/docs/using-fivetran/ips
+    cadence: "irregular; page carries no version marker"
+    notes: >
+      Both purposes are ingress: Fivetran reaches into your warehouse and sources, and
+      sends webhook events to your endpoint. The Fivetran Proxy section of the same page
+      is deliberately not published. It routes through wildcard domains whose addresses,
+      in the vendor's own words, "may change in the future without notice", so the page
+      directs users to resolve those hostnames rather than offering a list.
+    endpoints:
+      - id: docs
+        url: https://fivetran.com/docs/using-fivetran/ips
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: sync,     direction: ingress, select: "section=Fivetran IP Addresses;exclude=Webhooks users"}
+          - {key: webhooks, direction: ingress, select: "section=Webhooks users"}
+    verified: "2026-07-30"
+
+  - slug: dbt-cloud
+    name: dbt Cloud
+    category: data-platform
+    classification: dedicated
+    provenance: https://docs.getdbt.com/docs/cloud/about-cloud/access-regions-ip-addresses
+    cadence: "irregular; page carries no version marker"
+    notes: "Addresses dbt Cloud connects to your data warehouse from, listed per cloud and region."
+    endpoints:
+      - id: docs
+        url: https://docs.getdbt.com/docs/cloud/about-cloud/access-regions-ip-addresses
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: all, direction: ingress, select: "section=Access, Regions, & IP addresses"}
+    verified: "2026-07-30"
+
+  - slug: airbyte
+    name: Airbyte Cloud
+    category: data-platform
+    classification: dedicated
+    provenance: https://docs.airbyte.com/platform/operating-airbyte/ip-allowlist
+    cadence: "irregular; page carries no version marker"
+    notes: "Their wording: 'Airbyte Cloud runs and syncs your data using a specific set of IP addresses. Allow these IPs in your firewall.'"
+    endpoints:
+      - id: docs
+        url: https://docs.airbyte.com/platform/operating-airbyte/ip-allowlist
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: all, direction: ingress, select: "section=IP allow list for Cloud"}
+    verified: "2026-07-30"
+
+  - slug: hightouch
+    name: Hightouch
+    category: data-platform
+    classification: dedicated
+    provenance: https://hightouch.com/docs/security/networking
+    cadence: "irregular; page carries no version marker"
+    notes: >
+      Their wording: "You can provide Hightouch access by adding Hightouch's IP addresses
+      to your firewall allowlist." The page groups addresses by the region chosen when a
+      workspace is created, and instructs users to allow only their own region's set.
+    endpoints:
+      - id: docs
+        url: https://hightouch.com/docs/security/networking
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: all, direction: ingress, select: "section=IP addresses"}
+    verified: "2026-07-30"
 
   # ── AI APIs ───────────────────────────────────────────────────────────────
   - slug: anthropic

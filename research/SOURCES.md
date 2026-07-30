@@ -67,6 +67,7 @@ published here, so it scores none.
 
 | Service | Document | Change detection | Advance notice | Vendor change signal | Direction |
 |---|---|---|---|---|---|
+| [Airbyte Cloud](https://docs.airbyte.com/platform/operating-airbyte/ip-allowlist) | docs page | page extraction | none documented | none | ingress |
 | [Akamai Connected Cloud (Linode)](https://geoip.linode.com/) | CSV | conditional GET | none documented | none | egress |
 | [Amazon Web Services](https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html) | JSON | conditional GET | none documented | [SNS arn:aws:sns:us-east-1:806199016981:AmazonIpSpaceChanged (us-east-1 subscription required)](https://docs.aws.amazon.com/vpc/latest/userguide/subscribe-notifications.html) | egress + ingress |
 | [Anthropic (Claude API)](https://platform.claude.com/docs/en/api/ip-addresses) | docs page | page extraction | none documented | none | egress + ingress |
@@ -84,15 +85,18 @@ published here, so it scores none.
 | [DocuSign](https://www.docusign.com/trust/security/esignature) | JSON | full download | none documented | none | ingress |
 | [Elastic Cloud](https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips) | JSON | conditional GET | [8 weeks before static IPs change](https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips) | [status.elastic.co subscription (static IP changes announced >=8 weeks ahead)](https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips) | egress + ingress |
 | [Fastly](https://www.fastly.com/documentation/reference/api/utils/public-ip-list/) | JSON | full download | none documented | [fastlystatus.com subscription ('IP address announcement' category)](https://www.fastly.com/documentation/reference/api/utils/public-ip-list/) | egress + ingress |
+| [Fivetran](https://fivetran.com/docs/using-fivetran/ips) | docs page | page extraction | none documented | none | ingress |
 | [GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-githubs-ip-addresses) | JSON | conditional GET | none documented | none | egress + ingress |
 | [GitLab.com](https://docs.gitlab.com/user/gitlab_com/) | docs page | page extraction | none documented | [gitlab.com/gitlab-org/gitlab commits atom feed for doc/user/gitlab_com/_index.md](https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/user/gitlab_com/_index.md) (docs repo) | egress + ingress |
 | [Google (all services)](https://knowledge.workspace.google.com/admin/security/obtain-google-ip-address-ranges) | JSON | conditional GET | none documented | none | egress |
 | [Google Cloud Platform](https://knowledge.workspace.google.com/admin/security/obtain-google-ip-address-ranges) | JSON | conditional GET | none documented | none | egress |
 | [Grafana Cloud](https://grafana.com/docs/grafana-cloud/security-and-account-management/allow-list/) | text | full download | none documented | none | ingress |
+| [Hightouch](https://hightouch.com/docs/security/networking) | docs page | page extraction | none documented | none | ingress |
 | [HubSpot](https://developers.hubspot.com/docs/api-reference/2026-09-beta/account/ip-ranges/guide) | JSON | full download | none documented | none | ingress |
 | [IBM Cloud (Classic infrastructure)](https://cloud.ibm.com/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges) | docs page | page extraction | none documented | none | egress |
 | [Intercom](https://developers.intercom.com/docs/webhooks) | JSON | conditional GET | none documented | none | egress + ingress |
 | [Klaviyo](https://help.klaviyo.com/hc/en-us/articles/19143781289115) | JSON | full download | none documented | none | ingress |
+| [LaunchDarkly](https://launchdarkly.com/docs/home/infrastructure/ip-list) | JSON | full download | [2 weeks, posted on the status page](https://launchdarkly.com/docs/home/infrastructure/ip-list) | [status.launchdarkly.com posts IP list changes ahead of the change](https://launchdarkly.com/docs/home/infrastructure/ip-list) | egress + ingress |
 | [Microsoft 365](https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service) | JSON | full download | [30 days before new endpoints are used](https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service?view=o365-worldwide) | [poll https://endpoints.office.com/version (tiny response; version string bumps on change)](https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service?view=o365-worldwide) | egress |
 | [Microsoft Azure (Service Tags)](https://learn.microsoft.com/en-us/azure/virtual-network/service-tags-overview) | JSON | page extraction | [1 week before new IPs are used](https://learn.microsoft.com/en-us/azure/virtual-network/service-tags-overview) | none | egress |
 | [Neon (Serverless Postgres)](https://neon.com/docs/introduction/regions) | docs page | page extraction | none documented | [github.com/neondatabase/website commits feed for content/docs/introduction/regions.md](https://github.com/neondatabase/website/blob/main/content/docs/introduction/regions.md) (docs repo) | ingress |
@@ -118,6 +122,7 @@ published here, so it scores none.
 | [Zendesk](https://developer.zendesk.com/api-reference/ticketing/account-configuration/public_ips/) | JSON | full download | none documented | none | egress + ingress |
 | [Zoom](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060548) | text | conditional GET | none documented | none | egress |
 | [Zscaler (zscaler.net cloud)](https://config.zscaler.com/) | JSON | conditional GET | none documented | none | egress |
+| [dbt Cloud](https://docs.getdbt.com/docs/cloud/about-cloud/access-regions-ip-addresses) | docs page | page extraction | none documented | none | ingress |
 
 <!-- /GEN:catalog -->
 
