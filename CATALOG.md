@@ -61,6 +61,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `grafana-cloud` | Grafana Cloud | dedicated | `alerts` (ingress), `logs` (ingress), `metrics` (ingress) | [official ↗](https://grafana.com/docs/grafana-cloud/security-and-account-management/allow-list/) |
 | `new-relic` | New Relic | dedicated | `agents` (egress), `synthetics` (ingress) | [official ↗](https://docs.newrelic.com/docs/new-relic-solutions/get-started/networks/) |
 | `sentry` | Sentry (hosted) | dedicated | `ingest` (egress), `uptime` (ingress), `webhooks` (ingress) | [official ↗](https://docs.sentry.io/security-legal-pii/security/ip-ranges/) |
+| `uptimerobot` | UptimeRobot | dedicated | `probes` (ingress) | [official ↗](https://uptimerobot.com/help/locations/) |
 
 ## Developer platforms & CI
 
@@ -89,6 +90,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
 | `auth0` | Auth0 (Okta CIC) | dedicated | `all` (both) | [official ↗](https://auth0.com/docs/secure/security-guidance/data-security/allowlist) |
+| `duo` | Cisco Duo | dedicated | `mfa` (egress) | [official ↗](https://help.duo.com/s/article/1337) |
 | `okta` | Okta | dedicated | `all` (both) | [official ↗](https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm) |
 
 ## Communications
@@ -164,6 +166,8 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 | Docker Hub / Docker Desktop | Publishes an allowlist of domain URLs rather than addresses; the page lists hostnames only. Reproducible on the data plane: registry-1.docker.io resolves into rotating AWS us-east-1 EC2 addresses, a different set on each query (verified 2026-07-30). |
 | Mailchimp Transactional (Mandrill) webhooks | Directs users to authenticate that a webhook originated from Mailchimp's servers using the documented request-signature flow. The /ips/ API returns your own dedicated sending addresses, which is a different thing from webhook sources. |
 | Honeycomb | Offers AWS PrivateLink to the Honeycomb API for Enterprise customers on AWS. No range list is published in the docs. |
+| Mailgun | Their IP Allowlist API 'lets you view and manage allowlisted IP addresses to which API key and SMTP credential usage is restricted', which controls your own callers rather than publishing Mailgun's addresses. Outbound sending addresses are per-account dedicated IPs grouped into pools, read through the authenticated /v3/ips API. |
+| Dynatrace (Synthetic Monitoring) | Public Synthetic location addresses are read per environment, either from the Frequency and locations page in the web UI ('Copy IPs to clipboard or Download IPs') or from the Synthetic locations API, which 'returns all the locations available for your Environment along with their IP addresses'. No global list is published. |
 | npm registry (registry.npmjs.org) | registry.npmjs.org resolves into Cloudflare's published ranges (verified 2026-07-30: 104.16.0.34 and 104.16.1.34, both inside 104.16.0.0/13), so pinning it would allowlist the whole CDN rather than npm. |
 | PyPI (pypi.org, files.pythonhosted.org) | Both pypi.org and files.pythonhosted.org resolve into Fastly's published ranges (verified 2026-07-30: 151.101.0.223 and 151.101.128.223, inside 151.101.0.0/16), so pinning them would allowlist the whole CDN rather than PyPI. |
 | Maven Central (repo1.maven.org) | repo1.maven.org resolves into Cloudflare's published ranges (verified 2026-07-30: 104.18.18.12 and 104.18.19.12, both inside 104.16.0.0/13), so pinning it would allowlist the whole CDN rather than Maven Central. |

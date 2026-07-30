@@ -53,6 +53,11 @@ type Endpoint struct {
 	// their contract to a version header, where relying on the server's
 	// default would let the vendor change the payload shape under us.
 	Headers map[string]string `yaml:"headers"`
+	// Render names a browser engine to load the page with, for the vendors
+	// whose ranges exist only after JavaScript runs. Currently "chrome" is
+	// the only value. Leave unset for everything else: a plain fetch is
+	// cheaper, has no external dependency, and is what the fixtures replay.
+	Render string `yaml:"render"`
 }
 
 type Detection struct {
@@ -102,6 +107,21 @@ func LoadRegistry(path string) (*Registry, error) {
 		}
 	}
 	for _, svc := range r.Services {
+		for _, ep := range svc.Endpoints {
+			switch ep.Render {
+			case "", "chrome":
+			default:
+				return nil, fmt.Errorf("%s/%s: unknown render engine %q (only \"chrome\")",
+					svc.Slug, ep.ID, ep.Render)
+			}
+			// Chrome takes its headers from the page load, not from our
+			// process, so silently dropping them would leave a pinned API
+			// version or auth header looking applied when it is not.
+			if ep.Render != "" && len(ep.Headers) > 0 {
+				return nil, fmt.Errorf("%s/%s: headers cannot be sent with render: %s",
+					svc.Slug, ep.ID, ep.Render)
+			}
+		}
 		g := svc.Guard
 		if g == nil {
 			continue

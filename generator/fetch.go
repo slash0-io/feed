@@ -47,6 +47,13 @@ func (f *Fetcher) Get(svc SourceService, ep Endpoint) ([]byte, string, error) {
 	}
 
 	url := strings.ReplaceAll(ep.URL, "<uuid>", newUUID())
+	if ep.Render != "" {
+		body, err := renderChrome(url)
+		if err != nil {
+			return nil, "", err
+		}
+		return body, ep.URL, nil
+	}
 	body, err := f.doGet(url, ep.Headers)
 	if err != nil {
 		return nil, "", err
