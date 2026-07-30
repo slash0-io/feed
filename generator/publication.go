@@ -25,6 +25,7 @@ var documentTypes = map[string]string{
 	"fastly-list":        "json",
 	"github-meta":        "json",
 	"google-prefixes":    "json",
+	"hubspot-ranges":     "json",
 	"intercom-ranges":    "json",
 	"json-cidr-map":      "json",
 	"json-ip-array":      "json",

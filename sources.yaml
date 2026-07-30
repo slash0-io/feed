@@ -630,6 +630,39 @@ services:
           - {key: connected-content, direction: ingress, select: "section=Connected Content IP allowlisting"}
     verified: "2026-07-30"
 
+  - slug: hubspot
+    name: HubSpot
+    category: business-saas
+    classification: dedicated
+    provenance: https://developers.hubspot.com/docs/api-reference/2026-09-beta/account/ip-ranges/guide
+    cadence: "vendor states the returned ranges change over time and asks consumers to re-fetch regularly"
+    notes: >
+      Reclassified 2026-07-30 from non-publisher to publisher. HubSpot now serves
+      an unauthenticated JSON endpoint of its network origins; the previous record
+      that this was available only to authenticated callers was wrong.
+      DIRECTION: every entry is tagged EGRESS in HubSpot's own vocabulary, meaning
+      traffic leaving HubSpot. From the customer's point of view those addresses
+      connect IN, so all purposes here are ingress. Reading HubSpot's label
+      literally would put these in egress rules, where they would match traffic a
+      workload never sends.
+      HubSpot publishes only its outbound addresses. The destination ranges for
+      api.hubapi.com are still not published, so this does not help anyone trying
+      to restrict egress TO HubSpot; that side remains unpinnable by address.
+      The endpoint path carries a beta marker and HubSpot flags the feature as
+      beta, so treat a 404 here as a vendor move rather than an outage.
+      No ETag or Last-Modified, so detection is a content hash. IPv4 only.
+    endpoints:
+      - id: ranges
+        url: https://api.hubapi.com/meta/network-origins/2026-09-beta/ip-ranges
+        format: hubspot-ranges
+        detection: {poll: hash}
+        purposes:
+          - {key: api,      direction: ingress, select: "service=API"}
+          - {key: email,    direction: ingress, select: "service=EMAIL"}
+          - {key: crawlers, direction: ingress, select: "service=WEB_SCRAPING"}
+          - {key: dns,      direction: ingress, select: "service=DNS"}
+    verified: "2026-07-30"
+
   - slug: klaviyo
     name: Klaviyo
     category: comms
@@ -1000,19 +1033,15 @@ non_publishers:
     vendor_position: "No published egress IPs; their allowlisting feature restricts YOUR IPs calling THEM."
   - slug: shopify
     name: Shopify (webhooks)
-    evidence: "Shopify community threads; no official ranges page"
-    vendor_position: "Webhook source IPs not published; verify HMAC signatures instead."
+    evidence: https://shopify.dev/docs/apps/build/webhooks/verify-deliveries
+    vendor_position: "Documents HMAC-SHA256 signature verification as the way to authenticate a webhook. The page does not mention source IPs, and no official range list was found as of the verified date."
   - slug: square
     name: Square (webhooks)
     evidence: https://developer.squareup.com/docs/webhooks/step3validate
     vendor_position: "No webhook source-IP list published; validate notifications via the documented HMAC-SHA256 signature flow."
-  - slug: duo
-    name: Duo Security
-    evidence: https://duo.com/docs (KB 1337)
-    vendor_position: "Explicitly discourages IP-based egress rules; may change to maintain availability."
   - slug: snowflake
     name: Snowflake
-    evidence: "SYSTEM$ALLOWLIST() function docs"
+    evidence: https://docs.snowflake.com/en/sql-reference/functions/system_allowlist
     vendor_position: "Deployment-specific hostnames/IPs per account; no global list."
   - slug: mongodb-atlas
     name: MongoDB Atlas (data plane)
@@ -1024,20 +1053,16 @@ non_publishers:
     vendor_position: "Dynamic by default; static IPs are a paid per-customer feature, not a public range."
   - slug: netlify
     name: Netlify (function egress)
-    evidence: "Netlify support/community; runs on AWS Lambda"
-    vendor_position: "No published IPs; any circulating list 'is a guess or outdated'."
-  - slug: hubspot
-    name: HubSpot
-    evidence: https://developers.hubspot.com/docs/api-reference (ip-ranges guide)
-    vendor_position: "No static publication ('change too frequently'); an API returning the current ranges is available to authenticated callers."
+    evidence: https://docs.netlify.com/manage/security/private-connectivity/
+    vendor_position: "States that by default the addresses builds and functions connect from 'will fluctuate when we scale up and down'. A static set is available only through the Private Connectivity add-on on Enterprise plans."
   - slug: openai-api
     name: OpenAI API (api.openai.com)
-    evidence: "Cloudflare-fronted endpoint; no inbound range publication"
-    vendor_position: "Egress to api.openai.com resolves to shared Cloudflare ranges; pinning would allowlist the whole CDN."
+    evidence: https://www.cloudflare.com/ips/
+    vendor_position: "api.openai.com resolves into Cloudflare's published ranges (verified 2026-07-30: 172.66.0.243 within 172.64.0.0/13, 162.159.140.245 within 162.158.0.0/15), so pinning it would allowlist the whole CDN rather than OpenAI."
   - slug: akamai
     name: Akamai (CDN)
-    evidence: "Site Shield / Origin IP ACL docs (auth required)"
-    vendor_position: "Customer-specific maps behind login; no public global ranges."
+    evidence: https://techdocs.akamai.com/site-shield/docs/welcome-site-shield
+    vendor_position: "Site Shield issues a per-customer set of IP subnet ranges (a map) retrieved through Akamai Control Center or the Site Shield API, rather than one public global list."
   - slug: box
     name: Box
     evidence: https://support.box.com/hc/en-us/articles/360043696434-Configuring-A-Firewall-For-Box-Applications-and-Services
@@ -1065,6 +1090,24 @@ backlog:
       note: "no public range documentation found (2026-07-10); segment.com/docs bot-blocks fetches; candidates for vendor outreach."
     - slug: scaleway-ovh-hetzner
       note: "no geofeeds at standard URLs (2026-07-10); announced space visible only via BGP; low priority for SaaS-egress use case."
+    - slug: duo
+      note: >
+        Duo DOES publish an official list and should not be recorded as a
+        non-publisher. help.duo.com/s/article/1337 is titled "What are Duo's IP
+        ranges, hostnames, and data residency areas by deployment?" and carries
+        32 properly masked CIDRs organised by data-residency jurisdiction and
+        deployment (U.S. 3.145.240.0/25, 52.32.63.128/26, ... for DUO1, DUO2,
+        DUO4...). Blocked on tooling, not vendor policy: the article is a
+        Salesforce-community page that renders only with JavaScript, and a plain
+        fetch returns a 152KB app shell with zero CIDRs (verified 2026-07-30,
+        default and Go-http-client UAs alike). No static mirror found;
+        duo.com/docs/networking 404s and the CIDRs on
+        duo.com/docs/authproxy-reference are documentation examples (1.2.3.0/24).
+        Duo separately discourages IP-based egress rules "since these may change
+        over time" (duo.com/docs/protecting-applications), which is the exact
+        staleness problem this product removes, so their guidance is not a reason
+        to leave them out. Integrate as soon as the pipeline can render JS or a
+        static source appears.
     - slug: qualys
       note: >
         NOT integrable from platform-identification/ and the earlier note's

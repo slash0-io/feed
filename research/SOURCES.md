@@ -88,6 +88,7 @@ published here, so it scores none.
 | [Google (all services)](https://support.google.com/a/answer/10026322) | JSON | conditional GET | none documented | none | egress |
 | [Google Cloud Platform](https://support.google.com/a/answer/10026322) | JSON | conditional GET | none documented | none | egress |
 | [Grafana Cloud](https://grafana.com/docs/grafana-cloud/security-and-account-management/allow-list/) | text | full download | none documented | none | ingress |
+| [HubSpot](https://developers.hubspot.com/docs/api-reference/2026-09-beta/account/ip-ranges/guide) | JSON | full download | none documented | none | ingress |
 | [IBM Cloud (Classic infrastructure)](https://cloud.ibm.com/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges) | docs page | page extraction | none documented | none | egress |
 | [Intercom](https://developers.intercom.com/docs/webhooks) | JSON | conditional GET | none documented | none | egress + ingress |
 | [Klaviyo](https://help.klaviyo.com/hc/en-us/articles/19143781289115) | JSON | full download | none documented | none | ingress |
@@ -184,17 +185,15 @@ named vendor, so each row links the page stating it.
 | Service | Vendor's stated position |
 |---|---|
 | [Adyen](https://help.adyen.com/knowledge/ecommerce-integrations/webhooks/what-ip-addresses-does-adyen-use-to-send-webhook-events) | No IP list; allowlist out.adyen.com or resolve it via DNS hourly (their words). |
-| [Akamai (CDN)](Site Shield / Origin IP ACL docs (auth required)) | Customer-specific maps behind login; no public global ranges. |
+| [Akamai (CDN)](https://techdocs.akamai.com/site-shield/docs/welcome-site-shield) | Site Shield issues a per-customer set of IP subnet ranges (a map) retrieved through Akamai Control Center or the Site Shield API, rather than one public global list. |
 | [Box](https://support.box.com/hc/en-us/articles/360043696434-Configuring-A-Firewall-For-Box-Applications-and-Services) | Use domain names; 'IP addresses can change frequently and without notice' (their wording). No webhook source ranges published. |
-| [Duo Security](https://duo.com/docs (KB 1337)) | Explicitly discourages IP-based egress rules; may change to maintain availability. |
-| [HubSpot](https://developers.hubspot.com/docs/api-reference (ip-ranges guide)) | No static publication ('change too frequently'); an API returning the current ranges is available to authenticated callers. |
 | [MongoDB Atlas (data plane)](https://www.mongodb.com/docs/atlas/reference/faq/networking/) | Cluster IPs are per-project/dynamic; control-plane IPs only via authenticated Admin API. Vendor directs users to private endpoints (PrivateLink). |
-| [Netlify (function egress)](Netlify support/community; runs on AWS Lambda) | No published IPs; any circulating list 'is a guess or outdated'. |
-| [OpenAI API (api.openai.com)](Cloudflare-fronted endpoint; no inbound range publication) | Egress to api.openai.com resolves to shared Cloudflare ranges; pinning would allowlist the whole CDN. |
+| [Netlify (function egress)](https://docs.netlify.com/manage/security/private-connectivity/) | States that by default the addresses builds and functions connect from 'will fluctuate when we scale up and down'. A static set is available only through the Private Connectivity add-on on Enterprise plans. |
+| [OpenAI API (api.openai.com)](https://www.cloudflare.com/ips/) | api.openai.com resolves into Cloudflare's published ranges (verified 2026-07-30: 172.66.0.243 within 172.64.0.0/13, 162.159.140.245 within 162.158.0.0/15), so pinning it would allowlist the whole CDN rather than OpenAI. |
 | [SendGrid (webhooks/parse)](https://support.sendgrid.com/hc/en-us/articles/44375457225371) | Dynamic cloud infra; use signed webhooks, not IP allowlists. |
-| [Shopify (webhooks)](Shopify community threads; no official ranges page) | Webhook source IPs not published; verify HMAC signatures instead. |
+| [Shopify (webhooks)](https://shopify.dev/docs/apps/build/webhooks/verify-deliveries) | Documents HMAC-SHA256 signature verification as the way to authenticate a webhook. The page does not mention source IPs, and no official range list was found as of the verified date. |
 | [Slack](https://docs.slack.dev/concepts/security/) | No published egress IPs; their allowlisting feature restricts YOUR IPs calling THEM. |
-| [Snowflake](SYSTEM$ALLOWLIST() function docs) | Deployment-specific hostnames/IPs per account; no global list. |
+| [Snowflake](https://docs.snowflake.com/en/sql-reference/functions/system_allowlist) | Deployment-specific hostnames/IPs per account; no global list. |
 | [Square (webhooks)](https://developer.squareup.com/docs/webhooks/step3validate) | No webhook source-IP list published; validate notifications via the documented HMAC-SHA256 signature flow. |
 | [Sumo Logic](https://support.sumologic.com/hc/en-us/articles/360012685393-How-to-allow-or-enable-IP-ranges-for-Sumo-Logic-endpoints) | No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region), covered by the aws service. |
 | [Twilio (REST API + webhooks)](https://support.twilio.com/hc/en-us/articles/115015934048-All-About-Twilio-IP-Addresses) | IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking IS pinnable, see the twilio-sip service. |

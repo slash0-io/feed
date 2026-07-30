@@ -19,6 +19,7 @@ var parsers = map[string]parseFunc{
 	"cloudflare-api":     parseCloudflareAPI,
 	"fastly-list":        parseFastlyList,
 	"github-meta":        parseGitHubMeta,
+	"hubspot-ranges":     parseHubSpotRanges,
 	"datadog-ranges":     parseDatadogRanges,
 	"stripe-list":        parseStripeList,
 	"atlassian-ranges":   parseAtlassianRanges,
@@ -655,4 +656,42 @@ func parseKlaviyoAllowlist(body []byte, _ string) ([]string, error) {
 		return nil, fmt.Errorf("klaviyo-allowlist: no prefixes in response")
 	}
 	return d.Data.Attributes.Prefixes, nil
+}
+
+// parseHubSpotRanges reads HubSpot's network-origins endpoint, which returns
+// one object per CIDR qualified by service and direction.
+//
+// Note the direction vocabulary is HubSpot's, not ours: every entry is
+// "EGRESS", meaning traffic leaving HubSpot toward the internet. From the
+// customer's point of view those are inbound, so the purposes in sources.yaml
+// declare direction: ingress. Selecting on it here would invert the meaning,
+// so select is on service only.
+func parseHubSpotRanges(body []byte, sel string) ([]string, error) {
+	var d struct {
+		Results []struct {
+			CIDR      string `json:"cidr"`
+			Direction string `json:"direction"`
+			Service   string `json:"service"`
+		} `json:"results"`
+	}
+	if err := json.Unmarshal(body, &d); err != nil {
+		return nil, err
+	}
+	if len(d.Results) == 0 {
+		return nil, fmt.Errorf("hubspot-ranges: no results in response")
+	}
+	key, want, all := selKV(sel)
+	if !all && key != "service" {
+		return nil, fmt.Errorf("hubspot-ranges: select must be service=<value>, got %q", sel)
+	}
+	var out []string
+	for _, r := range d.Results {
+		if all || strings.EqualFold(r.Service, want) {
+			out = append(out, r.CIDR)
+		}
+	}
+	if !all && len(out) == 0 {
+		return nil, fmt.Errorf("hubspot-ranges: no entry has service %q", want)
+	}
+	return out, nil
 }

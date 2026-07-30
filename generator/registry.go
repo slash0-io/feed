@@ -90,6 +90,17 @@ func LoadRegistry(path string) (*Registry, error) {
 	if r.SchemaVersion != 1 {
 		return nil, fmt.Errorf("%s: unsupported schema_version %d", path, r.SchemaVersion)
 	}
+	// A recorded negative is still a public claim about a named vendor, so it
+	// ships with the page that states it. These were reframed 2026-07-30 from
+	// unciteable absence claims ("no official ranges page") to positive claims
+	// about what the vendor DOES document, because vendors publish what they
+	// support rather than what they do not.
+	for _, np := range r.NonPublishers {
+		if !strings.HasPrefix(np.Evidence, "http") {
+			return nil, fmt.Errorf("non-publisher %s: evidence must be a vendor URL, got %q",
+				np.Slug, np.Evidence)
+		}
+	}
 	for _, svc := range r.Services {
 		g := svc.Guard
 		if g == nil {

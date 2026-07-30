@@ -101,6 +101,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 |---|---|---|---|---|
 | `atlassian` | Atlassian Cloud | dedicated | `all` (both), `bitbucket` (both), `egress` (ingress) | [official ↗](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/) |
 | `docusign` | DocuSign | mixed | `connect-webhooks` (ingress), `email` (ingress) | [official ↗](https://www.docusign.com/trust/security/esignature) |
+| `hubspot` | HubSpot | dedicated | `api` (ingress), `crawlers` (ingress), `dns` (ingress), `email` (ingress) | [official ↗](https://developers.hubspot.com/docs/api-reference/2026-09-beta/account/ip-ranges/guide) |
 | `microsoft-365` | Microsoft 365 | mixed | `common` (egress), `exchange` (egress), `sharepoint` (egress), `teams` (egress) | [official ↗](https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service) |
 | `salesforce` | Salesforce | dedicated | `all` (both) | [official ↗](https://help.salesforce.com/s/articleView?id=000384438 (IP Addresses and Domains to Allow)) |
 | `zendesk` | Zendesk | mixed | `api` (egress), `webhooks` (ingress) | [official ↗](https://developer.zendesk.com/api-reference/ticketing/account-configuration/public_ips/) |
@@ -132,16 +133,14 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 | Adyen | No IP list; allowlist out.adyen.com or resolve it via DNS hourly (their words). |
 | SendGrid (webhooks/parse) | Dynamic cloud infra; use signed webhooks, not IP allowlists. |
 | Slack | No published egress IPs; their allowlisting feature restricts YOUR IPs calling THEM. |
-| Shopify (webhooks) | Webhook source IPs not published; verify HMAC signatures instead. |
+| Shopify (webhooks) | Documents HMAC-SHA256 signature verification as the way to authenticate a webhook. The page does not mention source IPs, and no official range list was found as of the verified date. |
 | Square (webhooks) | No webhook source-IP list published; validate notifications via the documented HMAC-SHA256 signature flow. |
-| Duo Security | Explicitly discourages IP-based egress rules; may change to maintain availability. |
 | Snowflake | Deployment-specific hostnames/IPs per account; no global list. |
 | MongoDB Atlas (data plane) | Cluster IPs are per-project/dynamic; control-plane IPs only via authenticated Admin API. Vendor directs users to private endpoints (PrivateLink). |
 | Vercel (function egress) | Dynamic by default; static IPs are a paid per-customer feature, not a public range. |
-| Netlify (function egress) | No published IPs; any circulating list 'is a guess or outdated'. |
-| HubSpot | No static publication ('change too frequently'); an API returning the current ranges is available to authenticated callers. |
-| OpenAI API (api.openai.com) | Egress to api.openai.com resolves to shared Cloudflare ranges; pinning would allowlist the whole CDN. |
-| Akamai (CDN) | Customer-specific maps behind login; no public global ranges. |
+| Netlify (function egress) | States that by default the addresses builds and functions connect from 'will fluctuate when we scale up and down'. A static set is available only through the Private Connectivity add-on on Enterprise plans. |
+| OpenAI API (api.openai.com) | api.openai.com resolves into Cloudflare's published ranges (verified 2026-07-30: 172.66.0.243 within 172.64.0.0/13, 162.159.140.245 within 162.158.0.0/15), so pinning it would allowlist the whole CDN rather than OpenAI. |
+| Akamai (CDN) | Site Shield issues a per-customer set of IP subnet ranges (a map) retrieved through Akamai Control Center or the Site Shield API, rather than one public global list. |
 | Box | Use domain names; 'IP addresses can change frequently and without notice' (their wording). No webhook source ranges published. |
 | Sumo Logic | No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region), covered by the aws service. |
 
