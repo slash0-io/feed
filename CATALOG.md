@@ -164,6 +164,11 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 | Docker Hub / Docker Desktop | Publishes an allowlist of domain URLs rather than addresses; the page lists hostnames only. Reproducible on the data plane: registry-1.docker.io resolves into rotating AWS us-east-1 EC2 addresses, a different set on each query (verified 2026-07-30). |
 | Mailchimp Transactional (Mandrill) webhooks | Directs users to authenticate that a webhook originated from Mailchimp's servers using the documented request-signature flow. The /ips/ API returns your own dedicated sending addresses, which is a different thing from webhook sources. |
 | Honeycomb | Offers AWS PrivateLink to the Honeycomb API for Enterprise customers on AWS. No range list is published in the docs. |
+| npm registry (registry.npmjs.org) | registry.npmjs.org resolves into Cloudflare's published ranges (verified 2026-07-30: 104.16.0.34 and 104.16.1.34, both inside 104.16.0.0/13), so pinning it would allowlist the whole CDN rather than npm. |
+| PyPI (pypi.org, files.pythonhosted.org) | Both pypi.org and files.pythonhosted.org resolve into Fastly's published ranges (verified 2026-07-30: 151.101.0.223 and 151.101.128.223, inside 151.101.0.0/16), so pinning them would allowlist the whole CDN rather than PyPI. |
+| Maven Central (repo1.maven.org) | repo1.maven.org resolves into Cloudflare's published ranges (verified 2026-07-30: 104.18.18.12 and 104.18.19.12, both inside 104.16.0.0/13), so pinning it would allowlist the whole CDN rather than Maven Central. |
+| RubyGems (rubygems.org) | rubygems.org resolves into Fastly's published ranges (verified 2026-07-30: 151.101.1.227 and 151.101.129.227, inside 151.101.0.0/16), so pinning it would allowlist the whole CDN rather than RubyGems. |
+| crates.io | crates.io resolves into Fastly's published ranges (verified 2026-07-30: 151.101.130.137 and 151.101.194.137, inside 151.101.0.0/16), so pinning it would allowlist the whole CDN rather than crates.io. |
 | Alibaba Cloud | Publishes per-service ingress lists, such as this per-region table for Data Management Service, rather than a provider-wide range file of the kind AWS, Azure and Google publish. |
 
 Evidence links for every row: [`sources.yaml`](sources.yaml) · methodology: [`research/SOURCES.md`](research/SOURCES.md)

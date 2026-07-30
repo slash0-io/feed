@@ -1331,6 +1331,26 @@ non_publishers:
     name: Honeycomb
     evidence: https://docs.honeycomb.io/security-compliance/security-data-protection/
     vendor_position: "Offers AWS PrivateLink to the Honeycomb API for Enterprise customers on AWS. No range list is published in the docs."
+  - slug: npm
+    name: npm registry (registry.npmjs.org)
+    evidence: https://www.cloudflare.com/ips/
+    vendor_position: "registry.npmjs.org resolves into Cloudflare's published ranges (verified 2026-07-30: 104.16.0.34 and 104.16.1.34, both inside 104.16.0.0/13), so pinning it would allowlist the whole CDN rather than npm."
+  - slug: pypi
+    name: PyPI (pypi.org, files.pythonhosted.org)
+    evidence: https://api.fastly.com/public-ip-list
+    vendor_position: "Both pypi.org and files.pythonhosted.org resolve into Fastly's published ranges (verified 2026-07-30: 151.101.0.223 and 151.101.128.223, inside 151.101.0.0/16), so pinning them would allowlist the whole CDN rather than PyPI."
+  - slug: maven-central
+    name: Maven Central (repo1.maven.org)
+    evidence: https://www.cloudflare.com/ips/
+    vendor_position: "repo1.maven.org resolves into Cloudflare's published ranges (verified 2026-07-30: 104.18.18.12 and 104.18.19.12, both inside 104.16.0.0/13), so pinning it would allowlist the whole CDN rather than Maven Central."
+  - slug: rubygems
+    name: RubyGems (rubygems.org)
+    evidence: https://api.fastly.com/public-ip-list
+    vendor_position: "rubygems.org resolves into Fastly's published ranges (verified 2026-07-30: 151.101.1.227 and 151.101.129.227, inside 151.101.0.0/16), so pinning it would allowlist the whole CDN rather than RubyGems."
+  - slug: crates-io
+    name: crates.io
+    evidence: https://api.fastly.com/public-ip-list
+    vendor_position: "crates.io resolves into Fastly's published ranges (verified 2026-07-30: 151.101.130.137 and 151.101.194.137, inside 151.101.0.0/16), so pinning it would allowlist the whole CDN rather than crates.io."
   - slug: alibaba-cloud
     name: Alibaba Cloud
     evidence: https://www.alibabacloud.com/help/en/dms/configure-an-ip-address-whitelist
@@ -1376,6 +1396,16 @@ backlog:
         Allowlist", restricts which of YOUR addresses reach JFrog, which is the wrong
         direction. Whether a real "JFrog Cloud NAT IPs" list exists is still unknown, so
         this is neither a publisher nor a non-publisher yet.
+    - slug: uptimerobot
+      note: >
+        UptimeRobot DOES publish its prober addresses and must not be recorded as a
+        non-publisher. uptimerobot.com/help/locations/ carries 103 IPv4 addresses plus an
+        IPv6 set, grouped under headings by continent (North America, Europe, Asia,
+        Australia / Oceania). Blocked on tooling exactly like duo below: the list renders
+        only with JavaScript, and a plain fetch returns the page with zero addresses
+        (verified 2026-07-30, headless Chrome with a 25s virtual time budget renders all
+        103). Direction would be ingress, since these are the probes that reach your
+        endpoints. Integrate as soon as the pipeline can render JS.
     - slug: duo
       note: >
         Duo DOES publish an official list and should not be recorded as a
