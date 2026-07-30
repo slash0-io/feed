@@ -87,6 +87,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
+| `braze` | Braze | dedicated | `connected-content` (ingress) | [official ↗](https://www.braze.com/docs/user_guide/messaging/design_and_edit/personalize/connected_content/making_an_api_call) |
 | `intercom` | Intercom | dedicated | `all-eu` (both), `all` (both), `outbound-webhooks` (ingress) | [official ↗](https://developers.intercom.com/docs/webhooks) |
 | `klaviyo` | Klaviyo | dedicated | `integrations` (ingress) | [official ↗](https://help.klaviyo.com/hc/en-us/articles/19143781289115) |
 | `pagerduty` | PagerDuty | dedicated | `webhooks-eu` (ingress), `webhooks` (ingress) | [official ↗](https://support.pagerduty.com/main/docs/safelist-ips) |

@@ -602,6 +602,34 @@ services:
           - {key: webhooks, direction: ingress, select: "section=Webhooks"}
     verified: "2026-07-10"
 
+  - slug: braze
+    name: Braze
+    category: comms
+    classification: dedicated
+    provenance: https://www.braze.com/docs/user_guide/messaging/design_and_edit/personalize/connected_content/making_an_api_call
+    cadence: "rare; vendor describes a reserved pool where not all IPs are active at once"
+    notes: >
+      Connected Content sources: Braze's servers calling OUT to customer or
+      third-party endpoints to pull data into a message, so these are ingress
+      from the customer's point of view. Published as individual addresses
+      across six regional tabs (US, EU, AU, ID, JP, KR) on one page. Braze
+      states the set is reserved and that it "may use one, a subset, or all"
+      at a given time, so the published list is deliberately wider than what
+      is live; that is the vendor's own framing, not overshoot we introduced.
+      Recovered 2026-07-30 from the backlog: the previously recorded URL had
+      not 404'd but 308-redirected to this path under a reorganized docs tree,
+      and the page is server-rendered, so no headless fetch is needed.
+      Braze also documents separate REST API and webhook allowlists; those are
+      not integrated yet and are a follow-up rather than part of this purpose.
+    endpoints:
+      - id: docs
+        url: https://www.braze.com/docs/user_guide/messaging/design_and_edit/personalize/connected_content/making_an_api_call
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: connected-content, direction: ingress, select: "section=Connected Content IP allowlisting"}
+    verified: "2026-07-30"
+
   - slug: klaviyo
     name: Klaviyo
     category: comms
@@ -1043,5 +1071,3 @@ backlog:
       note: "help-center article 'Allowing Iterable IP Addresses' exists but support.iterable.com returns 403 to non-browser fetchers, browser UA included (verified 2026-07-10); vendor outreach candidate."
     - slug: ringcentral
       note: "publishes supernets in support articles but support.ringcentral.com is client-rendered/SPA (verified 2026-07-10); revisit if a static source appears."
-    - slug: braze
-      note: "publishes per-cluster IPs but the docs page moved (2026-07-10, prior URL 404s); docs are open source (braze-inc/braze-docs); locate the current page or source from the repo."
