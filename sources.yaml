@@ -1066,8 +1066,28 @@ backlog:
     - slug: scaleway-ovh-hetzner
       note: "no geofeeds at standard URLs (2026-07-10); announced space visible only via BGP; low priority for SaaS-egress use case."
     - slug: qualys
-      note: "DOES publish scanner ranges (www.qualys.com/platform-identification/) but the page is client-rendered (verified 2026-07-10); success.qualys.com KB is Salesforce-community JS too. Needs a static per-platform source or a headless fetch; revisit."
+      note: >
+        NOT integrable from platform-identification/ and the earlier note's
+        premise was wrong. Re-checked 2026-07-30 with headless Chrome: the page
+        renders fine, but it is a platform IDENTIFIER serving hostnames
+        (Platform URLs, API URLs, Cloud Agent Servers), not IP ranges. The only
+        regex hits are MaxMind GeoIP localStorage keys of the form
+        maxmind.geoip2.data.34.141.10.24, which would have published as
+        "Qualys scanner ranges" had they not been read in context. A real
+        source would be the per-platform KB on success.qualys.com, still
+        Salesforce-community JS. Vendor-outreach candidate.
     - slug: iterable
-      note: "help-center article 'Allowing Iterable IP Addresses' exists but support.iterable.com returns 403 to non-browser fetchers, browser UA included (verified 2026-07-10); vendor outreach candidate."
+      note: >
+        Still blocked, re-verified 2026-07-30: support.iterable.com returns 403
+        to a default curl UA and to a Go-http-client UA alike, so the
+        non-browser-UA trick that works on IBM Cloud does not help here. The
+        403 body itself contains regex-matchable numbers; do not mistake them
+        for ranges. Vendor-outreach candidate.
     - slug: ringcentral
-      note: "publishes supernets in support articles but support.ringcentral.com is client-rendered/SPA (verified 2026-07-10); revisit if a static source appears."
+      note: >
+        Re-checked 2026-07-30. support.ringcentral.com now returns 200 rather
+        than blocking, but the network-requirements article carries no IP data
+        in the delivered HTML: all 15 regex hits are SVG path coordinates from
+        inline icons (fragments like "0 0 1-1.27 2.86 4.83 4.83" match the IPv4
+        pattern). So the blocker is missing data, not a fetch problem. Needs a
+        page that actually carries the supernets before this is worth revisiting.
