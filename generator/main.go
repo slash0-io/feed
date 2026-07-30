@@ -11,9 +11,15 @@
 // set is unchanged are republished byte-for-byte (sync tokens and timestamps
 // preserved), real changes are recorded in dist/v1/changelog.json, and a
 // change that removes most of a service's previously published ranges is
-// quarantined — the previous version keeps serving and the build exits
-// nonzero for humans to review. <out>/BUILD_CHANGED (true|false) tells CI
-// whether deploying is worthwhile.
+// quarantined, so the previous version keeps serving.
+//
+// A quarantine or a failed upstream does NOT fail the build: the service keeps
+// its last-good document, the artifact stays complete, and failing here would
+// only freeze all 45 services to protect one. The build exits nonzero solely
+// when a service ends up with no document at all, which would shrink the
+// published catalog. <out>/BUILD_CHANGED (true|false) tells CI whether
+// deploying is worthwhile; <out>/NEEDS_REVIEW holds "<quarantined> <failed>"
+// for CI to report after the deploy.
 package main
 
 import (
@@ -47,6 +53,11 @@ type buildOptions struct {
 type buildStats struct {
 	Fresh, Unchanged, Changed, Skipped, Failed, Quarantined int
 	BuildChanged                                            bool
+	// Dropped counts services with no document at all: the upstream failed
+	// and there was no previously published version to fall back to. This is
+	// the only per-service condition that must block a publish, because the
+	// published catalog would otherwise silently shrink.
+	Dropped int
 }
 
 func main() {
@@ -99,7 +110,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	if stats.Failed > 0 || stats.Quarantined > 0 {
+	// A quarantine or a failed fetch is a safe, designed state: the service
+	// keeps serving its last-good document and the artifact is complete, so
+	// blocking the publish would only make all 45 services stale to protect
+	// one. CI reads the counts below and reports them after deploying.
+	if stats.Dropped > 0 {
 		os.Exit(1)
 	}
 }
@@ -163,6 +178,7 @@ func runBuild(opts buildOptions) (buildStats, error) {
 			// Fail static: a broken or unreachable upstream must not shrink
 			// the published catalog — keep serving the last-good version.
 			if prev == nil || prev.services[svc.Slug] == nil {
+				stats.Dropped++
 				continue
 			}
 			doc, docBytes = prev.services[svc.Slug], prev.serviceBytes[svc.Slug]
@@ -291,6 +307,12 @@ func runBuild(opts buildOptions) (buildStats, error) {
 		return stats, err
 	}
 	if err := os.WriteFile(filepath.Join(opts.OutDir, "BUILD_CHANGED"), []byte(fmt.Sprintf("%v\n", stats.BuildChanged)), 0o644); err != nil {
+		return stats, err
+	}
+	// Counts CI reports AFTER deploying. These are safe states that still want
+	// a human to look, so they must not gate the deploy itself.
+	if err := os.WriteFile(filepath.Join(opts.OutDir, "NEEDS_REVIEW"),
+		[]byte(fmt.Sprintf("%d %d\n", stats.Quarantined, stats.Failed)), 0o644); err != nil {
 		return stats, err
 	}
 	// Human landing page at the feed root, with per-purpose entry counts so

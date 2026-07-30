@@ -202,4 +202,36 @@ func TestQuarantineKeepsPreviousVersion(t *testing.T) {
 	if s.BuildChanged {
 		t.Error("BUILD_CHANGED should be false when the only change is quarantined")
 	}
+	// A quarantine must NOT block the publish. Databricks shrank 72% on
+	// 2026-07-29 and the nonzero exit froze all 45 services for six hours
+	// while the artifact itself was complete and correct the whole time.
+	if s.Dropped != 0 {
+		t.Errorf("Dropped = %d, want 0: a quarantined service still has a document", s.Dropped)
+	}
+	// The counts CI reports after deploying.
+	if got := string(mustRead(t, filepath.Join(dist2, "NEEDS_REVIEW"))); got != "1 0\n" {
+		t.Errorf("NEEDS_REVIEW = %q, want \"1 0\\n\"", got)
+	}
+}
+
+// TestDroppedServiceBlocksPublish covers the one per-service condition that
+// must still fail the build: an upstream failure with no previously published
+// version, which would publish a catalog missing that service entirely.
+func TestDroppedServiceBlocksPublish(t *testing.T) {
+	fixtures := copyFixtures(t)
+	// Remove one endpoint's fixture so the service cannot build, with no
+	// -previous to fall back to, which is the fresh-publish case.
+	if err := os.Remove(filepath.Join(fixtures, "stripe-api.data")); err != nil {
+		t.Fatal(err)
+	}
+	s, err := runBuild(buildOpts(t, fixtures, t.TempDir(), ""))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if s.Dropped == 0 {
+		t.Fatalf("stats = %+v, want at least one dropped service", s)
+	}
+	if s.Failed == 0 {
+		t.Errorf("stats = %+v, want the drop counted as a failure too", s)
+	}
 }

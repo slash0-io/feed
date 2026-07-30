@@ -25,6 +25,7 @@ jobs:
     outputs:
       changed: ${{ steps.diff.outputs.changed }}
       public: ${{ steps.vis.outputs.public }}
+      review: ${{ steps.diff.outputs.review }}
     steps:
       # Pages can't serve from a private repo (free plan), so skip deploys, not
       # builds, until the repo goes public.
@@ -39,7 +40,10 @@ jobs:
           go-version-file: go.mod
       - name: Build feed incrementally against the published version
         # Unchanged services republish byte-for-byte; mass removals are
-        # quarantined (nonzero exit) with the last-good version still served.
+        # quarantined with the last-good version still served. A quarantine
+        # does NOT fail this step: the artifact stays complete and freezing
+        # every service to protect one is worse. The needs-review job below
+        # reports it after the deploy has gone out.
         # The checked-in changelog floor is merged in so history survives a
         # bad publish. GITHUB_TOKEN authenticates only the github service's
         # api.github.com/meta fetch (unauthenticated runner IPs get 403
@@ -49,7 +53,9 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
       - name: Detect content change
         id: diff
-        run: echo "changed=$(head -c5 dist/BUILD_CHANGED | tr -d '\n')" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "changed=$(head -c5 dist/BUILD_CHANGED | tr -d '\n')" >> "$GITHUB_OUTPUT"
+          echo "review=$(tr -d '\n' < dist/NEEDS_REVIEW)" >> "$GITHUB_OUTPUT"
       # KMS-held signing key (non-exportable; sign-only OIDC role) writes
       # the only index signature; inert until the AWS_SIGN_ROLE_ARN repo
       # variable is set. Runs only on deploying builds: ECDSA signatures are
@@ -89,3 +95,29 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # Runs after the deploy so a quarantine is still loud without making the
+  # whole feed stale. Fresh data ships first; then the run goes red.
+  needs-review:
+    needs: [build, deploy]
+    if: always() && needs.build.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Report quarantined or failed services
+        # Passed via env rather than interpolated into the script body, so the
+        # value can never be treated as shell.
+        env:
+          REVIEW: ${{ needs.build.outputs.review }}
+        run: |
+          set -- $REVIEW
+          quarantined="${1:-0}"; failed="${2:-0}"
+          if [ "$quarantined" -gt 0 ]; then
+            echo "::error::$quarantined service(s) quarantined by the removal guardrail. Last-good versions are still serving. Review the build log, then either accept the change or fix the source."
+          fi
+          if [ "$failed" -gt 0 ]; then
+            echo "::error::$failed service(s) failed to build and are serving their last-good version."
+          fi
+          if [ "$quarantined" -gt 0 ] || [ "$failed" -gt 0 ]; then
+            exit 1
+          fi
+          echo "No services need review."
