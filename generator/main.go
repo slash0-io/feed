@@ -188,7 +188,8 @@ func runBuild(opts buildOptions) (buildStats, error) {
 			stats.Unchanged++
 			log.Printf("OK   %-16s unchanged", svc.Slug)
 		case prev != nil && prev.services[svc.Slug] != nil:
-			if reason := quarantineReason(prev.services[svc.Slug].Purposes, built.Purposes, opts.MaxRemovedFrac, opts.MinGuardCount); reason != "" {
+			maxFrac := guardFracFor(svc, opts.MaxRemovedFrac)
+			if reason := quarantineReason(prev.services[svc.Slug].Purposes, built.Purposes, maxFrac, opts.MinGuardCount); reason != "" {
 				doc, docBytes = prev.services[svc.Slug], prev.serviceBytes[svc.Slug]
 				stats.Quarantined++
 				log.Printf("QUAR %-16s %s — keeping previously published version", svc.Slug, reason)
@@ -434,4 +435,18 @@ func buildService(svc SourceService, fetcher *Fetcher, generatedAt, syncToken st
 func sha256hex(b []byte) string {
 	h := sha256.Sum256(b)
 	return hex.EncodeToString(h[:])
+}
+
+// guardFracFor resolves the removal threshold for one service: its own guard
+// override when set, otherwise the global default. An active override warns on
+// every run, because one left in place silently disarms the only protection
+// against a vendor publishing a truncated list.
+func guardFracFor(svc SourceService, defaultFrac float64) float64 {
+	g := svc.Guard
+	if g == nil || g.MaxRemovedFrac == nil {
+		return defaultFrac
+	}
+	log.Printf("warning: %s: removal guardrail relaxed to %.0f%% — remove the guard override in sources.yaml once the change has published (%s)",
+		svc.Slug, *g.MaxRemovedFrac*100, strings.TrimSpace(g.Reason))
+	return *g.MaxRemovedFrac
 }

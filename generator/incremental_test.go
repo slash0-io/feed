@@ -235,3 +235,61 @@ func TestDroppedServiceBlocksPublish(t *testing.T) {
 		t.Errorf("stats = %+v, want the drop counted as a failure too", s)
 	}
 }
+
+// TestGuardFracForPrefersServiceOverride checks the per-service escape hatch
+// used when a vendor genuinely shrinks their set and a human has verified it.
+// Databricks cut 72% on 2026-07-29 and needed this rather than a global
+// threshold change, which would have disarmed the guardrail for all 45.
+func TestGuardFracForPrefersServiceOverride(t *testing.T) {
+	if got := guardFracFor(SourceService{Slug: "x"}, 0.5); got != 0.5 {
+		t.Errorf("no override: got %v, want the global 0.5", got)
+	}
+	frac := 0.8
+	svc := SourceService{Slug: "x", Guard: &GuardOverride{MaxRemovedFrac: &frac, Reason: "verified"}}
+	if got := guardFracFor(svc, 0.5); got != 0.8 {
+		t.Errorf("with override: got %v, want 0.8", got)
+	}
+	// An override must never tighten silently past the global default either;
+	// it is whatever the file says, so the file is the single source of truth.
+	tight := 0.2
+	svc.Guard.MaxRemovedFrac = &tight
+	if got := guardFracFor(svc, 0.5); got != 0.2 {
+		t.Errorf("tightening override: got %v, want 0.2", got)
+	}
+}
+
+// TestDatabricksOverrideIsDocumented guards the live registry: the override
+// exists to be temporary, so it must always carry its justification.
+func TestDatabricksOverrideIsDocumented(t *testing.T) {
+	reg, err := LoadRegistry("../sources.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, svc := range reg.Services {
+		if svc.Guard == nil {
+			continue
+		}
+		if svc.Guard.Reason == "" {
+			t.Errorf("%s: guard override with no reason", svc.Slug)
+		}
+		if svc.Guard.MaxRemovedFrac == nil {
+			t.Errorf("%s: guard override with no threshold", svc.Slug)
+		}
+		t.Logf("active guard override: %s at %.0f%%", svc.Slug, *svc.Guard.MaxRemovedFrac*100)
+	}
+}
+
+// TestGuardOverrideNeedsReason keeps an override from being left in place
+// without saying why, which is how a disarmed guardrail becomes permanent.
+func TestGuardOverrideNeedsReason(t *testing.T) {
+	dir := t.TempDir()
+	path := filepath.Join(dir, "sources.yaml")
+	frac := "0.9"
+	body := "schema_version: 1\nservices:\n  - slug: x\n    name: X\n    category: cloud\n    classification: dedicated\n    provenance: https://example.com\n    guard:\n      max_removed_frac: " + frac + "\n"
+	if err := os.WriteFile(path, []byte(body), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := LoadRegistry(path); err == nil {
+		t.Fatal("a guard override with no reason should fail to load")
+	}
+}

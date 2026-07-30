@@ -802,6 +802,18 @@ services:
     cadence: "can change as often as every 30 days; updated IPs active >=60 days after publication (documented grace window)"
     notice: "60 days before updated IPs activate"
     notice_evidence: https://docs.databricks.com/aws/en/resources/ip-domain-region
+    guard:
+      max_removed_frac: 0.8
+      reason: >
+        Databricks consolidated their published space on 2026-07-29T18:01:18Z,
+        cutting purpose "all" from 3021 to 849 ranges (72%), which tripped the
+        default 50% guardrail. Verified before accepting: the new set is a
+        strict SUBSET of the old (2173 nets / 52,512 addresses removed, ZERO
+        added), so no consumer loses reachability; the payload is structurally
+        healthy with MORE groups (182 vs 179) and regions (110 vs 108) than our
+        July fixture, which a truncated publish would not produce; and upstream
+        stayed byte-identical for 23h afterwards rather than being corrected.
+        REMOVE THIS OVERRIDE once the change has published.
     endpoints:
       - id: main
         url: https://www.databricks.com/networking/v1/ip-ranges.json

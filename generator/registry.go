@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -27,6 +28,18 @@ type SourceService struct {
 	Endpoints      []Endpoint `yaml:"endpoints"`
 	Verified       string     `yaml:"verified"`
 	NeedsAttention string     `yaml:"needs_attention"`
+	// Guard relaxes the mass-removal guardrail for this service only, for
+	// the case where a vendor has genuinely published a large shrink and a
+	// human has verified it. Global thresholds stay put for everyone else.
+	Guard *GuardOverride `yaml:"guard"`
+}
+
+// GuardOverride is deliberately noisy: the generator warns on every run while
+// one is set, because an override left in place silently disarms the only
+// protection against a vendor publishing a truncated list.
+type GuardOverride struct {
+	MaxRemovedFrac *float64 `yaml:"max_removed_frac"`
+	Reason         string   `yaml:"reason"`
 }
 
 type Endpoint struct {
@@ -76,6 +89,23 @@ func LoadRegistry(path string) (*Registry, error) {
 	}
 	if r.SchemaVersion != 1 {
 		return nil, fmt.Errorf("%s: unsupported schema_version %d", path, r.SchemaVersion)
+	}
+	for _, svc := range r.Services {
+		g := svc.Guard
+		if g == nil {
+			continue
+		}
+		// A relaxed guardrail without a stated reason is how one gets left in
+		// place forever, so it is a build error rather than a warning.
+		if strings.TrimSpace(g.Reason) == "" {
+			return nil, fmt.Errorf("%s: guard override needs a reason", svc.Slug)
+		}
+		if g.MaxRemovedFrac == nil {
+			return nil, fmt.Errorf("%s: guard override sets no max_removed_frac", svc.Slug)
+		}
+		if f := *g.MaxRemovedFrac; f < 0 || f > 1 {
+			return nil, fmt.Errorf("%s: guard max_removed_frac %v out of range 0..1", svc.Slug, f)
+		}
 	}
 	return &r, nil
 }
