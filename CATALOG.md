@@ -46,11 +46,11 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
 | `braintree` | Braintree (PayPal) | dedicated | `api` (egress), `sandbox` (egress) | [official ↗](https://developer.paypal.com/braintree/docs/reference/general/braintree-ip-addresses) |
-| `checkout-com` | Checkout.com (webhooks) | mixed | `webhooks` (ingress) | [official ↗](https://www.checkout.com/docs/developer-resources/ip-addresses) |
+| `checkout-com` | Checkout.com | mixed | `webhooks` (ingress) | [official ↗](https://www.checkout.com/docs/developer-resources/ip-addresses) |
 | `paypal` | PayPal | dedicated | `all` (both) | [official ↗](https://www.paypal.com/us/cshelp/article/what-are-the-internet-protocol-ip-addresses-for-paypal-server-endpoints-ts1056) |
 | `plaid` | Plaid | dedicated | `webhooks` (ingress) | [official ↗](https://plaid.com/docs/api/webhooks/) |
 | `stripe` | Stripe | dedicated | `api` (egress), `terminal` (egress), `webhooks` (ingress) | [official ↗](https://docs.stripe.com/ips) |
-| `wise` | Wise (webhook delivery) | dedicated | `webhooks-sandbox` (ingress), `webhooks` (ingress) | [official ↗](https://docs.wise.com/api-docs/features/webhooks-notifications) |
+| `wise` | Wise | dedicated | `webhooks-sandbox` (ingress), `webhooks` (ingress) | [official ↗](https://docs.wise.com/api-docs/features/webhooks-notifications) |
 
 ## Observability
 

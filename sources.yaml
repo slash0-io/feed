@@ -394,7 +394,7 @@ services:
     verified: "2026-07-11"
 
   - slug: checkout-com
-    name: Checkout.com (webhooks)
+    name: Checkout.com
     category: payments
     classification: mixed
     provenance: https://www.checkout.com/docs/developer-resources/ip-addresses
@@ -418,7 +418,7 @@ services:
     verified: "2026-07-30"
 
   - slug: wise
-    name: Wise (webhook delivery)
+    name: Wise
     category: payments
     classification: dedicated
     provenance: https://docs.wise.com/api-docs/features/webhooks-notifications
