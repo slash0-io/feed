@@ -50,7 +50,14 @@ Add an entry to `sources.yaml` (official vendor endpoint only, with a provenance
 
 ## Roadmap
 
-Push-based rebuilds (AWS SNS, Microsoft 365 `/version`), sub-minute polling via a long-lived poller (a GitHub Actions cron floors at roughly five minutes), parser upgrades where a vendor has since published a better source than the one being read, and the research backlog in `sources.yaml`: 23 candidates under `needs_research` plus 8 recorded dead ends worth revisiting.
+Push-based rebuilds (AWS SNS, Microsoft 365 `/version`), sub-minute polling via a long-lived poller (a GitHub Actions cron floors at roughly five minutes), and parser upgrades where a vendor has since published a better source than the one being read.
+
+Two source types that vendor research has shown are needed:
+
+- **Set subtraction across endpoints.** Google publishes `goog.json` and `cloud.json` and documents everything else as the difference between them, so a Workspace purpose is `goog` minus `cloud`. A purpose currently reads one endpoint, so this cannot be expressed.
+- **DNS as a source.** Oracle documents `outboundips.netsuite.com` rather than a list as the way to track NetSuite outbound addresses. It answers with 41 A records, which exceeds a 512-byte UDP response, so an implementation needs EDNS0 or TCP and must treat a short answer as a fetch failure rather than as a removal.
+
+Vendors still unresolved are tracked in the `backlog` block of `sources.yaml`, grouped by why: `blocked` where the vendor publishes but the document is unreachable, `no_source_found` where nothing public exists, `non_publisher_candidates` where a per-customer source exists and only an evidence URL is missing, and `declined`.
 
 ## License
 

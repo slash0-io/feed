@@ -158,6 +158,46 @@ func TestParserSpotChecks(t *testing.T) {
 		t.Errorf("anthropic outbound contains phased-out 34.162.46.92/32: %v", v4out)
 	}
 
+	// AppDynamics puts both directions under one region heading: the addresses
+	// its platform connects FROM sit beside the Synthetic Server addresses an
+	// agent connects TO. A heading select cannot tell them apart, so the
+	// from= marker must, and the two purposes must stay disjoint.
+	body, ep = get("appdynamics", "docs")
+	rawSrc, err := parsers[ep.Format](body, "section=*;from=All traffic originating from")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v4src, _ := normalize(rawSrc, func(string, ...any) {})
+	rawAgents, err := parsers[ep.Format](body, "section=Synthetic Hosted Agents")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v4agents, _ := normalize(rawAgents, func(string, ...any) {})
+	if len(v4src) != 27 {
+		t.Errorf("appdynamics platform-sources = %d ranges, want 27", len(v4src))
+	}
+	for _, dest := range []string{"52.40.35.5/32", "52.201.103.47/32", "52.48.243.82/32"} {
+		if contains(v4src, dest) {
+			t.Errorf("appdynamics platform-sources contains Synthetic Server destination %s", dest)
+		}
+	}
+	// Smartlook is a different vendor entirely and must never be published here.
+	for _, sl := range []string{"52.39.171.210/32", "52.59.31.101/32"} {
+		if contains(v4src, sl) || contains(v4agents, sl) {
+			t.Errorf("appdynamics publishes third-party Smartlook address %s", sl)
+		}
+	}
+	for _, a := range v4agents {
+		if contains(v4src, a) {
+			t.Errorf("appdynamics purposes overlap on %s: ingress sources and hosted agents must be disjoint", a)
+		}
+	}
+	// A marker that matches nothing must fail loudly. Publishing zero ranges is
+	// how a page reorganisation becomes a silent mass removal.
+	if _, err := parsers[ep.Format](body, "section=*;from=no such lead-in sentence"); err == nil {
+		t.Error("html-cidr-extract: unmatched from= marker returned no error")
+	}
+
 	// GitLab docs: the "IP range" section is exactly two dedicated ranges.
 	body, ep = get("gitlab", "docs")
 	raw, err = parsers[ep.Format](body, "section=IP range")

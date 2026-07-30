@@ -75,6 +75,7 @@ published here, so it scores none.
 | [Braintree (PayPal)](https://developer.paypal.com/braintree/docs/reference/general/braintree-ip-addresses) | JSON | full download | none documented | none | egress |
 | [Braze](https://www.braze.com/docs/user_guide/messaging/design_and_edit/personalize/connected_content/making_an_api_call) | docs page | page extraction | none documented | none | ingress |
 | [Buildkite](https://buildkite.com/docs/apis/rest-api/meta) | JSON | conditional GET | [7 days, vendor says it will try](https://buildkite.com/docs/apis/rest-api/meta) | none | ingress |
+| [Checkout.com (webhooks)](https://www.checkout.com/docs/developer-resources/ip-addresses) | docs page | page extraction | none documented | none | ingress |
 | [CircleCI](https://circleci.com/docs/guides/security/ip-ranges/) | JSON | full download | [30 days](https://circleci.com/docs/guides/security/ip-ranges/) | [email to customers with a job opted into the IP ranges feature](https://circleci.com/docs/guides/security/ip-ranges/) | egress + ingress |
 | [Cloudflare](https://www.cloudflare.com/ips/) | JSON | conditional GET | none documented | none | egress + ingress |
 | [Databricks](https://docs.databricks.com/aws/en/resources/ip-domain-region) | JSON | full download | [60 days before updated IPs activate](https://docs.databricks.com/aws/en/resources/ip-domain-region) | none | egress + ingress |
@@ -85,8 +86,8 @@ published here, so it scores none.
 | [Fastly](https://www.fastly.com/documentation/reference/api/utils/public-ip-list/) | JSON | full download | none documented | [fastlystatus.com subscription ('IP address announcement' category)](https://www.fastly.com/documentation/reference/api/utils/public-ip-list/) | egress + ingress |
 | [GitHub](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-githubs-ip-addresses) | JSON | conditional GET | none documented | none | egress + ingress |
 | [GitLab.com](https://docs.gitlab.com/user/gitlab_com/) | docs page | page extraction | none documented | [gitlab.com/gitlab-org/gitlab commits atom feed for doc/user/gitlab_com/_index.md](https://gitlab.com/gitlab-org/gitlab/-/raw/master/doc/user/gitlab_com/_index.md) (docs repo) | egress + ingress |
-| [Google (all services)](https://support.google.com/a/answer/10026322) | JSON | conditional GET | none documented | none | egress |
-| [Google Cloud Platform](https://support.google.com/a/answer/10026322) | JSON | conditional GET | none documented | none | egress |
+| [Google (all services)](https://knowledge.workspace.google.com/admin/security/obtain-google-ip-address-ranges) | JSON | conditional GET | none documented | none | egress |
+| [Google Cloud Platform](https://knowledge.workspace.google.com/admin/security/obtain-google-ip-address-ranges) | JSON | conditional GET | none documented | none | egress |
 | [Grafana Cloud](https://grafana.com/docs/grafana-cloud/security-and-account-management/allow-list/) | text | full download | none documented | none | ingress |
 | [HubSpot](https://developers.hubspot.com/docs/api-reference/2026-09-beta/account/ip-ranges/guide) | JSON | full download | none documented | none | ingress |
 | [IBM Cloud (Classic infrastructure)](https://cloud.ibm.com/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges) | docs page | page extraction | none documented | none | egress |
@@ -100,6 +101,7 @@ published here, so it scores none.
 | [Okta](https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm) | JSON | conditional GET | none documented | none | egress + ingress |
 | [OpenAI (ChatGPT egress)](https://developers.openai.com/api/docs/guides/ip-addresses) | JSON | full download | none documented | none | ingress |
 | [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/addressranges.htm) | JSON | conditional GET | none documented | none | egress |
+| [Oracle NetSuite Connector](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162859452018.html) | docs page | page extraction | none documented | none | ingress |
 | [PagerDuty](https://support.pagerduty.com/main/docs/safelist-ips) | JSON | conditional GET | none documented | none | ingress |
 | [PayPal](https://www.paypal.com/us/cshelp/article/what-are-the-internet-protocol-ip-addresses-for-paypal-server-endpoints-ts1056) | docs page | page extraction | none documented | none | egress + ingress |
 | [Plaid](https://plaid.com/docs/api/webhooks/) | docs page | page extraction | none documented | none | ingress |
@@ -107,10 +109,12 @@ published here, so it scores none.
 | [Rapid7 (InsightAppSec cloud engines)](https://docs.rapid7.com/insightappsec/allowlist-cloud-engine-ips/) | docs page | page extraction | none documented | none | ingress |
 | [Salesforce](https://help.salesforce.com/s/articleView?id=000384438 (IP Addresses and Domains to Allow)) | JSON | conditional GET | none documented | none | egress + ingress |
 | [Sentry (hosted)](https://docs.sentry.io/security-legal-pii/security/ip-ranges/) | docs page | page extraction | none documented | [github.com/getsentry/sentry-docs commits feed for the ip-ranges page source](https://github.com/getsentry/sentry-docs/blob/master/docs/security-legal-pii/security/ip-ranges.mdx) (docs repo) | egress + ingress |
+| [Splunk AppDynamics SaaS](https://help.splunk.com/en/appdynamics-saas/product-announcements-and-alerts/saas-domains-and-ip-ranges) | docs page | page extraction | none documented | none | ingress |
 | [Stripe](https://docs.stripe.com/ips) | JSON | full download | [7 days, by mailing list](https://docs.stripe.com/ips) | [stripe.com/ips mailing list (seven days notice before changes)](https://docs.stripe.com/ips) | egress + ingress |
 | [Tenable (Vulnerability Management)](https://docs.tenable.com/vulnerability-management/Content/Settings/Sensors/CloudSensors.htm) | JSON | conditional GET | none documented | none | ingress |
 | [Twilio Elastic SIP Trunking](https://www.twilio.com/docs/sip-trunking/ip-addresses) | docs page | page extraction | none documented | none | egress + ingress |
 | [Vultr (Constant, AS20473)](https://geofeed.constant.com/) | CSV | full download | none documented | none | egress |
+| [Wise (webhook delivery)](https://docs.wise.com/api-docs/features/webhooks-notifications) | docs page | page extraction | none documented | none | ingress |
 | [Zendesk](https://developer.zendesk.com/api-reference/ticketing/account-configuration/public_ips/) | JSON | full download | none documented | none | egress + ingress |
 | [Zoom](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060548) | text | conditional GET | none documented | none | egress |
 | [Zscaler (zscaler.net cloud)](https://config.zscaler.com/) | JSON | conditional GET | none documented | none | egress |
@@ -185,17 +189,30 @@ named vendor, so each row links the page stating it.
 | Service | Vendor's stated position |
 |---|---|
 | [Adyen](https://help.adyen.com/knowledge/ecommerce-integrations/webhooks/what-ip-addresses-does-adyen-use-to-send-webhook-events) | No IP list; allowlist out.adyen.com or resolve it via DNS hourly (their words). |
+| [Aiven](https://aiven.io/docs/platform/concepts/static-ips) | Services are addressed by hostname; static IP addresses are a paid per-project resource created and attached with the avn static-ip CLI, not a public range list. |
 | [Akamai (CDN)](https://techdocs.akamai.com/site-shield/docs/welcome-site-shield) | Site Shield issues a per-customer set of IP subnet ranges (a map) retrieved through Akamai Control Center or the Site Shield API, rather than one public global list. |
+| [Alibaba Cloud](https://www.alibabacloud.com/help/en/dms/configure-an-ip-address-whitelist) | Publishes per-service ingress lists, such as this per-region table for Data Management Service, rather than a provider-wide range file of the kind AWS, Azure and Google publish. |
 | [Box](https://support.box.com/hc/en-us/articles/360043696434-Configuring-A-Firewall-For-Box-Applications-and-Services) | Use domain names; 'IP addresses can change frequently and without notice' (their wording). No webhook source ranges published. |
+| [CockroachDB Cloud](https://www.cockroachlabs.com/docs/cockroachcloud/network-authorization) | The documented controls are an allowlist of your own authorized networks and private connectivity through AWS PrivateLink, GCP Private Service Connect or Azure Private Link. |
+| [Confluent Cloud](https://docs.confluent.io/cloud/current/networking/static-egress-ip-addresses.html) | Public egress addresses are read from the Cloud Console or the authenticated Cloud REST API (api.confluent.cloud/networking/v1/ip-addresses), are shared by every customer in the same cloud and region, and are 'not guaranteed to be static' (their wording). |
+| [Docker Hub / Docker Desktop](https://docs.docker.com/desktop/setup/allow-list/) | Publishes an allowlist of domain URLs rather than addresses; the page lists hostnames only. Reproducible on the data plane: registry-1.docker.io resolves into rotating AWS us-east-1 EC2 addresses, a different set on each query (verified 2026-07-30). |
+| [Honeycomb](https://docs.honeycomb.io/security-compliance/security-data-protection/) | Offers AWS PrivateLink to the Honeycomb API for Enterprise customers on AWS. No range list is published in the docs. |
+| [Mailchimp Transactional (Mandrill) webhooks](https://mailchimp.com/developer/transactional/docs/webhooks/) | Directs users to authenticate that a webhook originated from Mailchimp's servers using the documented request-signature flow. The /ips/ API returns your own dedicated sending addresses, which is a different thing from webhook sources. |
 | [MongoDB Atlas (data plane)](https://www.mongodb.com/docs/atlas/reference/faq/networking/) | Cluster IPs are per-project/dynamic; control-plane IPs only via authenticated Admin API. Vendor directs users to private endpoints (PrivateLink). |
 | [Netlify (function egress)](https://docs.netlify.com/manage/security/private-connectivity/) | States that by default the addresses builds and functions connect from 'will fluctuate when we scale up and down'. A static set is available only through the Private Connectivity add-on on Enterprise plans. |
 | [OpenAI API (api.openai.com)](https://www.cloudflare.com/ips/) | api.openai.com resolves into Cloudflare's published ranges (verified 2026-07-30: 172.66.0.243 within 172.64.0.0/13, 162.159.140.245 within 162.158.0.0/15), so pinning it would allowlist the whole CDN rather than OpenAI. |
+| [Oracle NetSuite (platform)](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_N251955.html) | States plainly that Oracle 'does not support the use of NetSuite IP addresses to access or manage access to any NetSuite services', that outbound addresses are 'not documented in the NetSuite Help Center or in SuiteAnswers', and that *.netsuite.com is CDN-fronted. Directs users to 2FA, token-based auth and OAuth 2.0 instead, or to a DNS lookup on outboundips.netsuite.com. NetSuite Connector IS published, see the netsuite-connector service. |
+| [Palo Alto Networks Prisma Access](https://docs.paloaltonetworks.com/prisma-access/administration/prisma-access-setup/retrieve-ip-addresses-for-prisma-access) | Egress addresses are allocated per tenant and retrieved with your own API key from api.prod.datapath.prismaaccess.com, or read per location in the Prisma Access UI. |
+| [PlanetScale](https://planetscale.com/docs/imports/import-tool-migration-addresses) | The addresses to allowlist are shown in the console during the import workflow, differ by region, and the vendor directs users to read them there each time because they 'can change occasionally'. |
+| [Redis Cloud](https://redis.io/docs/latest/operate/rc/security/cidr-whitelist/) | The CIDR allow list restricts which of your own addresses may reach your database, between 4 and 32 entries depending on plan. Redis publishes no ranges of its own. |
 | [SendGrid (webhooks/parse)](https://support.sendgrid.com/hc/en-us/articles/44375457225371) | Dynamic cloud infra; use signed webhooks, not IP allowlists. |
 | [Shopify (webhooks)](https://shopify.dev/docs/apps/build/webhooks/verify-deliveries) | Documents HMAC-SHA256 signature verification as the way to authenticate a webhook. The page does not mention source IPs, and no official range list was found as of the verified date. |
 | [Slack](https://docs.slack.dev/concepts/security/) | No published egress IPs; their allowlisting feature restricts YOUR IPs calling THEM. |
 | [Snowflake](https://docs.snowflake.com/en/sql-reference/functions/system_allowlist) | Deployment-specific hostnames/IPs per account; no global list. |
+| [Splunk Cloud Platform](https://help.splunk.com/en?resourceId=SplunkCloud_Config_ConfigureIPAllowList) | The documented control is an IP allow list restricting which addresses on your own network reach each Splunk feature, managed through the Admin Config Service API. Splunk publishes no ranges of its own for the stack. |
 | [Square (webhooks)](https://developer.squareup.com/docs/webhooks/step3validate) | No webhook source-IP list published; validate notifications via the documented HMAC-SHA256 signature flow. |
 | [Sumo Logic](https://support.sumologic.com/hc/en-us/articles/360012685393-How-to-allow-or-enable-IP-ranges-for-Sumo-Logic-endpoints) | No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region), covered by the aws service. |
+| [Supabase](https://supabase.com/docs/guides/platform/ipv4-address) | States that 'IPv4 addresses are guaranteed to be static for ingress traffic' through a per-project paid add-on, while 'the outbound IP address is not static and cannot be guaranteed'. |
 | [Twilio (REST API + webhooks)](https://support.twilio.com/hc/en-us/articles/115015934048-All-About-Twilio-IP-Addresses) | IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking IS pinnable, see the twilio-sip service. |
 | [Vercel (function egress)](https://vercel.com/docs/networking/static-ips) | Dynamic by default; static IPs are a paid per-customer feature, not a public range. |
 
@@ -227,17 +244,28 @@ named vendor, so each row links the page stating it.
 
 ## Backlog
 
-`sources.yaml → backlog` holds 23 candidates under `needs_research` (Alibaba
-Cloud, Workday, ServiceNow, NetSuite, CrowdStrike, SentinelOne, Palo Alto,
-JFrog, Confluent, Aiven, and others) plus 8 recorded dead ends under
-`partially_verified`.
+`sources.yaml → backlog` groups what is left by the reason it is unresolved,
+because those reasons call for different work:
+
+- `blocked`: the vendor publishes a real list and the document is unreachable,
+  usually behind a customer login or a docs portal that renders nothing without
+  JavaScript. These are never recorded as non-publishers, which would be a false
+  claim about the vendor.
+- `no_source_found`: researched, nothing public located, and no vendor page
+  stating a position that could be cited. That missing citation is precisely why
+  they are not non-publishers either.
+- `non_publisher_candidates`: a real source exists but is per-customer or
+  authenticated. Each becomes a non-publisher as soon as someone fetches an
+  evidence URL for it.
+- `declined`: product decisions, recorded so they are not researched again.
+
+Generator features that this research surfaced are tracked in the README
+roadmap rather than here, so that they get scheduled as engineering work.
 
 Resolved in earlier passes: Zendesk, PayPal, Vultr and DocuSign integrated as
-publishers; Box and Sumo Logic documented as non-publishers; Dynatrace recorded
-as tier D, since its synthetic-location IPs come only from a per-tenant
-authenticated API; Segment, Amplitude and Mixpanel found to have no public
-range documentation; Scaleway, OVH and Hetzner found to expose no geofeeds at
-standard URLs.
+publishers; Box and Sumo Logic documented as non-publishers; Segment, Amplitude
+and Mixpanel found to have no public range documentation; Scaleway, OVH and
+Hetzner found to expose no geofeeds at standard URLs.
 
 A second pass added Buildkite, Tenable, Rapid7, Elastic Cloud, Neon, Klaviyo
 and Twilio SIP Trunking as publishers. A third added Plaid, Netskope (NewEdge)

@@ -8,12 +8,19 @@ import (
 
 // html-cidr-extract: pulls IP ranges out of an official vendor docs page.
 //
-// Select syntax: "section=<substring>[;exclude=<substring>]".
+// Select syntax: "section=<substring>[;exclude=<substring>][;from=<substring>]".
 //   - section matches heading text case-insensitively; the captured region
 //     runs from that heading to the next heading of the same or higher level,
 //     so subsections are included.
 //   - exclude removes any matching sub-heading's region from the capture
 //     (e.g. Anthropic's "Phased out IP addresses").
+//   - from narrows the capture to the text following each occurrence of a
+//     marker sentence, up to the next heading. This exists because vendors
+//     routinely put two directions under one heading: AppDynamics lists the
+//     addresses its platform connects FROM under the same region heading as
+//     the addresses an agent connects TO, distinguished only by the lead-in
+//     "All traffic originating from the <region> Datacenter environment".
+//     Selecting on the heading alone would publish both under one direction.
 //   - "section=*" captures the whole document.
 //
 // Candidate tokens are validated with canonCIDR; anything that doesn't parse
@@ -35,13 +42,16 @@ type headingMark struct {
 }
 
 func parseHTMLCIDRExtract(body []byte, sel string) ([]string, error) {
-	section, exclude, err := parseSectionSelect(sel)
+	section, exclude, from, err := parseSectionSelect(sel)
 	if err != nil {
 		return nil, err
 	}
 
 	html := reScriptStyle.ReplaceAllString(string(body), " ")
 	if section == "*" {
+		if from != "" {
+			return extractAfterMarkers(html, from)
+		}
 		return extractRanges(html), nil
 	}
 
@@ -96,6 +106,14 @@ func parseHTMLCIDRExtract(body []byte, sel string) ([]string, error) {
 			}
 			region = kept.String()
 		}
+		if from != "" {
+			sub, err := extractAfterMarkers(region, from)
+			if err != nil {
+				return nil, err
+			}
+			out = append(out, sub...)
+			continue
+		}
 		out = append(out, extractRanges(region)...)
 	}
 	if !matched {
@@ -104,7 +122,36 @@ func parseHTMLCIDRExtract(body []byte, sel string) ([]string, error) {
 	return out, nil
 }
 
-func parseSectionSelect(sel string) (section, exclude string, err error) {
+// extractAfterMarkers captures, for every occurrence of marker, the ranges in
+// the text between it and the next heading. A marker that matches nothing is an
+// error rather than an empty result: silently publishing zero ranges is how a
+// vendor's page reorganisation turns into an unnoticed mass removal.
+func extractAfterMarkers(fragment, marker string) ([]string, error) {
+	lower := strings.ToLower(fragment)
+	needle := strings.ToLower(marker)
+	var out []string
+	found := false
+	for pos := 0; ; {
+		i := strings.Index(lower[pos:], needle)
+		if i < 0 {
+			break
+		}
+		found = true
+		start := pos + i + len(needle)
+		end := len(fragment)
+		if h := reHeading.FindStringIndex(fragment[start:]); h != nil {
+			end = start + h[0]
+		}
+		out = append(out, extractRanges(fragment[start:end])...)
+		pos = start
+	}
+	if !found {
+		return nil, fmt.Errorf("html-cidr-extract: no text matches from %q", marker)
+	}
+	return out, nil
+}
+
+func parseSectionSelect(sel string) (section, exclude, from string, err error) {
 	for _, part := range strings.Split(sel, ";") {
 		part = strings.TrimSpace(part)
 		if part == "" {
@@ -120,14 +167,16 @@ func parseSectionSelect(sel string) (section, exclude string, err error) {
 			section = strings.TrimSpace(v)
 		case "exclude":
 			exclude = strings.TrimSpace(v)
+		case "from":
+			from = strings.TrimSpace(v)
 		default:
-			return "", "", fmt.Errorf("html-cidr-extract: unknown select key %q", k)
+			return "", "", "", fmt.Errorf("html-cidr-extract: unknown select key %q", k)
 		}
 	}
 	if section == "" {
-		return "", "", fmt.Errorf("html-cidr-extract: select must include section=")
+		return "", "", "", fmt.Errorf("html-cidr-extract: select must include section=")
 	}
-	return section, exclude, nil
+	return section, exclude, from, nil
 }
 
 func containsFold(haystack, needle string) bool {

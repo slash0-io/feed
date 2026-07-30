@@ -1,0 +1,148 @@
+<!DOCTYPE html >
+<html lang="en">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NetSuite Applications Suite - NetSuite Connector IP Addresses to Safelist (Allowlist)</title>
+    <link rel="stylesheet" href="/sp_common/book-template/ohc-book-template/css/book.css">
+    <link rel="stylesheet" href="ns-enhanced.css">
+    <script>
+                 document.write('<style type="text/css">');
+                 document.write('body > .noscript, body > .noscript ~ * { opacity: 0; }');
+                 document.write('</style>');
+      </script>
+    <script data-main="/sp_common/book-template/ohc-book-template/js/book-config" src="/sp_common/book-template/requirejs/require.js"> </script>
+    <script>
+                 if (window.require === undefined) {
+                 document.write('<script data-main="sp_common/book-template/ohc-book-template/js/book-config" src="sp_common/book-template/requirejs/require.js"><\/script>');
+                 document.write('<link href="sp_common/book-template/ohc-book-template/css/book.css" rel="stylesheet"/>');
+                 }
+      </script>
+    <meta property="og:site_name" content="Oracle Help Center">
+    <meta property="og:title" content="NetSuite Applications Suite">
+    <meta property="og:description" content="NetSuite Applications Suite">
+    <meta name="generator" content="Doc Generator v123">
+    <link rel="shortcut icon" href="/sp_common/book-template/ohc-common/img/favicon.ico">
+    <meta name="application-name" content="NetSuite Applications Suite">
+    <link rel="schema.dcterms" href="http://purl.org/dc/terms/">
+    <meta name="dcterms.created" content="2016-05-06T23:01:47Z">
+    <meta name="dcterms.dateCopyrighted" content="2015, 2016">
+    <meta name="dcterms.category" content="cloud">
+    
+    <link rel="prev" href="section_163048972922.html" title="Previous" type="text/html">
+    <link rel="next" href="section_162753685891.html" title="Next" type="text/html">
+    <meta content="all" name="robots">
+    <meta content="yes" name="mos_crawl">
+    <meta content="F41230-01" name="partno">
+    <meta name="rel_num" content="21A">
+    <script type="application/json" id="ssot-metadata">{"primary":{"category":{"short_name":"cloud","element_name":"Cloud","display_in_url":true},"suite":{"short_name":"saas","element_name":"Cloud Applications","display_in_url":true},"product_group":{"short_name":"netsuite-applications","element_name":"NetSuite Applications","display_in_url":false},"product":{"short_name":"netsuite","element_name":"NetSuite","display_in_url":true},"release":{"short_name":"latest","element_name":"Cloud Latest","display_in_url":false}}}</script>
+    
+  
+    <meta name="dcterms.title" content="NetSuite Applications Online Help">
+    <meta name="dcterms.product" content="en/cloud/saas/netsuite">
+    <meta name="dcterms.identifier" content="F41230-75">
+    <meta name="dcterms.release" content="Cloud Latest">
+    <meta name="dcterms.isVersionOf" content="NSOLH">
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"NetSuite Applications Suite - NetSuite Connector IP Addresses to Safelist (Allowlist)","datePublished":"2026-07-10 CST","dateModified":"2026-07-10 CST"}</script>
+    <script>window.ohcglobal || document.write('<script src="/en/dcommon/js/global.js">\x3C/script>')</script></head>
+  <body>
+    <div class="noscript alert alert-danger text-center" role="alert"><a class="pull-left" href="section_163048972922.html"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true">&nbsp;</span>Previous</a><a class="pull-right" href="section_162753685891.html">Next<span class="glyphicon glyphicon-chevron-right" aria-hidden="true">&nbsp;</span></a><span class="fa fa-exclamation-triangle" aria-hidden="true">&nbsp;</span> JavaScript must be enabled to correctly display this content
+				  </div>
+    <article>
+      <header>
+        <ol class="breadcrumb" vocab="http://schema.org/" typeof="BreadcrumbList">
+          <li property="itemListElement" typeof="ListItem">
+            <a href="book_163214400180.html" property="item" typeof="WebPage">
+              <span property="name">NetSuite Connector</span>
+            </a>
+          </li>
+          <li property="itemListElement" typeof="ListItem">
+            <a href="article_164681358277.html" property="item" typeof="WebPage">
+              <span property="name">NetSuite Connector Setup</span>
+            </a>
+          </li>
+          <li class="active" property="itemListElement" typeof="ListItem">NetSuite Connector IP Addresses to Safelist (Allowlist)</li>
+        </ol>
+        <h1 class="sect1">NetSuite Connector IP Addresses to Safelist (Allowlist)</h1>
+      </header>
+      <div class="ns-enhanced-page">
+        <div class="infobox-important">
+          <span class="notep1">Important: </span>
+          <p class="nshelp_first">Oracle NetSuite does not support the use of NetSuite IP addresses to access or manage access to any NetSuite services. There are better alternatives than using a list of allowed IP addresses to manage access to NetSuite. Using IP addresses (either as part of a URL or in your Domain Name Server, or DNS) to access NetSuite services prevents dynamic DNS routing. Understand the following:</p>
+          <ul>
+            <li>
+              <p>The IP addresses of NetSuite services may change at any time without notice.</p>
+            </li>
+            <li>
+              <p>Using IP addresses to directly access NetSuite services can result in unpredictable service outages or significant performance degradation.</p>
+            </li>
+          </ul>
+        </div>
+        <p>When using a cart, server, or other service that is behind a firewall, you may need to add NetSuite Connector IP Addresses to your firewall's safelist or allowlist.</p>
+        <p>If necessary, include the following IP addresses:</p>
+        <ul>
+          <li>
+            <p>158.101.44.97</p>
+          </li>
+          <li>
+            <p>158.101.27.21</p>
+          </li>
+          <li>
+            <p>141.148.149.162</p>
+          </li>
+          <li>
+            <p>52.10.94.111</p>
+          </li>
+          <li>
+            <p>50.112.172.4</p>
+          </li>
+          <li>
+            <p>35.161.153.181</p>
+          </li>
+          <li>
+            <p>44.224.106.183</p>
+          </li>
+          <li>
+            <p>192.241.198.156</p>
+          </li>
+        </ul>
+        <p>Including the above IP addresses to your safelist will enable you to connect to any NetSuite Connector service.</p>
+        <div class="infobox-note">
+          <span class="notep1">Note: </span>
+          <p class="nshelp_first">If you view any of the following issues for a connector, the reason most likely is that the IP addresses are blocked:</p>
+          <ul>
+            <li>
+              <p>Long delays before a failing test or timed out test.</p>
+            </li>
+            <li>
+              <p>403 Forbidden error.</p>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h3>Related Topics</h3>
+          <div>
+            <div>
+              <ul class="ns-enhanced-minitoc">
+                <li>
+                  <span>
+                    <a href="article_164681358277.html">NetSuite Connector Setup</a>
+                  </span>
+                </li>
+                <li>
+                  <span>
+                    <a href="section_163048972922.html">NetSuite Connector Prerequisites</a>
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <p style="margin-top: 60px;">
+          <a rev="chapter_N000004" href="chapter_N000004.html">General Notices</a>
+        </p>
+      </div>
+    </article>
+  </body>
+</html>

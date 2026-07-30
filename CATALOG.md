@@ -27,8 +27,8 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `aws` | Amazon Web Services | dedicated | `all` (egress), `cloudfront` (egress), `dynamodb` (egress), `route53-healthchecks` (ingress), `s3` (egress) | [official ↗](https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html) |
 | `azure` | Microsoft Azure (Service Tags) | dedicated | `all` (egress), `sql` (egress), `storage` (egress) | [official ↗](https://learn.microsoft.com/en-us/azure/virtual-network/service-tags-overview) |
 | `digitalocean` | DigitalOcean | dedicated | `all` (egress) | [official ↗](https://www.digitalocean.com/geo/google.csv) |
-| `google` | Google (all services) | dedicated | `all` (egress) | [official ↗](https://support.google.com/a/answer/10026322) |
-| `google-cloud` | Google Cloud Platform | dedicated | `all` (egress) | [official ↗](https://support.google.com/a/answer/10026322) |
+| `google` | Google (all services) | dedicated | `all` (egress) | [official ↗](https://knowledge.workspace.google.com/admin/security/obtain-google-ip-address-ranges) |
+| `google-cloud` | Google Cloud Platform | dedicated | `all` (egress) | [official ↗](https://knowledge.workspace.google.com/admin/security/obtain-google-ip-address-ranges) |
 | `ibm-cloud` | IBM Cloud (Classic infrastructure) | dedicated | `frontend` (egress), `load-balancers` (egress) | [official ↗](https://cloud.ibm.com/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges) |
 | `linode` | Akamai Connected Cloud (Linode) | dedicated | `all` (egress) | [official ↗](https://geoip.linode.com/) |
 | `oracle-cloud` | Oracle Cloud Infrastructure | dedicated | `all` (egress), `object-storage` (egress) | [official ↗](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/addressranges.htm) |
@@ -46,14 +46,17 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
 | `braintree` | Braintree (PayPal) | dedicated | `api` (egress), `sandbox` (egress) | [official ↗](https://developer.paypal.com/braintree/docs/reference/general/braintree-ip-addresses) |
+| `checkout-com` | Checkout.com (webhooks) | mixed | `webhooks` (ingress) | [official ↗](https://www.checkout.com/docs/developer-resources/ip-addresses) |
 | `paypal` | PayPal | dedicated | `all` (both) | [official ↗](https://www.paypal.com/us/cshelp/article/what-are-the-internet-protocol-ip-addresses-for-paypal-server-endpoints-ts1056) |
 | `plaid` | Plaid | dedicated | `webhooks` (ingress) | [official ↗](https://plaid.com/docs/api/webhooks/) |
 | `stripe` | Stripe | dedicated | `api` (egress), `terminal` (egress), `webhooks` (ingress) | [official ↗](https://docs.stripe.com/ips) |
+| `wise` | Wise (webhook delivery) | dedicated | `webhooks-sandbox` (ingress), `webhooks` (ingress) | [official ↗](https://docs.wise.com/api-docs/features/webhooks-notifications) |
 
 ## Observability
 
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
+| `appdynamics` | Splunk AppDynamics SaaS | mixed | `platform-sources` (ingress), `synthetic-agents` (ingress) | [official ↗](https://help.splunk.com/en/appdynamics-saas/product-announcements-and-alerts/saas-domains-and-ip-ranges) |
 | `datadog` | Datadog | dedicated | `agents-eu` (egress), `agents` (egress), `api-eu` (egress), `api` (egress), `apm` (egress), `logs` (egress), `synthetics` (ingress), `webhooks` (ingress) | [official ↗](https://docs.datadoghq.com/api/latest/ip-ranges/) |
 | `grafana-cloud` | Grafana Cloud | dedicated | `alerts` (ingress), `logs` (ingress), `metrics` (ingress) | [official ↗](https://grafana.com/docs/grafana-cloud/security-and-account-management/allow-list/) |
 | `new-relic` | New Relic | dedicated | `agents` (egress), `synthetics` (ingress) | [official ↗](https://docs.newrelic.com/docs/new-relic-solutions/get-started/networks/) |
@@ -103,6 +106,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `docusign` | DocuSign | mixed | `connect-webhooks` (ingress), `email` (ingress) | [official ↗](https://www.docusign.com/trust/security/esignature) |
 | `hubspot` | HubSpot | dedicated | `api` (ingress), `crawlers` (ingress), `dns` (ingress), `email` (ingress) | [official ↗](https://developers.hubspot.com/docs/api-reference/2026-09-beta/account/ip-ranges/guide) |
 | `microsoft-365` | Microsoft 365 | mixed | `common` (egress), `exchange` (egress), `sharepoint` (egress), `teams` (egress) | [official ↗](https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service) |
+| `netsuite-connector` | Oracle NetSuite Connector | dedicated | `connector` (ingress) | [official ↗](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162859452018.html) |
 | `salesforce` | Salesforce | dedicated | `all` (both) | [official ↗](https://help.salesforce.com/s/articleView?id=000384438 (IP Addresses and Domains to Allow)) |
 | `zendesk` | Zendesk | mixed | `api` (egress), `webhooks` (ingress) | [official ↗](https://developer.zendesk.com/api-reference/ticketing/account-configuration/public_ips/) |
 
@@ -143,5 +147,18 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 | Akamai (CDN) | Site Shield issues a per-customer set of IP subnet ranges (a map) retrieved through Akamai Control Center or the Site Shield API, rather than one public global list. |
 | Box | Use domain names; 'IP addresses can change frequently and without notice' (their wording). No webhook source ranges published. |
 | Sumo Logic | No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region), covered by the aws service. |
+| Oracle NetSuite (platform) | States plainly that Oracle 'does not support the use of NetSuite IP addresses to access or manage access to any NetSuite services', that outbound addresses are 'not documented in the NetSuite Help Center or in SuiteAnswers', and that *.netsuite.com is CDN-fronted. Directs users to 2FA, token-based auth and OAuth 2.0 instead, or to a DNS lookup on outboundips.netsuite.com. NetSuite Connector IS published, see the netsuite-connector service. |
+| Confluent Cloud | Public egress addresses are read from the Cloud Console or the authenticated Cloud REST API (api.confluent.cloud/networking/v1/ip-addresses), are shared by every customer in the same cloud and region, and are 'not guaranteed to be static' (their wording). |
+| Palo Alto Networks Prisma Access | Egress addresses are allocated per tenant and retrieved with your own API key from api.prod.datapath.prismaaccess.com, or read per location in the Prisma Access UI. |
+| Splunk Cloud Platform | The documented control is an IP allow list restricting which addresses on your own network reach each Splunk feature, managed through the Admin Config Service API. Splunk publishes no ranges of its own for the stack. |
+| CockroachDB Cloud | The documented controls are an allowlist of your own authorized networks and private connectivity through AWS PrivateLink, GCP Private Service Connect or Azure Private Link. |
+| Redis Cloud | The CIDR allow list restricts which of your own addresses may reach your database, between 4 and 32 entries depending on plan. Redis publishes no ranges of its own. |
+| Aiven | Services are addressed by hostname; static IP addresses are a paid per-project resource created and attached with the avn static-ip CLI, not a public range list. |
+| Supabase | States that 'IPv4 addresses are guaranteed to be static for ingress traffic' through a per-project paid add-on, while 'the outbound IP address is not static and cannot be guaranteed'. |
+| PlanetScale | The addresses to allowlist are shown in the console during the import workflow, differ by region, and the vendor directs users to read them there each time because they 'can change occasionally'. |
+| Docker Hub / Docker Desktop | Publishes an allowlist of domain URLs rather than addresses; the page lists hostnames only. Reproducible on the data plane: registry-1.docker.io resolves into rotating AWS us-east-1 EC2 addresses, a different set on each query (verified 2026-07-30). |
+| Mailchimp Transactional (Mandrill) webhooks | Directs users to authenticate that a webhook originated from Mailchimp's servers using the documented request-signature flow. The /ips/ API returns your own dedicated sending addresses, which is a different thing from webhook sources. |
+| Honeycomb | Offers AWS PrivateLink to the Honeycomb API for Enterprise customers on AWS. No range list is published in the docs. |
+| Alibaba Cloud | Publishes per-service ingress lists, such as this per-region table for Data Management Service, rather than a provider-wide range file of the kind AWS, Azure and Google publish. |
 
 Evidence links for every row: [`sources.yaml`](sources.yaml) · methodology: [`research/SOURCES.md`](research/SOURCES.md)

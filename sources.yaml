@@ -57,7 +57,7 @@ services:
     name: Google Cloud Platform
     category: cloud
     classification: dedicated
-    provenance: https://support.google.com/a/answer/10026322
+    provenance: https://knowledge.workspace.google.com/admin/security/obtain-google-ip-address-ranges
     cadence: "regenerated frequently (roughly daily); syncToken/creationTime in file"
     endpoints:
       - id: cloud
@@ -72,9 +72,16 @@ services:
     name: Google (all services)
     category: cloud
     classification: dedicated
-    provenance: https://support.google.com/a/answer/10026322
+    provenance: https://knowledge.workspace.google.com/admin/security/obtain-google-ip-address-ranges
     cadence: "regenerated frequently (roughly daily)"
-    notes: "goog.json is the superset of all Google netblocks; Google documents goog-minus-cloud as the set for Google APIs/Workspace default domains."
+    notes: >
+      goog.json is the superset of all Google netblocks. Google publishes exactly two
+      files, goog.json and cloud.json, and documents the derivation for everything else:
+      "To obtain the net list of default domain IP ranges, subtract the ranges in the
+      second list from the ranges in the first list." Google Workspace is therefore not a
+      separate publication, it is goog minus cloud, which is why there is no
+      google-workspace service. Computing that purpose here would need cross-endpoint set
+      subtraction, which the generator does not have; see the README roadmap.
     endpoints:
       - id: goog
         url: https://www.gstatic.com/ipranges/goog.json
@@ -386,6 +393,53 @@ services:
           - {key: webhooks, direction: ingress, select: "section=Configuring webhooks"}
     verified: "2026-07-11"
 
+  - slug: checkout-com
+    name: Checkout.com (webhooks)
+    category: payments
+    classification: mixed
+    provenance: https://www.checkout.com/docs/developer-resources/ip-addresses
+    cadence: "irregular; page carries a 'Last updated' date, February 15 2023 as of the verified date"
+    notes: >
+      Webhook sources only. The API list on the same page is Fastly-fronted: 19 of its 43
+      distinct entries are exactly Fastly's published ranges, each one verified as a subnet
+      of api.fastly.com/public-ip-list on 2026-07-30, so pinning the API would allow every
+      other site behind that CDN. The four machine-readable .txt files the page advertises
+      under "Retrieve IP address lists" all return 404 on both checkout.com and
+      www.checkout.com (verified 2026-07-30), which is why this reads the page itself. The
+      page does honour If-None-Match with a stable ETag, but the tag covers the whole
+      document rather than the lists, so detection stays a hash of the extracted set.
+    endpoints:
+      - id: docs
+        url: https://www.checkout.com/docs/developer-resources/ip-addresses
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: webhooks, direction: ingress, select: "section=Receive webhook notifications"}
+    verified: "2026-07-30"
+
+  - slug: wise
+    name: Wise (webhook delivery)
+    category: payments
+    classification: dedicated
+    provenance: https://docs.wise.com/api-docs/features/webhooks-notifications
+    cadence: "irregular; no version marker on the page"
+    notes: >
+      Wise documents two representations of the same production senders and they are not
+      equivalent. The preferred form is two /24s, while the "if you can't allowlist a /24"
+      alternative adds six AWS eu-central-1 addresses that sit outside both. The published
+      production purpose is the union of the two, so an allowlist built from it satisfies
+      either reading. Wise states that individual IPs "can change and have a lower
+      reliability SLO", and that IP allowlisting should not be the only control.
+    endpoints:
+      - id: docs
+        url: https://docs.wise.com/api-docs/features/webhooks-notifications
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: webhooks,         direction: ingress, select: "section=Production"}
+          - {key: webhooks-sandbox, direction: ingress, select: "section=Sandbox"}
+    verified: "2026-07-30"
+
   # ── Observability ─────────────────────────────────────────────────────────
   - slug: datadog
     name: Datadog
@@ -488,6 +542,39 @@ services:
         purposes:
           - {key: synthetics, direction: ingress, select: "*"}
     verified: "2026-07-10"
+
+  - slug: appdynamics
+    name: Splunk AppDynamics SaaS
+    category: observability
+    classification: mixed
+    provenance: https://help.splunk.com/en/appdynamics-saas/product-announcements-and-alerts/saas-domains-and-ip-ranges
+    cadence: "irregular; page states the addresses are subject to change"
+    notes: >
+      Two ingress sets: the hosted agents AppDynamics browser checks reach your
+      application from, and the per-region addresses its platform connects out from.
+      Most of the rest of the page is not pinnable: the CDN
+      is CloudFront, the OpenTelemetry, EUM and Analytics endpoints delegate to the AWS
+      range file for their region, and a Controller Tenant gets "a unique set of IP
+      addresses at the time of provisioning", which is per customer. The page also carries
+      two Smartlook addresses belonging to a different vendor; the Synthetic Hosted Agents
+      section stops before them. The platform-sources purpose uses a `from=` select rather
+      than a heading, because the per-region datacenter source addresses sit under the same
+      region headings as the Synthetic Server destinations an agent connects TO, and only
+      the lead-in sentence tells the two directions apart. Cisco AppDynamics docs moved to
+      Splunk: docs.appdynamics.com/display/PAA/... now 301s to help.splunk.com, and the
+      versioned get-started page is only a stub linking here.
+    endpoints:
+      - id: docs
+        url: https://help.splunk.com/en/appdynamics-saas/product-announcements-and-alerts/saas-domains-and-ip-ranges
+        format: html-cidr-extract
+        # help.splunk.com sits behind a WAF that requires this exact Accept value.
+        # Sending no Accept header, or "text/html", both return 403 (verified 2026-07-30).
+        headers: {Accept: "*/*"}
+        detection: {poll: docs-page}
+        purposes:
+          - {key: synthetic-agents,  direction: ingress, select: "section=Synthetic Hosted Agents"}
+          - {key: platform-sources, direction: ingress, select: "section=*;from=All traffic originating from"}
+    verified: "2026-07-30"
 
   # ── Identity ──────────────────────────────────────────────────────────────
   - slug: okta
@@ -780,6 +867,29 @@ services:
           - {key: email,            direction: ingress, select: "usage=email_outbound"}
     verified: "2026-07-28"
 
+  - slug: netsuite-connector
+    name: Oracle NetSuite Connector
+    category: business-saas
+    classification: dedicated
+    provenance: https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162859452018.html
+    cadence: "irregular; page carries no version marker"
+    notes: >
+      NetSuite Connector only, which is the component that reaches a cart or server of
+      yours sitting behind a firewall. The NetSuite platform itself is a non-publisher and
+      is recorded as one: Oracle states it "does not support the use of NetSuite IP
+      addresses to access or manage access to any NetSuite services". Oracle also
+      documents a DNS record, outboundips.netsuite.com, as the way to track outbound
+      addresses; it resolved to 41 A records on 2026-07-30, identical from two resolvers,
+      but the generator has no DNS source type yet, so that is on the README roadmap.
+    endpoints:
+      - id: docs
+        url: https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162859452018.html
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: connector, direction: ingress, select: "section=NetSuite Connector IP Addresses"}
+    verified: "2026-07-30"
+
   # ── Security ──────────────────────────────────────────────────────────────
   - slug: zscaler
     name: Zscaler (zscaler.net cloud)
@@ -1071,25 +1181,99 @@ non_publishers:
     name: Sumo Logic
     evidence: https://support.sumologic.com/hc/en-us/articles/360012685393-How-to-allow-or-enable-IP-ranges-for-Sumo-Logic-endpoints
     vendor_position: "No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region), covered by the aws service."
+  - slug: netsuite
+    name: Oracle NetSuite (platform)
+    evidence: https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_N251955.html
+    vendor_position: "States plainly that Oracle 'does not support the use of NetSuite IP addresses to access or manage access to any NetSuite services', that outbound addresses are 'not documented in the NetSuite Help Center or in SuiteAnswers', and that *.netsuite.com is CDN-fronted. Directs users to 2FA, token-based auth and OAuth 2.0 instead, or to a DNS lookup on outboundips.netsuite.com. NetSuite Connector IS published, see the netsuite-connector service."
+  - slug: confluent
+    name: Confluent Cloud
+    evidence: https://docs.confluent.io/cloud/current/networking/static-egress-ip-addresses.html
+    vendor_position: "Public egress addresses are read from the Cloud Console or the authenticated Cloud REST API (api.confluent.cloud/networking/v1/ip-addresses), are shared by every customer in the same cloud and region, and are 'not guaranteed to be static' (their wording)."
+  - slug: palo-alto
+    name: Palo Alto Networks Prisma Access
+    evidence: https://docs.paloaltonetworks.com/prisma-access/administration/prisma-access-setup/retrieve-ip-addresses-for-prisma-access
+    vendor_position: "Egress addresses are allocated per tenant and retrieved with your own API key from api.prod.datapath.prismaaccess.com, or read per location in the Prisma Access UI."
+  - slug: splunk-cloud
+    name: Splunk Cloud Platform
+    evidence: https://help.splunk.com/en?resourceId=SplunkCloud_Config_ConfigureIPAllowList
+    vendor_position: "The documented control is an IP allow list restricting which addresses on your own network reach each Splunk feature, managed through the Admin Config Service API. Splunk publishes no ranges of its own for the stack."
+  - slug: cockroachdb
+    name: CockroachDB Cloud
+    evidence: https://www.cockroachlabs.com/docs/cockroachcloud/network-authorization
+    vendor_position: "The documented controls are an allowlist of your own authorized networks and private connectivity through AWS PrivateLink, GCP Private Service Connect or Azure Private Link."
+  - slug: redis-cloud
+    name: Redis Cloud
+    evidence: https://redis.io/docs/latest/operate/rc/security/cidr-whitelist/
+    vendor_position: "The CIDR allow list restricts which of your own addresses may reach your database, between 4 and 32 entries depending on plan. Redis publishes no ranges of its own."
+  - slug: aiven
+    name: Aiven
+    evidence: https://aiven.io/docs/platform/concepts/static-ips
+    vendor_position: "Services are addressed by hostname; static IP addresses are a paid per-project resource created and attached with the avn static-ip CLI, not a public range list."
+  - slug: supabase
+    name: Supabase
+    evidence: https://supabase.com/docs/guides/platform/ipv4-address
+    vendor_position: "States that 'IPv4 addresses are guaranteed to be static for ingress traffic' through a per-project paid add-on, while 'the outbound IP address is not static and cannot be guaranteed'."
+  - slug: planetscale
+    name: PlanetScale
+    evidence: https://planetscale.com/docs/imports/import-tool-migration-addresses
+    vendor_position: "The addresses to allowlist are shown in the console during the import workflow, differ by region, and the vendor directs users to read them there each time because they 'can change occasionally'."
+  - slug: docker-hub
+    name: Docker Hub / Docker Desktop
+    evidence: https://docs.docker.com/desktop/setup/allow-list/
+    vendor_position: "Publishes an allowlist of domain URLs rather than addresses; the page lists hostnames only. Reproducible on the data plane: registry-1.docker.io resolves into rotating AWS us-east-1 EC2 addresses, a different set on each query (verified 2026-07-30)."
+  - slug: mailchimp-mandrill
+    name: Mailchimp Transactional (Mandrill) webhooks
+    evidence: https://mailchimp.com/developer/transactional/docs/webhooks/
+    vendor_position: "Directs users to authenticate that a webhook originated from Mailchimp's servers using the documented request-signature flow. The /ips/ API returns your own dedicated sending addresses, which is a different thing from webhook sources."
+  - slug: honeycomb
+    name: Honeycomb
+    evidence: https://docs.honeycomb.io/security-compliance/security-data-protection/
+    vendor_position: "Offers AWS PrivateLink to the Honeycomb API for Enterprise customers on AWS. No range list is published in the docs."
+  - slug: alibaba-cloud
+    name: Alibaba Cloud
+    evidence: https://www.alibabacloud.com/help/en/dms/configure-an-ip-address-whitelist
+    vendor_position: "Publishes per-service ingress lists, such as this per-region table for Data Management Service, rather than a provider-wide range file of the kind AWS, Azure and Google publish."
 
 # ── Researched but not yet sourced: candidate backlog (v2+) ─────────────────
 backlog:
-  needs_research: [alibaba-cloud, workday, servicenow, netsuite,
-                   crowdstrike, sentinelone, palo-alto,
-                   checkout-com, wise,
-                   jfrog, docker-hub, confluent, aiven,
-                   redis-cloud, planetscale, cockroachdb, supabase,
-                   vonage, mailchimp-mandrill, appdynamics, honeycomb,
-                   splunk-cloud, google-workspace]
-  partially_verified:
-    - slug: mailgun
-      note: "publishes account-specific sending IPs via authenticated API only."
-    - slug: dynatrace
-      note: "synthetic location IPs only via per-tenant authenticated API; public-locations docs page is client-rendered (verified 2026-07-10); tier D / partner candidate."
-    - slug: segment-amplitude-mixpanel
-      note: "no public range documentation found (2026-07-10); segment.com/docs bot-blocks fetches; candidates for vendor outreach."
-    - slug: scaleway-ovh-hetzner
-      note: "no geofeeds at standard URLs (2026-07-10); announced space visible only via BGP; low priority for SaaS-egress use case."
+  # Not published and not parsed: generator/registry.go reads only schema_version,
+  # services and non_publishers. This block is a research ledger for humans.
+  # Generator features that vendor research surfaced live in the README roadmap,
+  # not here, so they get scheduled as engineering work.
+
+  # The vendor publishes a real list and we cannot reach it. These must NEVER be
+  # recorded as non-publishers: that would be a false claim about the vendor.
+  blocked:
+    - slug: crowdstrike
+      note: >
+        CrowdStrike DOES publish cloud IP addresses and must not be recorded as a
+        non-publisher. The document is falcon.<region>.crowdstrike.com/documentation/65/
+        cloud-ip-addresses, inside the Falcon console: an anonymous fetch returns a 7.8KB
+        "Login | Falcon" page (verified 2026-07-30). No mirror of it exists on the public
+        marketing site. Blocked on access, not on vendor policy. Same shape as the duo
+        entry below.
+    - slug: workday
+      note: >
+        Network documentation is in Workday Community (community.workday.com), which
+        requires a customer login; the article IDs reachable from search 404 anonymously
+        (verified 2026-07-30). ready.workday.com/network is only a browser readiness
+        test: rendered under headless Chrome it carries no addresses at all.
+    - slug: servicenow
+      note: >
+        Blocked on both access and rendering (verified 2026-07-30). The docs page
+        "Define allowed ServiceNow internal IP addresses" renders "Loading application..."
+        under headless Chrome with a 25s virtual time budget. The substantive articles
+        (KB0598826, KB0538621) are on support.servicenow.com behind a customer login, and
+        KB0538621's documented route is a Now Support catalog item, "My IP Information",
+        which is per instance and per customer rather than a published list.
+    - slug: jfrog
+      note: >
+        jfrog.com/help/r/... is a Zoomin portal: a plain fetch returns 2.4MB with zero
+        addresses and headless Chrome renders 650KB of navigation with no article body
+        (verified 2026-07-30). The feature that search surfaces, MyJFrog "IP/CIDR
+        Allowlist", restricts which of YOUR addresses reach JFrog, which is the wrong
+        direction. Whether a real "JFrog Cloud NAT IPs" list exists is still unknown, so
+        this is neither a publisher nor a non-publisher yet.
     - slug: duo
       note: >
         Duo DOES publish an official list and should not be recorded as a
@@ -1108,6 +1292,21 @@ backlog:
         staleness problem this product removes, so their guidance is not a reason
         to leave them out. Integrate as soon as the pipeline can render JS or a
         static source appears.
+
+  # Researched, no public source located, and no vendor page stating a position
+  # that could be cited. That missing citation is why they are not non-publishers.
+  no_source_found:
+    - slug: sentinelone
+      note: >
+        No public network-requirements document exists on sentinelone.com (checked
+        2026-07-30). The substantive docs live on usea1-support.sentinelone.net and
+        community.sentinelone.com, both requiring a customer login, so there is no vendor
+        page stating a position that could be cited. Deliberately NOT recorded as a
+        non-publisher for that reason. Vendor-outreach candidate.
+    - slug: segment-amplitude-mixpanel
+      note: "no public range documentation found (2026-07-10); segment.com/docs bot-blocks fetches; candidates for vendor outreach."
+    - slug: scaleway-ovh-hetzner
+      note: "no geofeeds at standard URLs (2026-07-10); announced space visible only via BGP; low priority for SaaS-egress use case."
     - slug: qualys
       note: >
         NOT integrable from platform-identification/ and the earlier note's
@@ -1134,3 +1333,18 @@ backlog:
         inline icons (fragments like "0 0 1-1.27 2.86 4.83 4.83" match the IPv4
         pattern). So the blocker is missing data, not a fetch problem. Needs a
         page that actually carries the supernets before this is worth revisiting.
+
+  # A real source exists but is per-customer or authenticated, so nothing can be
+  # published. Promote each to non_publishers once someone fetches an evidence URL.
+  non_publisher_candidates:
+    - slug: mailgun
+      note: "publishes account-specific sending IPs via authenticated API only."
+    - slug: dynatrace
+      note: "synthetic location IPs only via per-tenant authenticated API; public-locations docs page is client-rendered (verified 2026-07-10); tier D / partner candidate."
+
+  # Product decisions. Do not research these again.
+  declined:
+    - slug: vonage
+      note: >
+        DECLINED as a catalog entry (Jason, 2026-07-30): not worth the space. Kept as
+        this one line only so it is not researched a fourth time. Do not add it.
