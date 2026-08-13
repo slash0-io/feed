@@ -61,6 +61,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `datadog` | Datadog | dedicated | `agents-eu` (egress), `agents` (egress), `api-eu` (egress), `api` (egress), `apm` (egress), `logs` (egress), `synthetics` (ingress), `webhooks` (ingress) | [official ↗](https://docs.datadoghq.com/api/latest/ip-ranges/) |
 | `grafana-cloud` | Grafana Cloud | dedicated | `alerts` (ingress), `logs` (ingress), `metrics` (ingress) | [official ↗](https://grafana.com/docs/grafana-cloud/security-and-account-management/allow-list/) |
 | `new-relic` | New Relic | dedicated | `agents` (egress), `synthetics` (ingress) | [official ↗](https://docs.newrelic.com/docs/new-relic-solutions/get-started/networks/) |
+| `pingdom` | Pingdom | dedicated | `probes` (ingress) | [official ↗](https://my.pingdom.com/probes/feed) |
 | `sentry` | Sentry (hosted) | dedicated | `ingest` (egress), `uptime` (ingress), `webhooks` (ingress) | [official ↗](https://docs.sentry.io/security-legal-pii/security/ip-ranges/) |
 | `uptimerobot` | UptimeRobot | dedicated | `probes` (ingress) | [official ↗](https://uptimerobot.com/help/locations/) |
 
@@ -73,6 +74,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `github` | GitHub | dedicated | `actions` (ingress), `api` (egress), `git` (egress), `hooks` (ingress), `packages` (egress), `pages` (egress), `web` (egress) | [official ↗](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/about-githubs-ip-addresses) |
 | `gitlab` | GitLab.com | mixed | `web-api` (egress), `webhooks` (ingress) | [official ↗](https://docs.gitlab.com/user/gitlab_com/) |
 | `launchdarkly` | LaunchDarkly | dedicated | `service` (egress), `webhooks` (ingress) | [official ↗](https://launchdarkly.com/docs/home/infrastructure/ip-list) |
+| `retool` | Retool | dedicated | `default-region` (ingress) | [official ↗](https://docs.retool.com/data-sources/reference/ip-allowlist-cloud-orgs) |
 
 ## Data platforms
 
@@ -168,6 +170,8 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 | Docker Hub / Docker Desktop | Publishes an allowlist of domain URLs rather than addresses; the page lists hostnames only. Reproducible on the data plane: registry-1.docker.io resolves into rotating AWS us-east-1 EC2 addresses, a different set on each query (verified 2026-07-30). |
 | Mailchimp Transactional (Mandrill) webhooks | Directs users to authenticate that a webhook originated from Mailchimp's servers using the documented request-signature flow. The /ips/ API returns your own dedicated sending addresses, which is a different thing from webhook sources. |
 | Honeycomb | Offers AWS PrivateLink to the Honeycomb API for Enterprise customers on AWS. No range list is published in the docs. |
+| Snyk | The Broker Client opens the outbound WebSocket and Snyk rides it back, so in their words 'you do not need to allow a Snyk IP address. Instead, you can allow the Broker Client IP/port.' Requests to Snyk go through a CDN that rotates addresses and whole ranges, and they direct users to allow *.snyk.io. |
+| Zapier | States that Zapier 'uses Amazon (AWS)'s us-east-1 region, where it dynamically provisions instances as needed', so there is no fixed set. They suggest matching the User-Agent: Zapier header instead, or the static IP feature available on paid plans. |
 | Mailgun | Their IP Allowlist API 'lets you view and manage allowlisted IP addresses to which API key and SMTP credential usage is restricted', which controls your own callers rather than publishing Mailgun's addresses. Outbound sending addresses are per-account dedicated IPs grouped into pools, read through the authenticated /v3/ips API. |
 | Dynatrace (Synthetic Monitoring) | Public Synthetic location addresses are read per environment, either from the Frequency and locations page in the web UI ('Copy IPs to clipboard or Download IPs') or from the Synthetic locations API, which 'returns all the locations available for your Environment along with their IP addresses'. No global list is published. |
 | npm registry (registry.npmjs.org) | registry.npmjs.org resolves into Cloudflare's published ranges (verified 2026-07-30: 104.16.0.34 and 104.16.1.34, both inside 104.16.0.0/13), so pinning it would allowlist the whole CDN rather than npm. |

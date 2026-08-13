@@ -41,12 +41,13 @@ var documentTypes = map[string]string{
 	"cidr-lines":         "text",
 	"ip-lines":           "text",
 	"html-cidr-extract":  "html",
+	"pingdom-probes":     "xml",
 }
 
 // Rank orders each axis from easiest to hardest to track. A service that
 // publishes through several endpoints is reported at its weakest, since the
 // hardest source to follow is what sets the integration cost.
-var documentTypeRank = map[string]int{"json": 0, "csv": 1, "text": 2, "html": 3}
+var documentTypeRank = map[string]int{"json": 0, "xml": 1, "csv": 2, "text": 3, "html": 4}
 var pollModeRank = map[string]int{"cond-get": 0, "hash": 1, "docs-page": 2}
 
 // publicationFor derives the published Publication block for one service.

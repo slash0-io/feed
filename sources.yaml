@@ -325,6 +325,27 @@ services:
           - {key: webhooks, direction: ingress, select: "webhook_ips"}
     verified: "2026-07-10"
 
+  - slug: retool
+    name: Retool
+    category: devtools
+    classification: dedicated
+    provenance: https://docs.retool.com/data-sources/reference/ip-allowlist-cloud-orgs
+    cadence: "irregular; page carries no version marker"
+    notes: >
+      The default outbound region only, which is AWS us-west-2 in the vendor's words.
+      Retool reaches into your databases and APIs, so the direction is ingress: "Cloud
+      instances must ensure that any configured resources, such as APIs and databases,
+      allow access from Retool's IP addresses." Organisations routing through other
+      outbound regions have a separate published set that this does not yet cover.
+    endpoints:
+      - id: docs
+        url: https://docs.retool.com/data-sources/reference/ip-allowlist-cloud-orgs
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: default-region, direction: ingress, select: "section=Retool IP addresses"}
+    verified: "2026-08-12"
+
   - slug: launchdarkly
     name: LaunchDarkly
     category: devtools
@@ -592,6 +613,28 @@ services:
         purposes:
           - {key: probes, direction: ingress, select: "section=Locations and IPs"}
     verified: "2026-07-30"
+
+  - slug: pingdom
+    name: Pingdom
+    category: observability
+    classification: dedicated
+    provenance: https://my.pingdom.com/probes/feed
+    cadence: "irregular; feed carries a lastBuildDate"
+    notes: >
+      The probe-server RSS feed is the machine-readable form of the docs page, which is
+      client-rendered and carries nothing to a plain fetch. The feed's own description:
+      "These are the servers that we use to check your site. You can use the IP numbers to
+      open up for them in your firewall." Only probes marked State: Active are published.
+      All 99 are active as of the verified date, but the field exists and publishing a
+      decommissioned probe would allow traffic Pingdom no longer sends.
+    endpoints:
+      - id: feed
+        url: https://my.pingdom.com/probes/feed
+        format: pingdom-probes
+        detection: {poll: hash}
+        purposes:
+          - {key: probes, direction: ingress, select: "state=Active"}
+    verified: "2026-08-12"
 
   - slug: appdynamics
     name: Splunk AppDynamics SaaS
@@ -1423,6 +1466,14 @@ non_publishers:
     name: Honeycomb
     evidence: https://docs.honeycomb.io/security-compliance/security-data-protection/
     vendor_position: "Offers AWS PrivateLink to the Honeycomb API for Enterprise customers on AWS. No range list is published in the docs."
+  - slug: snyk
+    name: Snyk
+    evidence: https://docs.snyk.io/platform-administration/snyk-broker/broker-inbound-and-outbound-connections-and-allowed-requests
+    vendor_position: "The Broker Client opens the outbound WebSocket and Snyk rides it back, so in their words 'you do not need to allow a Snyk IP address. Instead, you can allow the Broker Client IP/port.' Requests to Snyk go through a CDN that rotates addresses and whole ranges, and they direct users to allow *.snyk.io."
+  - slug: zapier
+    name: Zapier
+    evidence: https://help.zapier.com/hc/en-us/articles/8496216020877-Zapier-IP-addresses-and-allowlisting
+    vendor_position: "States that Zapier 'uses Amazon (AWS)'s us-east-1 region, where it dynamically provisions instances as needed', so there is no fixed set. They suggest matching the User-Agent: Zapier header instead, or the static IP feature available on paid plans."
   - slug: mailgun
     name: Mailgun
     evidence: https://documentation.mailgun.com/docs/mailgun/api-reference/send/mailgun/ip-allowlist

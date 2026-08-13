@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strings"
 )
 
@@ -38,6 +39,7 @@ var parsers = map[string]parseFunc{
 	"databricks-ranges":  parseDatabricksRanges,
 	"o365-endpoints":     parseO365Endpoints,
 	"html-cidr-extract":  parseHTMLCIDRExtract,
+	"pingdom-probes":     parsePingdomProbes,
 	"azure-service-tags": parseAzureServiceTags,
 	"json-cidr-map":      parseJSONCIDRMap,
 	"zendesk-ips":        parseZendeskIPs,
@@ -543,6 +545,52 @@ func parseJSONCIDRMap(body []byte, sel string) ([]string, error) {
 	}
 	return out, nil
 }
+
+// parsePingdomProbes reads Pingdom's probe-server RSS feed, which carries one
+// <item> per probe with <pingdom:ip> and optional <pingdom:ipv6> elements plus
+// a "State: Active" field in the description.
+//
+// Only active probes are published. Every probe is active today, but the feed
+// models the field, and quietly publishing a decommissioned probe's address
+// would allow traffic Pingdom no longer sends. Select is "*" (all active) or
+// "state=<value>".
+func parsePingdomProbes(body []byte, sel string) ([]string, error) {
+	want := "active"
+	if k, v, all := selKV(sel); !all {
+		if k != "state" {
+			return nil, fmt.Errorf("pingdom-probes: unknown select %q", sel)
+		}
+		want = strings.ToLower(v)
+	}
+	items := rePingdomItem.FindAllString(string(body), -1)
+	if len(items) == 0 {
+		return nil, fmt.Errorf("pingdom-probes: no <item> elements")
+	}
+	var out []string
+	for _, item := range items {
+		m := rePingdomState.FindStringSubmatch(item)
+		if m == nil || !strings.EqualFold(m[1], want) {
+			continue
+		}
+		for _, re := range []*regexp.Regexp{rePingdomIPv4, rePingdomIPv6} {
+			for _, g := range re.FindAllStringSubmatch(item, -1) {
+				// Probes without IPv6 carry the literal string NULL rather
+				// than an empty element or no element at all.
+				if s := strings.TrimSpace(g[1]); s != "" && !strings.EqualFold(s, "NULL") {
+					out = append(out, s)
+				}
+			}
+		}
+	}
+	return out, nil
+}
+
+var (
+	rePingdomItem  = regexp.MustCompile(`(?s)<item>.*?</item>`)
+	rePingdomState = regexp.MustCompile(`State:\s*([A-Za-z]+)`)
+	rePingdomIPv4  = regexp.MustCompile(`<pingdom:ip>([^<]*)</pingdom:ip>`)
+	rePingdomIPv6  = regexp.MustCompile(`<pingdom:ipv6>([^<]*)</pingdom:ipv6>`)
+)
 
 // parseElasticIPs handles Elastic Cloud's https://ips.cld.elstc.co/ document:
 // {"regions": {"<region>": {"egress_from_elastic": [...], "ingress_to_elastic": [...]}}}.

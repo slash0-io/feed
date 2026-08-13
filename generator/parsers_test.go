@@ -411,3 +411,51 @@ func contains(ss []string, want string) bool {
 	}
 	return false
 }
+
+// Pingdom's feed carries a State per probe and the literal string NULL for
+// probes with no IPv6. Publishing a decommissioned probe would allow traffic
+// the vendor no longer sends, and NULL must never reach normalize.
+func TestPingdomProbesFiltersStateAndNull(t *testing.T) {
+	reg, err := LoadRegistry("../sources.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	f := NewFetcher("../testdata/fixtures")
+	var svc SourceService
+	for _, s := range reg.Services {
+		if s.Slug == "pingdom" {
+			svc = s
+		}
+	}
+	if svc.Slug == "" {
+		t.Fatal("pingdom is missing from sources.yaml")
+	}
+	body, _, err := f.Get(svc, svc.Endpoints[0])
+	if err != nil {
+		t.Fatal(err)
+	}
+	active, err := parsePingdomProbes(body, "state=Active")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, r := range active {
+		if strings.EqualFold(r, "NULL") {
+			t.Fatal("NULL leaked out of the pingdom parser")
+		}
+	}
+	if len(active) == 0 {
+		t.Fatal("no active probes parsed")
+	}
+	// A state nobody uses must yield nothing rather than silently falling back
+	// to every probe.
+	none, err := parsePingdomProbes(body, "state=Decommissioned")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(none) != 0 {
+		t.Errorf("unknown state returned %d ranges, want 0", len(none))
+	}
+	if _, err := parsePingdomProbes(body, "region=eu"); err == nil {
+		t.Error("an unknown select key should error")
+	}
+}

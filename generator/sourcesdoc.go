@@ -34,6 +34,7 @@ var pollLabels = map[string]string{
 
 var documentLabels = map[string]string{
 	"json": "JSON",
+	"xml":  "XML",
 	"csv":  "CSV",
 	"text": "text",
 	"html": "docs page",
