@@ -75,6 +75,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `gitlab` | GitLab.com | mixed | `web-api` (egress), `webhooks` (ingress) | [official ↗](https://docs.gitlab.com/user/gitlab_com/) |
 | `launchdarkly` | LaunchDarkly | dedicated | `service` (egress), `webhooks` (ingress) | [official ↗](https://launchdarkly.com/docs/home/infrastructure/ip-list) |
 | `retool` | Retool | dedicated | `default-region` (ingress) | [official ↗](https://docs.retool.com/data-sources/reference/ip-allowlist-cloud-orgs) |
+| `svix` | Svix | dedicated | `webhooks` (ingress) | [official ↗](https://docs.svix.com/receiving/source-ips) |
 
 ## Data platforms
 
@@ -95,6 +96,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `auth0` | Auth0 (Okta CIC) | dedicated | `all` (both) | [official ↗](https://auth0.com/docs/secure/security-guidance/data-security/allowlist) |
 | `duo` | Cisco Duo | dedicated | `mfa` (egress) | [official ↗](https://help.duo.com/s/article/1337) |
 | `okta` | Okta | dedicated | `all` (both) | [official ↗](https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm) |
+| `onelogin` | OneLogin | mixed | `agents-eu` (egress), `agents` (egress), `email` (ingress) | [official ↗](https://onelogin.service-now.com/kb_view_customer.do?sysparm_article=KB0010432) |
 | `workos` | WorkOS | mixed | `webhooks` (ingress) | [official ↗](https://workos.com/docs/events/data-syncing/webhooks) |
 
 ## Communications
@@ -116,9 +118,11 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `atlassian` | Atlassian Cloud | dedicated | `all` (both), `bitbucket` (both), `egress` (ingress) | [official ↗](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/) |
 | `docusign` | DocuSign | mixed | `connect-webhooks` (ingress), `email` (ingress) | [official ↗](https://www.docusign.com/trust/security/esignature) |
 | `hubspot` | HubSpot | dedicated | `api` (ingress), `crawlers` (ingress), `dns` (ingress), `email` (ingress) | [official ↗](https://developers.hubspot.com/docs/api-reference/2026-09-beta/account/ip-ranges/guide) |
+| `make` | Make | mixed | `platform` (ingress) | [official ↗](https://help.make.com/allow-connections-to-and-from-make-ip-addresses) |
 | `microsoft-365` | Microsoft 365 | mixed | `common` (egress), `exchange` (egress), `sharepoint` (egress), `teams` (egress) | [official ↗](https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service) |
 | `netsuite-connector` | Oracle NetSuite Connector | dedicated | `connector` (ingress) | [official ↗](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162859452018.html) |
 | `salesforce` | Salesforce | dedicated | `all` (both) | [official ↗](https://help.salesforce.com/s/articleView?id=000384438 (IP Addresses and Domains to Allow)) |
+| `workato` | Workato | dedicated | `on-prem-agent` (egress), `platform` (ingress) | [official ↗](https://docs.workato.com/security/ip-allowlists.html) |
 | `zendesk` | Zendesk | mixed | `api` (egress), `webhooks` (ingress) | [official ↗](https://developer.zendesk.com/api-reference/ticketing/account-configuration/public_ips/) |
 
 ## Security
@@ -153,6 +157,8 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 | Snowflake | Deployment-specific hostnames/IPs per account; no global list. |
 | MongoDB Atlas (data plane) | Cluster IPs are per-project/dynamic; control-plane IPs only via authenticated Admin API. Vendor directs users to private endpoints (PrivateLink). |
 | Vercel (function egress) | Dynamic by default; static IPs are a paid per-customer feature, not a public range. |
+| JumpCloud | States for the agent, LDAP-as-a-Service and AD Integration alike: 'Due to the elastic nature of the JumpCloud infrastructure, we currently do not publish lists of IP addresses for allow lists'. Directs users to FQDNs instead. Their separate data-centre page does list six regional RADIUS anycast addresses, which is a single narrow endpoint rather than a service range set. |
+| Stytch (webhooks) | Publishes no source-IP list of its own; states 'Stytch's webhooks are powered through Svix'. A receiving endpoint allowlists the svix service in this feed instead. Their own IP feature runs the other way: up to 10 customer IPs that may call the Stytch API, arranged over email with support. |
 | Netlify (function egress) | States that by default the addresses builds and functions connect from 'will fluctuate when we scale up and down'. A static set is available only through the Private Connectivity add-on on Enterprise plans. |
 | OpenAI API (api.openai.com) | api.openai.com resolves into Cloudflare's published ranges (verified 2026-07-30: 172.66.0.243 within 172.64.0.0/13, 162.159.140.245 within 162.158.0.0/15), so pinning it would allowlist the whole CDN rather than OpenAI. |
 | Akamai (CDN) | Site Shield issues a per-customer set of IP subnet ranges (a map) retrieved through Akamai Control Center or the Site Shield API, rather than one public global list. |

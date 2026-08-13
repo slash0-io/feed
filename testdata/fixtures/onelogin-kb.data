@@ -1,0 +1,1272 @@
+<!DOCTYPE html><html lang="en" class=" ltr " data-doctype="true" dir="ltr" ontouchend="CustomEvent.fireAll('body_clicked', event);"><head><script>document.addEventListener('click', function (event) {
+				CustomEvent.fireAll('body_clicked', event);
+			});
+			document.hasBodyClickedTrigger = 'true';</script><script type="text/javascript"></script><title>OneLogin Service System</title><meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"></meta><meta http-equiv="cache-control" content="public"></meta><meta name="referrer" content="default"></meta><meta name="viewport" content="initial-scale=1.0"></meta><script type="text/javascript" data-description="globals population">
+	window.NOW = window.NOW || {};
+	var g_loadTime = new Date();
+	var lastActivity = new Date();
+	var g_lang = 'en';
+	var g_system_lang = 'en';
+	var g_enhanced_activated = 'true';
+	  var g_popup_timeout = parseInt(100);
+	var g_export_warn_threshold = parseInt(10000);
+	  var g_event_handler_ids = {};
+	var g_event_handlers = [];
+	var g_event_handlers_onLoad = [];
+	var g_event_handlers_onSubmit = [];
+	var g_event_handlers_onChange = [];
+	var g_event_handlers_onCellEdit = {};
+	var g_event_handlers_localCache = {};
+	var g_event_handlers_queryTracking = true;
+	var g_user_date_time_format = "MM/dd/yyyy hh:mm:ss a";
+	var g_user_date_format = "MM/dd/yyyy";
+	var g_user_decimal_separator = ".";
+	var g_user_grouping_separator = ",";
+	var g_glide_list_separator = ", ";
+	var g_glide_duration_seconds_enabled = "false";
+	var g_allow_field_dependency_for_templates = ("true" === "true");
+	var g_tz = "US/Pacific";
+	var g_tz_offset = -25200000;
+	  var g_tz_user_offset = true;
+	var g_first_day_of_week = parseInt(1, 10);
+	var g_date_picker_first_day_of_week = parseInt(0, 10);
+	  var g_full_calendar_edit = true;
+	var g_submitted = false;
+	var g_max_table_length = 80;
+	var g_fontSizePreference = "";
+	var g_fontSize = "10pt";
+	// use to be the sys_property glide.ui.js_error_notify, hard coded for PRB603998
+	var g_jsErrorNotify = "true";
+	var g_cancelPreviousTransaction = true;
+	var g_text_direction = "ltr";
+	var g_glide_list_filter_max_length =  parseInt("0", 10);
+	var g_accessibility = false;
+	var g_accessibility_tooltips = false;
+	var g_accessibility_tooltip_duration = parseInt("10", 10);
+	var g_accessibility_visual_patterns = false;
+	var g_accessibility_screen_reader_table = false;
+	var g_accessibility_date_format = false;
+	var g_detail_row = false;
+	var g_builddate = "07-02-2026_1215";
+	// default values to be used in absence of user preferences are hard coded below
+	// as well as in keyboardShortcuts.js and keyboard_preference_changer.xml
+	window.g_keyboard_shortcuts = {};
+	window.g_keyboard_shortcuts.allow_in_input_fields = false;
+	window.g_keyboard_shortcuts.enabled = true;
+	window.g_keyboard_shortcuts.global_search = {};
+	window.g_keyboard_shortcuts.global_search.enabled = true;
+	window.g_keyboard_shortcuts.global_search.key_combination = 'ctrl+alt+g';
+	window.g_keyboard_shortcuts.main_frame = {};
+	window.g_keyboard_shortcuts.main_frame.enabled = true;
+	window.g_keyboard_shortcuts.main_frame.key_combination = 'ctrl+alt+p';
+	window.g_keyboard_shortcuts.navigator_toggle = {};
+	window.g_keyboard_shortcuts.navigator_toggle.enabled = true;
+	window.g_keyboard_shortcuts.navigator_toggle.key_combination = 'ctrl+alt+c';
+	window.g_keyboard_shortcuts.navigator_filter = {};
+	window.g_keyboard_shortcuts.navigator_filter.enabled = true;
+	window.g_keyboard_shortcuts.navigator_filter.key_combination = 'ctrl+alt+f';
+	window.g_keyboard_shortcuts.impersonator = {}
+	window.g_keyboard_shortcuts.impersonator.enabled = true;
+	window.g_keyboard_shortcuts.impersonator.key_combination = 'ctrl+alt+i';
+	// The `g_concourse_onmessage_enforce_same_origin` and `g_concourse_onmessage_enforce_same_origin_whitelist` variables
+    // do not appear to be used anywhere other than the CustomEventManager, but leaving these for backwards compatability
+	var g_concourse_onmessage_enforce_same_origin = 'true'.toLowerCase() === 'true';
+	var g_concourse_onmessage_enforce_same_origin_whitelist = '';
+	window.g_load_functions = [];
+	window.g_render_functions = [];
+	window.g_late_load_functions = [];
+	window.g_tiny_url = {};
+	window.g_tiny_url.use_tiny = 'true' === 'true';
+	window.g_tiny_url.min_length = parseInt('1024');
+	
+	
+	var g_ck = '5a21c2a393624f108f44f89a2603d6a1d2628ed5e8de60794c43152bec7a1b8264c45d03';
+	
+
+	
+	var g_acWaitTime = parseInt(250);
+	
+
+	var g_autoRequest = '';
+
+	try {
+		window.NOW.dateFormat = JSON.parse("{\"timeAgo\": false, \"dateBoth\": false}");
+	} catch (e) {
+		window.NOW.dateFormat = {timeAgo: false, dateBoth: false};
+	}
+
+	window.NOW.dateFormat.dateStringFormat = "MM/dd/yyyy";
+	window.NOW.dateFormat.timeStringFormat = "hh:mm:ss a";
+	window.NOW.shortDateFormat = false;
+	window.NOW.listTableWrap = true;
+	window.NOW.compact = false;
+  	window.NOW.templateToggle = false;
+	window.NOW.tabbed = true;
+	window.NOW.permalink = true;
+	window.NOW.useSimpleStorage = true;
+	window.NOW.httpRequestCompressionThreshold = 40000;
+	window.NOW.httpRequestCompressionLevel = -1;
+	window.NOW.httpRequestCompressionMemoryLevel = -1;
+	window.NOW.httpRequestCompressionExcludeUrls = 'xmlhttp.do,angular.do'.split(',');
+	window.NOW.deferAmbConnection = false;
+	window.NOW.deferredAmbConnectionTimeout = 10000;
+	window.NOW.simpleStorageSynch = "5ee11101932203108f44f89a2603d6a0";
+	window.NOW.language =  'en';
+	window.NOW.listOpenInAppTab = false;
+	window.NOW.floatingScrollbars = 'false'.toLowerCase() === 'true';
+	
+	window.NOW.user = {};
+	window.NOW.user.preferences = [];
+	window.NOW.user.roles = '';
+	window.NOW.user.allRoles = '';
+	window.NOW.user.userID = 'guest';
+	window.NOW.user.departmentID = '';
+	window.NOW.user.firstName = '';
+	window.NOW.user.lastName = '';
+	window.NOW.user.name = 'guest';
+  	window.NOW.user.isImpersonating = false;
+	window.NOW.batch_glide_ajax_requests = 'true' === 'true';
+	window.NOW.batch_glide_ajax_requests_max_time_in_queue = ~~'50';
+	window.NOW.batch_glide_ajax_disable_time = ~~'1000';
+
+	window.NOW.currency = {};
+	window.NOW.currency.code = 'USD';
+	window.NOW.locale = {};
+	window.NOW.locale.code = 'en_US';
+
+	window.NOW.attachment = {};
+	
+	window.NOW.attachment.overflow_limit =  parseInt('3', 10);
+	window.NOW.isPolarisEnabled = "true";
+	window.NOW.polaris_page_info ={"canUsePolarisCSS":true,"canUsePolarisTemplates":true,"jvar_form_name":"ui_page_render"};</script><script data-comment="GlideUser initialization">(function() {
+		 g_render_functions.push(setGlideUser);
+		function setGlideUser() {
+			if (window.g_user || !window.GlideUser)
+		return;
+
+		window.g_user = new GlideUser(NOW.user.name,
+			  NOW.user.firstName,
+			  NOW.user.lastName,
+			  NOW.user.roles,
+			  NOW.user.userID,
+			  NOW.user.departmentID);
+		window.g_user.setRoles(NOW.user.allRoles, true);
+		}
+	})();</script><script data-description="NOW glide web analytics siteid and url">window.snWebaConfig = window.snWebaConfig || {};
+		// glide web analytics config
+		window.snWebaConfig.siteId = "0";
+		window.snWebaConfig.trackerURL = "";
+		window.snWebaConfig.webaScriptPath = "/scripts/piwik-3.1.1/thirdparty/piwik.min.js";
+		window.snWebaConfig.ambClient = (window.g_ambClient) ? window.g_ambClient : ((window.amb)? window.amb.getClient(): "");
+		window.snWebaConfig.subscribed = false;</script><script type="text/javascript" src="/ConditionalFocus.jsdbx?v=07-02-2026_1215&amp;c=13_234"></script><link href="favicon.ico?v=5" rel="shortcut icon"></link><script type="text/javascript" src="/scripts/doctype/xperf_timing.jsx?v=07-02-2026_1215"></script><link type="text/css" rel="stylesheet" href="/styles/css_includes_doctype_polaris.cssx?v=07-02-2026_1215&amp;c=6f325501932203108f44f89a2603d6fa&amp;theme=Polaris"></link><script>window.NOW = window.NOW || {};
+		 NOW.isUsingPolaris = true;</script><link type="text/css" rel="stylesheet" href="/styles/polarisberg/css_includes_polarisberg.cssx?v=07-02-2026_1215&amp;c=6f325501932203108f44f89a2603d6fa&amp;theme=Polaris"></link><script>NOW.exclude_dark_theme = "false";</script><script type="text/javascript" src="/scripts/polaris_theme_refresh_observer.jsx?v=07-02-2026_1215"></script><link data-source-id="glide-theme" rel="stylesheet" id="polarisberg_theme_variables" href="/$uxappimmutables.do?sysparm_request_type=ux_theme&amp;sysparm_app_config_sys_id=e42a5af4c700201072b211d4d8c2607c&amp;sysparm_app_sys_id=c86a62e2c7022010099a308dc7c26022&amp;sysparm_page_registry=a84adaf4c700201072b211d4d8c260b7&amp;uxpcb=ux8hUy35paB6PAlzOLKQWgNyacw=null"></link><script>NOW.xperf.cssEnd = NOW.xperf.now();
+			NOW.xperf.scriptBegin = NOW.xperf.now();</script><script src="/legacy_date_time_choices_processor.do?lang=en"></script><script type="text/javascript" src="/scripts/doctype/js_includes_doctype.jsx?v=07-02-2026_1215&amp;lp=Sat_Jul_18_12_48_44_PDT_2026&amp;c=13_234"></script><script data-description="MessagesTag">(function() {
+ var messages = new GwtMessage();
+messages.set('ajax_session_timeout_goto_login_confirm','Your session has expired. Click OK to log in again.');
+messages.set('ajax_session_timeout_resubmit_request_confirm','Your session has expired. Click OK to continue.');
+messages.set('ajax_session_timeout_refresh_screen','Your session has expired. Click OK to continue.');
+})()</script><script type="text/javascript" src="/scripts/js_includes_customer.jsx?v=07-02-2026_1215&amp;lp=Sat_Jul_18_12_48_44_PDT_2026&amp;c=13_234"></script><script type="text/javascript" src="/scripts/doctype/history_across_tabs.jsx?v=07-02-2026_1215"></script><script type="text/javascript" src="/scripts/doctype/js_includes_legacy.jsx?v=07-02-2026_1215&amp;lp=Sat_Jul_18_12_48_44_PDT_2026&amp;c=13_234"></script><script type="text/javascript" data-comment="navpage layout preferences, onfocus observation">/**
+	* Every window needs to observe these events.
+	*/
+	if (Prototype.Browser.IE && !isMSIE9) {
+		document.onfocusout = function() { CustomEvent.fireTop(GlideEvent.WINDOW_BLURRED, window); };
+		document.onfocusin = function() { CustomEvent.fireTop(GlideEvent.WINDOW_FOCUSED, window); };
+	} else {
+		Event.observe(window, 'blur', function() { CustomEvent.fireTop(GlideEvent.WINDOW_BLURRED, window); });
+		Event.observe(window, 'focus', function() { CustomEvent.fireTop(GlideEvent.WINDOW_FOCUSED, window); });
+	}</script><script type="text/javascript">g_swLoadTime = new StopWatch(g_loadTime);
+
+    if (window.CustomEvent){
+        CustomEvent.fireAll("ck_updated", "5a21c2a393624f108f44f89a2603d6a1d2628ed5e8de60794c43152bec7a1b8264c45d03");
+	    CustomEvent.fireTop("navigation.complete", window);
+	}
+
+    addLoadEvent( function() {
+
+		if (isValidTouchDevice())
+			addTouchScrollClassToBody();
+
+      if (typeof g_ck != 'undefined') {
+        CustomEvent.observe("ck_updated", function(ck) { g_ck = ck; });
+        CustomEvent.fireAll("ck_updated", "5a21c2a393624f108f44f89a2603d6a1d2628ed5e8de60794c43152bec7a1b8264c45d03");}try {
+              var helpico = getTopWindow().document.getElementById("help_ico");
+
+              if (helpico) {
+                var urlname=window.location.pathname.split("?");
+                var search_str = window.location.search;
+                
+                // if this is a form, extract the record's sys_id...
+                var sys_id_loc = search_str.search(/sys_id=[0-9a-f]{32}/i);
+                var sys_id_str = (sys_id_loc != -1) ? search_str.substr(sys_id_loc, 39) : null;
+                
+                // make the URL to our context help processor...
+                var url_search = "?sysparm_url=" + urlname[0];
+                if (sys_id_loc != -1)
+                   url_search += "&" + sys_id_str;
+
+               	helpico.href="context_help.do" + url_search;                	
+              }
+            } catch (exception) {}
+
+      synchCache();
+      pageLoaded();
+    });
+    
+    function synchCache() {
+      try {
+        var w = getTopWindow();
+        if (w.g_cache_message)
+          w.g_cache_message.stamp("5ee11101932203108f44f89a2603d6a0");
+  
+        if (w.g_cache_td)
+          w.g_cache_td.stamp("27004ee393624f108f44f89a2603d6b5");
+      } catch(e) {}
+    }
+
+    function isValidTouchDevice() {
+		var navigator = window.navigator || {};
+		var devices;
+		try {
+			devices = 'iPad,Android'.split(',');
+		} catch(ex) {
+			devices = [];
+		}
+		return devices.some(function(item) {return item.trim() === navigator.platform;});
+	}
+
+	function addTouchScrollClassToBody() {
+		if ('ontouchstart' in window ||
+				(navigator.maxTouchPoints !== 'undefined' && navigator.maxTouchPoints > 0) ||
+				(navigator.msMaxTouchPoints !== 'undefined' && navigator.msMaxTouchPoints > 0)) {
+			if (typeof document.body != undefined) {
+				document.body.classList.add('touch_scroll');
+			}
+		}
+	}
+  </script><!--googleoff: all--><noscript>This site requires JavaScript to be enabled</noscript> <!--googleon: all--><script type="text/javascript" src="/scripts/app.guided_tours/js_guided_tours_includes.jsx?v=07-02-2026_1215"></script><script>NOW.xperf.scriptEnd = NOW.xperf.now();
+				NOW.xperf.parseEnd = NOW.xperf.now();</script></head><body class="        chrome        -polaris " data-formName="ui_page_render"><span class="sr-only"><div id="html_page_aria_live_polite" role="region" aria-relevant="additions text" aria-atomic="false" aria-live="polite"></div><div id="html_page_aria_live_assertive" role="region" aria-relevant="additions text" aria-atomic="false" aria-live="assertive"></div></span><div class="outputmsg_div"><div id="output_messages" class="outputmsg_container outputmsg_hide"><button type="button" aria-label="Close Messages" id="close-messages-btn" class="btn btn-icon close icon-cross" onclick="GlideUI.get().onCloseMessagesButtonClick(this); return false;"></button><div class="outputmsg_div" aria-live="polite" role="region" data-server-messages="false"></div></div><script>addRenderEvent(function() {CustomEvent.fire('glide_optics_inspect_update_watchfield', '');});
+
+			var accessibilityEnabled = Boolean(false);
+			var hasMessages = false;
+			if (accessibilityEnabled && hasMessages) {
+				$j(function() {
+					$j('#output_messages .btn.btn-icon.close').focus();
+				});
+			}</script><span class="ui_notification" data-type="session_change" data-text="" data-attr-session_domain="global"></span></div><SCRIPT LANGUAGE="JavaScript" SRC="kb.jsx?v=07-02-2026_1215" eval="true"></SCRIPT><SCRIPT LANGUAGE="JavaScript" SRC="kb_feedback.jsx?v=07-02-2026_1215" eval="true"></SCRIPT><link type="text/css" rel="stylesheet" href="/styles/retina_icons/retina_icons.cssx?v=07-02-2026_1215"></link><link type="text/css" rel="stylesheet" href="/styles/heisenberg/heisenberg_all.cssx?v=07-02-2026_1215"></link><link href="kb_styles.cssx" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="/KnowledgeFunctions.jsdbx?v=07-02-2026_1215&amp;c=13_234"></script><style type="text/css">A {
+		color: blue;
+                text-decoration: underline;
+	}
+	TABLE {
+		white-space: normal;
+	}
+	
+	IMG {
+		visibility: visible;
+		display: inline;
+	}
+	  
+	    .header tr td:first-child +td {
+	        padding:2px;
+	    }
+	  
+        .kb_options {
+                border:1px solid #dddddd;
+                background-color:#f6f6f6;
+        }
+        .kb_options_header {
+                font-weight:bold;
+                color:#666666;
+                padding-left:3px;
+                background-color: #EEEEEE;
+        }
+        .kb_link {
+                padding-left:10px;
+        }
+        .kb_link A {
+                color: blue;
+                text-decoration: none;
+        }
+        .kb_link A:hover {
+                text-decoration: underline;
+        }
+        .kb_link_disable {
+                padding-left:10px;
+        }
+        .kb_link_disable A {
+                color: #666666;
+                text-decoration: none;
+                cursor:default;
+        }</style><link href="styles/kb_text.cssx?v=07-02-2026_1215" type="text/css" rel="stylesheet"></link><table class="wide kb_header_row" cellspacing="0" border="0" style="margin-bottom: 8px;"><tr><td class="title" nowrap="true"><link href="styles/legacy/kb_header.cssx" type="text/css" rel="stylesheet"></link><script type="text/javascript" src="/scripts/lib/jquery_includes.jsx?v=07-02-2026_1215"></script>
+	
+
+	
+
+	
+
+	<script eval="true">
+		var $j = window.$j || window.jQuery;
+		var kbPublicationsList = [];
+		var kbParentDragPartZindex = '0';
+		var kbParentDragSectionOverflow = null;
+		var kbParentWidgetBodyOverflow = null;
+		var kbParentWidgetBodyDisplay = null;
+		var menu_item;
+		function kbOnLoad() {
+			$j(window).scroll(hideAdvancedMenu);
+			$j('body').click(function(event) {
+				if (event) {
+					var $target = $j(event.target);
+
+					// testing if we didn't click on the component or the menu itself.
+					if ($target.closest('#kb_advanced_search_menu, .kb-btn-advanced').length < 1) {
+						hideAdvancedMenu();
+					}
+				}
+			});
+
+			var form = gel('kb_view');
+
+			
+			
+				$j('.kb-hide-adv-btn').removeClass('kb-hide-adv-btn');
+			
+		}
+
+		function createNewIncident() {
+			window.open("/incident.do?sys_id=-1");
+		}
+
+		function submitSearch() {
+			
+				if (gel("sysparm_search").value == "")
+					return false;
+			
+
+			var form = gel('kb_view');
+			if (form['kb_knowledge.topic'])
+				form['sysparm_topic'].value = form['kb_knowledge.topic'].value;
+
+			if (form['kb_knowledge.category'])
+				form['sysparm_category'].value = form['kb_knowledge.category'].value;
+
+			var sysparmSearch = $('sysparm_search');
+			var searchEngine = $('search_engine');
+
+			if (sysparmSearch.value.length == 0 || !sysparmSearch.value) {
+				form.action = "kb_list.do";
+
+				if (form['sysparm_topic'])
+				addInput(form, 'HIDDEN', 'jvar_view_topic', form['sysparm_topic'].value);
+
+				if (form['sysparm_category'])
+				addInput(form, 'HIDDEN', 'jvar_view_category', form['sysparm_category'].value);
+
+				return true;
+
+			} else if (!searchEngine || searchEngine.options.selectedIndex < 1) {
+				return true;
+			} else {
+				var value = searchEngine.options[searchEngine.options.selectedIndex].value;
+				window["script_" + value](sysparmSearch.value); // execute function w/o eval
+				return false;
+			}	
+		}
+
+		function toggleAdvancedSearch() {
+			var menu = $j("#kb_advanced_search_menu");
+			if (menu.css('display') === 'none')
+				showAdvancedSearch();
+			else
+				hideAdvancedMenu();
+		}
+
+		function showAdvancedSearch() {
+			var cnt = $j("#kb-input-container");
+			var dragPart = cnt.closest('.drag_section_part');
+
+			// backup and change drag_section_part's z-index
+			if (dragPart.length > 0) {
+				kbParentDragPartZindex = dragPart.css('z-index');
+				dragPart.css('z-index', '10');
+			}
+		
+			// backup and change drag_section's overflow
+			var dragSection = cnt.closest('.drag_section');
+			if (dragSection.length > 0) {
+				kbParentDragSectionOverflow = dragSection.css('overflow');
+				dragSection.css('overflow', 'visible');
+			}
+		
+			// Back and change widget_body's overflow and display when not in doctype mode
+			if (!isDoctype()) {
+				var widgetBody = cnt.closest('.widget_body');
+				if (widgetBody.length > 0) {
+					kbParentWidgetBodyOverflow = widgetBody.css('overflow');
+					kbParentWidgetBodyDisplay = widgetBody.css('display');
+					widgetBody.css('overflow', 'visible');
+					widgetBody.css('display', 'inline-block');
+				}
+			}
+
+			var menu = $j("#kb_advanced_search_menu");
+			var width = cnt.outerWidth();
+			var offset = cnt.offset();
+			offset.top = offset.top - $j(window).scrollTop() + cnt.outerHeight();
+			offset.left = offset.left - $j(window).scrollLeft();
+
+			if (isMSIE7 || isMSIE8 || !isDoctype()) {
+				var path = window.location.pathname;
+				if (path.indexOf('/home.do') != -1) {
+					if (!isMSIE7 && !isMSIE8 && !isDoctype()) {
+						offset.top = 37;
+						offset.left = 10;
+					}
+                    else {
+						offset.top = 33;
+						offset.left = 10;
+					}
+				} else if (path.indexOf('/kb_home.do') != -1 || path.indexOf('/kb_find.do') != -1) {
+					offset.top -= 10;
+					offset.left -= 4;
+				}
+				if (isMSIE7 || isMSIE8)
+					width -= 36;
+				else
+					width -= 2;
+			}
+
+			menu.width(width);
+			menu.css({'top': offset.top + 'px', 'left': offset.left + 'px', 'right':'', 'display':'block'});
+		}
+
+		function sysparmSearchFocus(that) {
+			that.select();
+
+			if (!that.ac) {
+				addLoadEvent(function() {
+					var e = $('sysparm_search');
+					if (!e.ac) {
+						new AJAXTextSearchCompleter('global_search_completer', 'sysparm_search', 'left', $$('span.searchBox')[0]);
+					}
+				});
+			}
+		}
+
+		function filterPublications(that) {
+			// this could be a lot simpler if we didn't support Quirks mode IE.
+			var kbParentId = that.value;
+			var form = gel('kb_view');
+			var pubSelect = form['sysparm_publication'];
+
+			if (kbParentId !== 'null') {
+				pubSelect.innerHTML = '';
+				for (var i = 0; i < kbPublicationsList.length; i++) {
+					var opt = kbPublicationsList[i];
+
+					if (opt.sysId === 'null' || opt.parentSysId === kbParentId) {
+						var optElem = $j('<option></option>')
+						.val(opt.sysId)
+						.attr('data-kb-sysid', opt.parentSysId)
+						.text(opt.label);
+
+						if (opt.selected) {
+							optElem.attr('selected', 'true');
+							pubSelect.selectedIndex = i;
+						}
+
+						$j(pubSelect).append(optElem);
+					}
+				}
+				pubSelect.disabled = '';
+			} else {
+				pubSelect.options.selectedIndex = 0;
+				pubSelect.disabled = 'disabled';
+			}
+		}
+
+		function hideAdvancedMenu() {
+			var menu = $j("#kb_advanced_search_menu");
+			// restore drag_section_part's original z-index
+			var dragPart = menu.closest('.drag_section_part');
+			if (dragPart.length > 0) {
+				dragPart.css('z-index', kbParentDragPartZindex);
+			}
+		
+			// restore drag_section original overflow
+			if (kbParentDragSectionOverflow) {
+				var dragSection = menu.closest('.drag_section');
+				if (dragSection.length > 0) 
+					dragSection.css('overflow', kbParentDragSectionOverflow);
+			}
+		
+			// restore widget_body original overflow and dislay when not in doctype mode
+			if (!isDoctype() && kbParentWidgetBodyOverflow && kbParentWidgetBodyDisplay) {
+				var widgetBody = menu.closest('.widget_body');
+				if (widgetBody.length > 0) {
+					widgetBody.css('overflow', kbParentWidgetBodyOverflow);
+					widgetBody.css('display', kbParentWidgetBodyDisplay);
+				}
+			}
+		
+			menu.css('display', 'none');
+			menu.css('top', '-999px');
+			if ($j('html').is('.rtl')) {
+				menu.css({'right':'-999px', 'left':''});
+			} else {
+				menu.css({'right':'', 'left':'-999px'});
+			}
+		}
+
+		addLoadEvent(kbOnLoad);
+
+		
+		var gcm = new GwtContextMenu('context_ui_page_render');
+		var mRowsPerPage = new GwtContextMenu('context_rowsperpage_ui_page_render');
+		var sorting = new GwtContextMenu('context_sort_ui_page_render');
+		gcm.clear();
+		gcm.addMenu("Show", mRowsPerPage);
+		sorting.addHref('<img src="images/checked.pngx" style="visibility:hidden;" aria-hidden="true"></img> Views', "changeSort('views');",'','Select to sort by Views','menu_views');
+				menu_item = sorting.getItem('menu_views');
+				if(menu_item) {
+					elems = menu_item.getElementsByTagName('img');
+					if(elems && elems.length > 0) {
+						elems[0].setAttribute('alt','Select to sort by Views');
+					}
+				}
+			sorting.addHref('<img src="images/checked.pngx" style="visibility:hidden;" aria-hidden="true"></img> Relevancy', "changeSort('relevancy');",'','Select to sort by Relevancy','menu_relevancy');
+				menu_item = sorting.getItem('menu_relevancy');
+				if(menu_item) {
+					elems = menu_item.getElementsByTagName('img');
+					if(elems && elems.length > 0) {
+						elems[0].setAttribute('alt','Select to sort by Relevancy');
+					}
+				}
+			sorting.addHref('<img src="images/checked.pngx" style="visibility:hidden;" aria-hidden="true"></img> Last modified', "changeSort('sys_updated_on');",'','Select to sort by Last modified','menu_sys_updated_on');
+				menu_item = sorting.getItem('menu_sys_updated_on');
+				if(menu_item) {
+					elems = menu_item.getElementsByTagName('img');
+					if(elems && elems.length > 0) {
+						elems[0].setAttribute('alt','Select to sort by Last modified');
+					}
+				}
+			mRowsPerPage.addHref('<img src="images/checked.pngx" style="visibility:hidden;" aria-hidden="true"></img> 10 per page', "changeRowCountFromMenu(10);",'','Select to show 10 results per page', 'menu_10');
+				menu_item = mRowsPerPage.getItem('menu_10');
+				if(menu_item) {
+					elems = menu_item.getElementsByTagName('img');
+					if(elems && elems.length > 0) {
+						elems[0].setAttribute('alt','Select to show 10 results per page');
+					}
+				}
+			mRowsPerPage.addHref('<img src="images/checked.pngx" style="visibility:hidden;" aria-hidden="true"></img> 15 per page', "changeRowCountFromMenu(15);",'','Select to show 15 results per page', 'menu_15');
+				menu_item = mRowsPerPage.getItem('menu_15');
+				if(menu_item) {
+					elems = menu_item.getElementsByTagName('img');
+					if(elems && elems.length > 0) {
+						elems[0].setAttribute('alt','Select to show 15 results per page');
+					}
+				}
+			mRowsPerPage.addHref('<img src="images/checked.pngx" style="visibility:hidden;" aria-hidden="true"></img> 20 per page', "changeRowCountFromMenu(20);",'','Select to show 20 results per page', 'menu_20');
+				menu_item = mRowsPerPage.getItem('menu_20');
+				if(menu_item) {
+					elems = menu_item.getElementsByTagName('img');
+					if(elems && elems.length > 0) {
+						elems[0].setAttribute('alt','Select to show 20 results per page');
+					}
+				}
+			mRowsPerPage.addHref('<img src="images/checked.pngx" style="visibility:hidden;" aria-hidden="true"></img> 50 per page', "changeRowCountFromMenu(50);",'','Select to show 50 results per page', 'menu_50');
+				menu_item = mRowsPerPage.getItem('menu_50');
+				if(menu_item) {
+					elems = menu_item.getElementsByTagName('img');
+					if(elems && elems.length > 0) {
+						elems[0].setAttribute('alt','Select to show 50 results per page');
+					}
+				}
+			mRowsPerPage.addHref('<img src="images/checked.pngx" style="visibility:hidden;" aria-hidden="true"></img> 100 per page', "changeRowCountFromMenu(100);",'','Select to show 100 results per page', 'menu_100');
+				menu_item = mRowsPerPage.getItem('menu_100');
+				if(menu_item) {
+					elems = menu_item.getElementsByTagName('img');
+					if(elems && elems.length > 0) {
+						elems[0].setAttribute('alt','Select to show 100 results per page');
+					}
+				}
+			mRowsPerPage.addHref('<img src="images/checked.pngx"></img> per page', "changeRowCountFromMenu(100);",'','Select to show 100 results per page', 'menu_100');
+			menu_item = mRowsPerPage.getItem('menu_100');
+			if(menu_item) {
+				elems = menu_item.getElementsByTagName('img');
+				if(elems && elems.length > 0) {
+					elems[0].setAttribute('alt','Select to show 100 results per page');
+				}
+			}
+		$j(document).ready(function() { 
+			$j("input[id^='sysparm_'][type='HIDDEN']").attr('type','hidden');
+		});
+		
+		function displayKBPopupMenu(elem) {
+			contextShow(event, 'ui_page_render', 200, grabOffsetTop(elem) - 1, grabOffsetLeft(elem) + 10);
+		}
+
+		$j(function () {
+			// move the drop-down menus to the body as it could not position well otherwise.
+			$j('#kb_advanced_search_menu').css({'visibility':'', 'display':'none'});
+
+			if (isMSIE7 || isMSIE8) {
+				// making sure the menu appears on top of the msg bar.
+				$j('.outputmsg_container').css('z-index', '-1');
+
+				if ($j('html').is('.rtl')) {
+					var inc = 0;
+					var fnc = function() {
+						if (!window.contextMenuMoved) {
+							// Modify menus inline css to prevent them from stretching the page width, and subsequently miscalculate their own position.
+							$j('.context_menu').css({'position':'absolute', 'left':'', 'right':'-999px', 'width':'200px', 'display':'none'});
+							window.contextMenuMoved = true;
+						}
+						var buttons = $j('button').filter(function () {
+							return this.style.left == '-9999px';
+						});
+						if (buttons.length) {
+							// Delete useless hidden buttons which caused to stretch the page width.
+							buttons.remove();
+						}
+						if (++inc > 5) {
+							clearInterval(window.interval);
+						}
+					};
+					// Timeout needed to catch hidden buttons and menus generated/injected after the page has loaded.
+					window.interval = setInterval(fnc, 150);
+				}
+			}
+		});</script><div id="kb-header-container" class="navbar navbar-default kb-header-container" role="navigation"><form action="kb_find.do" style="DISPLAY: inline" id="kb_view" name="kb_view" onsubmit="return submitSearch();"><input type="HIDDEN" name="sysparm_article" id="sysparm_article" value="KB0010432"></input><input type="HIDDEN" name="sysparm_base_form" id="sysparm_base_form" value="ui_page_render"></input><input type="HIDDEN" name="sysparm_view" id="sysparm_view" value=""></input><input type="hidden" name="sysparm_operator" value="IR_AND_OR_QUERY"></input><input type="hidden" name="sysparm_order" id="sysparm_order" value="relevancy"></input><button id="backButton" class="btn btn-default icon-chevron-left navbar-btn" title="Click to goto previous page" type="button" onclick="window.history.back()" aria-label="Back button. Click this button to navigate to to previous page"></button><div class="kb_search_container"><div id="kb-input-container" class="kb-input-container kb-hide-adv-btn"><input id="sysparm_search" name="sysparm_search" class="search-input" autocomplete="off" value="" onfocus="sysparmSearchFocus(this)" onkeydown="return acReferenceKeyDown(this, event);" onkeypress="return acReferenceKeyPress(this, event);" onkeyup="return acReferenceKeyUp(this, event);" placeholder="Search" function="$('kb_view').submit()" aria-label="Search text field. Type search text and press enter to search"></input><a href="javascript:void(0)" onclick="toggleAdvancedSearch()" class="kb-btn-advanced" role="button" aria-haspopup="true" aria-label="Advanced Search options. Click to open advanced search options">Advanced search<span class="kb-arrow"></span></a></div><div id="kb_advanced_search_menu" class="context_menu" style="visibility: hidden; z-index: 999999; left: -1000px; top: -1000px;"><div class="context_item"><label for="sysparm_kb" style="display: block; margin: 5px 0;">Knowledge Base</label><select name="sysparm_kb" id="sysparm_kb" style="width:100%" aria-label="Knowledge Base list. Choose a knowledge base to search"><option value="null" aria-label="Choose to search all the available knowledge bases">-- All --</option><option value="5c45a3a0d712120023c84f80de61038b" aria-label="Choose to search Social QA knowledge base">Social QA</option><option value="05ff44289f011200550bf7b6077fcfa3" aria-label="Choose to search Customer Service knowledge base">Customer Service</option></select></div><br></br></div><button class="btn btn-primary kb-btn-primary" type="submit" aria-label="Search button. Click to search the entered text">Search</button></div></form></div></td></tr></table><table class="wide" cellspacing="0" border="0" style="margin-bottom: 8px;"><tr><td><form method="GET" action="ui_page_render.do" name="ui_page_render.do"><input type="HIDDEN" name="sys_action" id="sys_action" value="none"></input><input type="HIDDEN" name="sys_id" id="sys_id" value="3e8225b2876e2e10f7b8a7dd3fbb355a"></input><input type="HIDDEN" name="view_id" id="view_id" value="da21426793624f108f44f89a2603d6a2"></input><input type="HIDDEN" name="sysparm_modify_check" id="sysparm_modify_check" value="true"></input><input type="HIDDEN" name="sysparm_article" id="sysparm_article" value="KB0010432"></input><input type="HIDDEN" name="sysparm_base_form" id="sysparm_base_form" value="ui_page_render"></input><input type="HIDDEN" name="sysparm_view" id="sysparm_view" value=""></input><table class="wide" cellspacing="0"><tr class="header kb_header_title_row"><td><table border="0" class="wide" cellspacing="0" cellpadding="0"><tr class="header" border="0" cellspacing="0"><td><input type="HIDDEN" id="sysverb_back"></input></td><td width="100%"><div class="caption" style="margin-top: 2px;">Customer Service&nbsp;&gt;&nbsp;<a href="kb_list.do?jvar_view_topic=General&amp;sysparm_kb_search_table=&amp;sysparm_language=&amp;sysparm_nameofstack=&amp;sysparm_refer=kb_view_customer.do?sysparm_article=KB0010432" class="caption_link_chevron" title="Topic: General">General</a>&nbsp;&gt;
+
+					    OneLogin Domains and IP addresses
+</div></td></tr></table></td></tr><tr><td style="color:#999999;font-size: 80%;padding-top:6px;padding-bottom:8px;"><div class="kb_article_header_short_description">OneLogin Domains and IP addresses</div><div class="kb_article_header_info"><span style="font-weight:bold;">Article:</span>&nbsp;KB0010432
+		<span style="font-weight:bold;padding-left:8px;">Published:</span>&nbsp;07/09/2025
+			<span style="font-weight:bold;padding-left:8px;">Last modified:</span>&nbsp;07/09/2025
+	</div></td></tr><tr><td><table><tr><td></td><td class="kb_text" valign="top"><p><link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous"></p>
+<div class="alert alert-primary">
+<p>This document provides the domains, ports, and IP addresses that OneLogin uses to communicate with other services.</p>
+<ul>
+<li>Use <strong>domain</strong> allow lists for your end-user systems that access the OneLogin SSO portal and other user interfaces.</li>
+<li>Use <strong>IP</strong> allow lists for on-premises agents, like Active Directory connectors and LDAP connectors, as well as for apps provisioned by OneLogin.</li>
+</ul>
+<p class="alert alert-danger"><strong>Note:</strong> We do not support access from anonymous IP addresses.</p>
+</div>
+<div class="card border-secondary mb-3" style="width: fit-content;">
+<div class="card-header">
+<p>Table of Contents</p>
+</div>
+<div class="card-body text-secondary">
+<div class="mce-toc">
+<ul>
+<li><a href="#domains">Domains</a>
+<ul>
+<li><a href="#domains-us">North America Domains</a>
+<ul>
+<li><a href="#domains-us-back">Backward-Compatible North America Domains</a></li>
+</ul>
+</li>
+<li><a href="#domains-eu">Europe Domains</a></li>
+</ul>
+</li>
+<li><a href="#ports">Ports</a></li>
+<li><a href="#ips">IP Addresses</a>
+<ul>
+<li><a href="#ips-us">North America IP Addresses</a></li>
+<li><a href="#ips-eu">Europe IP Addresses</a></li>
+<li><a href="#ips-email">Email IP Addresses</a></li>
+<li><a href="#ips-radius">NAS IPs for RADIUS Servers</a></li>
+</ul>
+</li>
+<li><a href="#tls">TLS configuration</a></li>
+</ul>
+</div>
+</div>
+</div>
+<p>&nbsp;</p>
+<hr>
+<p>&nbsp;</p>
+<h1 id="domains">Domains</h1>
+<table class="table table-striped" style="width: fit-content;">
+<tbody>
+<tr>
+<td>
+<p><code><mark><em>your-domain</em></mark>.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>cdn.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>portal-cdn.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>web-login-v2-cdn.onelogin.com</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="domains-us">North America Domains</h2>
+<table class="table table-striped" style="width: fit-content;">
+<tbody>
+<tr>
+<td>
+<p><code><mark><em>your-domain</em></mark>.admin.us.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code><mark><em>your-domain</em></mark>.login.us.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>admin.us.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>dsl.us.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>api.us.onelogin.com</code> (v1 and v2 API)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>api.onelogin.com</code> (legacy v.1-v.3 API)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>smux.us.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>certs.us.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>radius.us.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>radius2.us.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>ldap.us.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>pki-us.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>desktop-us.onelogin.com</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="domains-us-back">Backward-Compatible North America Domains</h3>
+<table class="table table-striped" style="width: fit-content;">
+<tbody>
+<tr>
+<td>
+<p><code>app.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>certs.onelogin.com</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="domains-eu">Europe Domains</h2>
+<table class="table table-striped" style="width: fit-content;">
+<tbody>
+<tr>
+<td>
+<p><code><mark><em>your-domain</em></mark>.admin.eu.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code><mark><em>your-domain</em></mark>.login.eu.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>admin.eu.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>api.eu.onelogin.com</code> (v1 and v2 API)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>api-eu.onelogin.com</code> (legacy v.1-v.3 API)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>smux.eu.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>radius.eu.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>radius2.eu.onelogin.com</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>ldap.eu.onelogin.com</code></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<hr>
+<p>&nbsp;</p>
+<h1 id="ports">Ports</h1>
+<p>Allow the following ports when server components or browsers contact OneLogin:</p>
+<table class="table table-striped" style="width: fit-content;">
+<tbody>
+<tr>
+<td>
+<p><code>53</code> (TCP/UDP)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>80</code> (TCP)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>88</code> (TCP/UDP)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>135</code> (TCP/UDP)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>443</code> (TCP/UDP)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>636</code> (TCP)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>1812</code> (UDP)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>464</code> (TCP/UDP)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><code>49152-65535</code> (TCP)</p>
+<sub>This range is needed when using <a title="Service overview and network port requirements for Windows
+    " href="https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/service-overview-and-network-port-requirements" target="_blank" rel="noopener">Active Directory</a>.</sub></td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<hr>
+<p>&nbsp;</p>
+<h1 id="ips">IP Addresses</h1>
+<p>These are general IP allow lists that can be used in (but aren't limited to) on-premise agents or Active Directory.</p>
+<p>OneLogin customers who connect to <code>web-login-v2-cdn.onelogin.com</code> will access AWS Cloudfront, which has a rotating set of IP addresses. <a title="AWS Documentation: Locations and IP address ranges of CloudFront edge servers" href="https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/LocationsOfEdgeServers.html" target="_blank" rel="noopener">Click here</a> for more information.</p>
+<p>Install Active Directory on a domain-joined Windows server and open your firewall for outbound traffic to the addresses below.</p>
+<h2 id="ips-us">North America IP Addresses</h2>
+<table class="table table-striped" style="width: fit-content;">
+<tbody>
+<tr>
+<td>
+<p>23.183.113.12</p>
+</td>
+<td>
+<p>23.183.112.12</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>52.34.255.194/31</p>
+</td>
+<td>
+<p>52.34.255.196/30</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>52.34.255.200/29</p>
+</td>
+<td>
+<p>52.34.255.208/28</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>52.34.255.224/27</p>
+</td>
+<td>
+<p>18.216.23.64/26 (18.216.23.64 - 18.216.23.127)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>52.24.165.42</p>
+</td>
+<td>
+<p>52.15.145.203</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>13.52.4.72/29 (13.52.4.72 - 13.52.4.79)</p>
+</td>
+<td>
+<p>23.183.112.0/24</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>23.183.113.0/24</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ips-eu">Europe IP Addresses</h2>
+<table class="table table-striped" style="width: fit-content;">
+<tbody>
+<tr>
+<td>
+<p>23.183.113.14</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>23.183.112.14</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>52.29.255.192/26 (52.29.255.192 - 52.29.255.255)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>52.48.63.0/26 (52.48.63.0 - 52.48.63.63)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>18.130.91.64/29 (18.130.91.64 - 18.130.91.71)</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>23.183.112.0/24</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>23.183.113.0/24</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ips-email">Email IP Addresses</h2>
+<p>OneLogin uses two dedicated IP addresses to send email:</p>
+<table class="table table-striped" style="width: fit-content;">
+<tbody>
+<tr>
+<td>
+<p>167.89.76.151</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>198.21.5.193</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ips-radius">NAS IPs for RADIUS Servers</h2>
+<p><a title="Configuring the RADIUS Server Interface" href="https://onelogin.service-now.com/support?id=kb_article&amp;sys_id=041a52f887e17150695f0f66cebb357b" target="_blank" rel="noopener">Configure RADIUS</a> for authentication on your device using the following settings:</p>
+<p class="alert alert-warning">When possible, use the RADIUS server domain name rather than the IP address, as IP addresses may change.</p>
+<table class="table table-striped" style="width: fit-content;">
+<thead>
+<tr>
+<th>
+<h4>NAS Configuration</h4>
+</th>
+<th>
+<h4>OneLogin - US</h4>
+</th>
+<th>
+<h4>OneLogin - EU</h4>
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<h4>AAA/RADIUS Primary Server</h4>
+</td>
+<td>
+<p>Domain: <code>radius.us.onelogin.com</code></p>
+<p>IP: <code>23.183.113.15</code></p>
+</td>
+<td>
+<p>Domain: <code>radius.eu.onelogin.com</code></p>
+<p>IP: <code>23.183.113.18</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<h4>AAA/RADIUS Secondary Server</h4>
+</td>
+<td>
+<p>Domain: <code>radius2.us.onelogin.com</code></p>
+<p>IP: <code>23.183.112.15</code></p>
+</td>
+<td>
+<p>Domain: <code>radius2.eu.onelogin.com</code></p>
+<p>IP: <code>23.183.112.18</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<h4>Authentication Scheme</h4>
+</td>
+<td colspan="2" align="center">
+<p><code>PAP</code> <em>or</em> <code>EAP-TTLS/PAP</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<h4>RADIUS Port</h4>
+</td>
+<td colspan="2" align="center">
+<p><code>UDP/1812</code></p>
+</td>
+</tr>
+<tr>
+<td>
+<h4>Secret/Key</h4>
+</td>
+<td colspan="2" align="center">
+<p>Enter the <strong>Secret</strong> string from your OneLogin configuration.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>&nbsp;</p>
+<hr>
+<p>&nbsp;</p>
+<h1 id="tls">TLS configuration</h1>
+<table class="table table-striped" style="width: fit-content;">
+<tbody>
+<tr>
+<td>
+<p>ECDHE-ECDSA-AES128-GCM-SHA256</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>ECDHE-RSA-AES128-GCM-SHA256</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>ECDHE-ECDSA-AES256-GCM-SHA384</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>ECDHE-RSA-AES256-GCM-SHA384</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>ECDHE-ECDSA-CHACHA20-POLY1305</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>ECDHE-RSA-CHACHA20-POLY1305</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>DHE-RSA-AES128-GCM-SHA256</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>DHE-RSA-AES256-GCM-SHA384</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>no-sslv3</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>no-tlsv10</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>no-tlsv11</p>
+</td>
+</tr>
+</tbody>
+</table></td></tr></table></td></tr><tr><td class="kb_text" valign="top"><div style="padding-top:10px;"></div></td></tr><tr><td><div style="padding-top:10px;"></div><hr></hr></td></tr></table><table class="wide" cellspacing="0"><tr><td width="99%" style="padding-top:0px; vertical-align:top;"><table class="wide"><tr><td class="label label_spacing" style="padding-left:8px;background-color:#eeeeee;vertical-align:top;"><span onclick="toggleComments();" style="display: none"><img id="commentsimg" src="images/filter_hide.gifx" style="float:right;" alt="Expand/Collapse Comments"></img></span><span style="margin-right:3px; margin-left:1px;"><label for="article_comments">Feedback</label></span></td><td colspan="1" style="padding-left:0px;padding-bottom:0px;"><div id="commentsdiv_empty" style="background-color:#FFEBE8; border:0px solid red; margin: 0px 7px; padding: 5px 4px; display:none;">Please type feedback before submitting</div><div id="commentsdiv_done" style="display: none; padding: 4px 4px 2px 1px;">Your feedback has been submitted, thank you</div><div id="commentsdiv_flagmsg" style="background-color:#FFEBE8; border:0px solid red; margin: 0px 7px; padding: 5px 4px; display:none;">Please submit descriptive feedback after flagging an article, or it will not be modified</div><div id="commentsdiv" style="padding: 0px 4px;"><div><textarea name="article_comments" id="article_comments" style="width: 100%; height: 3em; margin-bottom: 3px;"></textarea></div><div><button name="not_important" id="feedback_button" type="submit" value="sysverb_feedback" onClick="return kbFeedback2('article_comments');">Submit</button></div></div></td></tr><script eval="true">if ("" == "false") {
+	     var e = gel("recent_tasks");
+	     if (e)
+	       e.style.display = "none";
+	   }</script></table><table class="wide" cellspacing="0"><tr><td style="color:#999999; font-size:80%; padding-top:8px;"><b><a id="permalink" style="color:#999999;">Permalink</a>:</b>&nbsp;<span id="permatext"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+		<script language="javascript" eval="true">var urlpath = location.href.substring(0, location.href.indexOf("?")) + "?sysparm_article=KB0010432";
+			gel("permalink").href = urlpath;
+			gel("permatext").innerHTML = urlpath;</script></td></tr></table></td><td style="padding-right: 10px" width="135px" valign="top"><table class="kb_options" width="100%" cellspacing="0" cellpadding="0"><tbody><tr><td><div class="kb_options_header">Was this helpful?</div><div style="padding-top: 10px;"></div><div><span id="articleratingsubmitted" style="display: none; color:#666666; padding-left: 10px;white-space:normal"><b>Thank you</b></span><span id="articlerating"><span id="yesarticlerating" class="kb_link" onclick="postUsed('3e8225b2876e2e10f7b8a7dd3fbb355a', 'yes')"><a><img border="0" src="images/icons/kb_yes.gifx" alt="Yes"></img>Yes</a></span><span id="noarticlerating" class="kb_link" onclick="postUsed('3e8225b2876e2e10f7b8a7dd3fbb355a', 'no')"><a><img border="0" src="images/icons/kb_no.gifx" alt="No"></img>No</a></span></span></div><div style="padding-top: 10px;"></div></td></tr></tbody></table></td></tr></table></form></td></tr></table><div style="border:none; visibility:hidden"><form name="sys_personalize" method="GET" action="slushbucket.do"><input type="hidden" name="sysparm_referring_url" value="kb_view_customer.do?sysparm_article=KB0010432"></input><input type="hidden" name="sysparm_view" value=""></input></form></div><script type="text/javascript" src="/scripts/ui_page_footer.jsx?v=07-02-2026_1215"></script><span style="display:none" data-comments="js_includes_last_doctype"></span><script type="text/javascript" src="/scripts/thirdparty/dom_purify/purify.jsx?v=07-02-2026_1215&amp;sysparm_substitute=false"></script><script>NOW.xperf.lastDoctypeBegin = NOW.xperf.now();</script><script type="text/javascript" src="/scripts/doctype/js_includes_last_doctype.jsx?v=07-02-2026_1215&amp;lp=Sat_Jul_18_12_48_44_PDT_2026&amp;c=13_234"></script><script type="text/javascript" src="/scripts/heisenberg/heisenberg_all.jsx?v=07-02-2026_1215"></script><script type="text/javascript" src="/scripts/js_includes_list_edit_doctype.jsx?v=07-02-2026_1215&amp;lp=Sat_Jul_18_12_48_44_PDT_2026&amp;c=13_234"></script><script type="text/javascript" src="/scripts/transaction_scope_includes.jsx?v=07-02-2026_1215"></script><script>if ('') 
+			GlideTransactionScope.setTransactionScope('');
+		if ('') 
+			GlideTransactionScope.setRecordScope('');
+		if ('') 
+			GlideTransactionScope.setTransactionUpdateSet('');
+		if (typeof g_form != 'undefined')
+			$(g_form.getFormElement()).fire('glidescope:initialized', {gts : GlideTransactionScope});</script><span style="display:none" data-comments="requires"></span><script>NOW.xperf.lastDoctypeEnd = NOW.xperf.now();</script><span style="display:none" data-comments="db_context_menu_script"></span><script>NOW.xperf.dbContextBegin = NOW.xperf.now();</script><script>NOW.xperf.dbContextEnd = NOW.xperf.now();</script><span style="display:none" data-comments="db_context_menu_script"></span><script data-description="MessagesTag">(function() {
+ var messages = new GwtMessage();
+messages.set('Timing Type');
+messages.set('Time Range');
+messages.set('Total Time');
+messages.set('{0}ms');
+messages.set('{0} ms');
+messages.set('Browser response time');
+messages.set('Server');
+messages.set('Timing details');
+messages.set('{0} of {1} {2}: {3}');
+messages.set('{0} of {1} Other: {2}');
+messages.set('{0} of {1} {2}: {3}');
+messages.set('Show Timing Breakdown');
+messages.set('Browser timing detail');
+messages.set('Time');
+messages.set('Other');
+messages.set('Timing details breakdown');
+messages.set('Response time(ms): {0}');
+messages.set('Network: {0}');
+messages.set('Network: {0}ms');
+messages.set('Server: {0}');
+messages.set('Server: {0}ms');
+messages.set('Browser: {0}');
+messages.set('Browser: {0}ms');
+messages.set('Response time','Response Time');
+messages.set('Close');
+messages.set('Cache/DNS/TCP');
+messages.set('DOM Processing');
+messages.set('Script Load/Parse');
+messages.set('CSS and JS Parse');
+messages.set('Form Sections');
+messages.set('UI Policy - On Load');
+messages.set('Client Scripts - On Load');
+messages.set('Client Scripts - On Change (initial load)');
+messages.set('Browser processing before onload');
+messages.set('DOMContentLoaded to LoadEventEnd');
+messages.set('addLoadEvent functions');
+messages.set('Related Lists');
+messages.set('Related Lists (sync)');
+messages.set('Related Lists (async)');
+messages.set('onLoad');
+messages.set('Unload');
+})()</script><script type="text/javascript">var g_serverTime = parseInt("133") + parseInt("0");
+            var g_logClientViewRoles = "";
+
+			// do not do this for the navigation menu
+            if (window.name != 'gsft_nav') {
+				 addAfterPageLoadedEvent(function() {
+					 if (window.performance)
+						setTimeGraph();
+					 else 
+						firePageTimer();
+				 });
+			 }
+			 
+			function setTimeGraph() {
+				if (window.performance.timing.loadEventEnd > 0)
+			 		firePageTimer();
+			 	else 
+			 		setTimeout(setTimeGraph, 300);
+			 }
+			 
+			function firePageTimer() {
+				 if (window.performance && performance.timing.requestStart != performance.timing.responseStart) {
+				 	var p = performance.timing;
+
+				 	CustomEvent.fire('page_timing', { name: 'SERV', ms: p.responseEnd - p.requestStart});
+				 	CustomEvent.fire('page_timing', { name: 'REND', ms: (p.loadEventEnd - p.responseEnd) });
+				 	CustomEvent.fire('page_timing_network', { name: 'NETW', ms: (p.responseEnd - p.navigationStart) });
+				 } else {
+				    CustomEvent.fire('page_timing', { name: 'SERV', ms: g_serverTime });
+					CustomEvent.fire('page_timing', { name: 'REND', startTime: g_loadTime });
+					CustomEvent.fire('page_timing_network', { name: 'NETW', loadTime: g_loadTime });
+				 }CustomEvent.fire('page_timing_show', {
+					 isFixed: '', 
+					 show: 'true'
+				 });var o = {};
+	      o.types = {};o.types['SECT'] = true;o.types['RLV2'] = true;o.types['UIOL'] = true;o.types['CSOL'] = true;
+	
+	      o.transaction_id = '5e2142a393624f108f44f89a2603d6a3';
+	      o.table_name = '';
+	      o.form_name = 'ui_page_render';
+	      o.view_id = 'Default view';
+	      o.logged_in = false;
+	      o.win = window;
+	      CustomEvent.fire('page_timing_client', o);}
+			 
+            // The following line is used to set the time when we start requesting a new page
+            Event.observe(window, 'beforeunload', function() {
+				new CookieJar({sameSite: 'strict'}).put('g_startTime', new Date().getTime());
+                CustomEvent.fireTop('request_start', document);
+            });
+
+            // simple pages fire this (stats.do, etc.)
+            CustomEvent.observe('simple_page.unload', function() {
+				new CookieJar({sameSite: 'strict'}).put('g_startTime', new Date().getTime());
+            }); 
+
+            // indicate we have completed the request (used by RequestManager.js for cancel widget)
+            addLoadEvent(function() {
+            	CustomEvent.fireTop("request_complete", window.location);
+            });</script><script type="text/javascript" src="/scripts/doctype/z_last_include.jsx?v=07-02-2026_1215"></script></body><script type="text/html" id="popup_template"><div class="popup popup_form" style=""><iframe src="$src" style=""></iframe></div></script></html>

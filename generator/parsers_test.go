@@ -361,6 +361,114 @@ func TestParserSpotChecks(t *testing.T) {
 			t.Errorf("ibm-cloud frontend: private range %s in output", c)
 		}
 	}
+
+	// OneLogin annotates several CIDRs with their own first and last address,
+	// as in "18.216.23.64/26 (18.216.23.64 - 18.216.23.127)". Those endpoints
+	// parse as /32s and must be absorbed rather than published alongside the
+	// block, and the two /24s must swallow the individual regional addresses.
+	body, ep = get("onelogin", "kb")
+	raw, err = parsers[ep.Format](body, "section=North America IP Addresses")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v4ol, _ := normalize(raw, func(string, ...any) {})
+	for _, absorbed := range []string{"18.216.23.127/32", "13.52.4.79/32", "23.183.113.12/32"} {
+		if contains(v4ol, absorbed) {
+			t.Errorf("onelogin: %s should have been absorbed by its enclosing block: %v", absorbed, v4ol)
+		}
+	}
+	// Assert coverage by address, not by CIDR string: 23.183.112.0/24 and
+	// 23.183.113.0/24 are exact siblings and aggregate to 23.183.112.0/23, so
+	// looking for the published spelling would fail on output that is correct.
+	for _, addr := range []string{"23.183.112.12", "23.183.113.18", "18.216.23.127", "13.52.4.79"} {
+		a := netip.MustParseAddr(addr)
+		covered := false
+		for _, c := range v4ol {
+			if netip.MustParsePrefix(c).Contains(a) {
+				covered = true
+				break
+			}
+		}
+		if !covered {
+			t.Errorf("onelogin north america does not cover %s: %v", addr, v4ol)
+		}
+	}
+	// Email is the opposite direction and is exactly two addresses; if the
+	// section select ever widened, this is what would catch it first.
+	raw, _ = parsers[ep.Format](body, "section=Email IP Addresses")
+	v4olMail, _ := normalize(raw, func(string, ...any) {})
+	if want := "167.89.76.151/32,198.21.5.193/32"; strings.Join(v4olMail, ",") != want {
+		t.Errorf("onelogin email = %v, want %s", v4olMail, want)
+	}
+
+	// Workato heads the two directions separately: "Traffic from Workato" is
+	// what a receiving app allows, "Traffic to Workato" is what an on-prem
+	// agent dials. Different infrastructure, so they must not overlap.
+	body, ep = get("workato", "docs")
+	rawFrom, err := parsers[ep.Format](body, "section=Traffic from Workato")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rawTo, err := parsers[ep.Format](body, "section=Traffic to Workato")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v4from, _ := normalize(rawFrom, func(string, ...any) {})
+	v4to, _ := normalize(rawTo, func(string, ...any) {})
+	if len(v4from) != 30 {
+		t.Errorf("workato platform = %d ranges, want 30 (ten data centres, three each)", len(v4from))
+	}
+	if len(v4to) != 60 {
+		t.Errorf("workato on-prem-agent = %d ranges, want 60", len(v4to))
+	}
+	for _, a := range v4from {
+		if contains(v4to, a) {
+			t.Errorf("workato purposes overlap on %s: the two directions must be disjoint", a)
+		}
+	}
+
+	// Make's page is rendered, and the fixture holds the rendered DOM. Nextra
+	// ships inline SVG icons whose path data matches the IPv4 pattern, so the
+	// section select is what keeps 138.112.25.25 out of the feed.
+	body, ep = get("make", "docs")
+	raw, err = parsers[ep.Format](body, "section=Allow connections to and from Make IP addresses")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v4mk, _ := normalize(raw, func(string, ...any) {})
+	if len(v4mk) != 18 {
+		t.Errorf("make = %d ranges, want 18 (six zones, three each): %v", len(v4mk), v4mk)
+	}
+	if !contains(v4mk, "44.209.150.16/32") {
+		t.Errorf("make missing us2 address 44.209.150.16/32: %v", v4mk)
+	}
+
+	// Svix: the JSON carries a us-east region the rendered docs page does not
+	// list, which is the reason the feed reads the file rather than the page.
+	body, ep = get("svix", "main")
+	rawAll, err := parsers[ep.Format](body, "*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rawUSEast, err := parsers[ep.Format](body, "us-east")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(rawUSEast) == 0 {
+		t.Error("svix: us-east region empty")
+	}
+	for _, c := range rawUSEast {
+		if !contains(rawAll, c) {
+			t.Errorf("svix: us-east %s missing from the all-regions selection", c)
+		}
+	}
+	v4sv, v6sv := normalize(rawAll, func(string, ...any) {})
+	if len(v4sv) != 15 || len(v6sv) != 5 {
+		t.Errorf("svix = %d v4 / %d v6, want 15 / 5", len(v4sv), len(v6sv))
+	}
+	if _, err := parsers[ep.Format](body, "no-such-region"); err == nil {
+		t.Error("svix: expected error for unknown region key")
+	}
 }
 
 func TestNormalize(t *testing.T) {

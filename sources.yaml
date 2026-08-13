@@ -375,6 +375,32 @@ services:
           - {key: webhooks, direction: ingress, select: "outboundAddresses"}
     verified: "2026-07-30"
 
+  - slug: svix
+    name: Svix
+    category: devtools
+    classification: dedicated
+    provenance: https://docs.svix.com/receiving/source-ips
+    cadence: "rare; vendor states the source IPs do not change for existing customers"
+    notes: >
+      Webhook infrastructure used by other SaaS vendors, so this range set is what a
+      receiving endpoint actually has to allow for any product built on Svix. Stytch is
+      one such product and is recorded under non_publishers for that reason. The JSON
+      file is the source rather than the docs page: it is byte-small, carries ETag and
+      Last-Modified, and lists a us-east region the rendered page does not show. Svix
+      states "For existing customers, the source IPs do not change" and "there's no
+      rotation schedule or change-notification process to worry about", which is a
+      stability statement rather than a notice period, so no notice is claimed here.
+      Their pricing caveat is real and worth repeating: "Static source IPs are not
+      guaranteed for all pricing tiers".
+    endpoints:
+      - id: main
+        url: https://docs.svix.com/webhook-ips.json
+        format: json-cidr-map           # {<region>: [ip|cidr]}
+        detection: {poll: cond-get}
+        purposes:
+          - {key: webhooks, direction: ingress, select: "*"}
+    verified: "2026-08-13"
+
   # ── Payments / fintech ────────────────────────────────────────────────────
   - slug: stripe
     name: Stripe
@@ -702,6 +728,36 @@ services:
           - {key: all, direction: both, select: "*"}
     verified: "2026-07-04"
 
+  - slug: onelogin
+    name: OneLogin
+    category: identity
+    classification: mixed
+    provenance: https://onelogin.service-now.com/kb_view_customer.do?sysparm_article=KB0010432
+    cadence: "irregular; article carries no version marker"
+    notes: >
+      Direction is the vendor's own framing: "Install Active Directory on a domain-joined
+      Windows server and open your firewall for outbound traffic to the addresses below."
+      The regional sections carry both OneLogin's own space (23.183.112.0/24,
+      23.183.113.0/24) and per-region AWS subnets, and they annotate several CIDRs with
+      their first and last address, which aggregation absorbs. Email is the other
+      direction: "OneLogin uses two dedicated IP addresses to send email". Classified
+      mixed because part of the surface is not pinnable by design: the same page states
+      that customers reaching web-login-v2-cdn.onelogin.com "will access AWS Cloudfront,
+      which has a rotating set of IP addresses". The RADIUS server addresses fall inside
+      the two /24s already published here, and OneLogin advises using the RADIUS hostname
+      rather than its address, so they get no separate purpose.
+    endpoints:
+      - id: kb
+        url: https://onelogin.service-now.com/kb_view_customer.do?sysparm_article=KB0010432
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: agents,    direction: egress,  select: "section=North America IP Addresses"}
+          - {key: agents-eu, direction: egress,  select: "section=Europe IP Addresses"}
+          - {key: email,     direction: ingress, select: "section=Email IP Addresses"}
+    verified: "2026-08-13"
+
+
   # ── Comms / messaging ─────────────────────────────────────────────────────
   - slug: zoom
     name: Zoom
@@ -982,6 +1038,54 @@ services:
         purposes:
           - {key: connector, direction: ingress, select: "section=NetSuite Connector IP Addresses"}
     verified: "2026-07-30"
+
+  - slug: workato
+    name: Workato
+    category: business-saas
+    classification: dedicated
+    provenance: https://docs.workato.com/security/ip-allowlists.html
+    cadence: "irregular; page carries no version marker"
+    notes: >
+      Both directions are vendor-labelled and separately headed. "Traffic from Workato
+      uses a unique set of IP addresses for each data center", covering ten data centers
+      including the shared self-service one, is what a receiving app allows. "Traffic to
+      Workato" is the set an on-prem agent dials out to: "The OPA creates an outbound
+      connection to the Workato cloud's on-premise gateways". Workato warns that an
+      on-prem group's own IP Allowlist page "defines which IPs on-prem agents can connect
+      from, not which IPs they can connect to", which is a different feature from these
+      lists. Their APIM addresses are deliberately excluded: "APIM doesn't include
+      permanent IP addresses".
+    endpoints:
+      - id: docs
+        url: https://docs.workato.com/security/ip-allowlists.html
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: platform,     direction: ingress, select: "section=Traffic from Workato"}
+          - {key: on-prem-agent, direction: egress, select: "section=Traffic to Workato"}
+    verified: "2026-08-13"
+
+  - slug: make
+    name: Make
+    category: business-saas
+    classification: mixed
+    provenance: https://help.make.com/allow-connections-to-and-from-make-ip-addresses
+    cadence: "irregular; page footer carried 'Updated 15 Jan 2026' when verified"
+    notes: >
+      Requires browser rendering: a plain fetch returns 1MB of app shell with zero
+      addresses. One direction only, and Make says so directly: the table is headed
+      "Egress IPs (outbound from Make)" and the page closes with "Make uses dynamic
+      Ingress IPs", so traffic INTO Make is not pinnable and gets no purpose here.
+      Covers the four make.com zones and the two make.celonis.com zones.
+    endpoints:
+      - id: docs
+        url: https://help.make.com/allow-connections-to-and-from-make-ip-addresses
+        format: html-cidr-extract
+        render: chrome
+        detection: {poll: docs-page}
+        purposes:
+          - {key: platform, direction: ingress, select: "section=Allow connections to and from Make IP addresses"}
+    verified: "2026-08-13"
 
   # ── Security ──────────────────────────────────────────────────────────────
   - slug: zscaler
@@ -1398,6 +1502,14 @@ non_publishers:
     name: Vercel (function egress)
     evidence: https://vercel.com/docs/networking/static-ips
     vendor_position: "Dynamic by default; static IPs are a paid per-customer feature, not a public range."
+  - slug: jumpcloud
+    name: JumpCloud
+    evidence: https://jumpcloud.com/support/create-an-allow-list-for-jumpcloud-services
+    vendor_position: "States for the agent, LDAP-as-a-Service and AD Integration alike: 'Due to the elastic nature of the JumpCloud infrastructure, we currently do not publish lists of IP addresses for allow lists'. Directs users to FQDNs instead. Their separate data-centre page does list six regional RADIUS anycast addresses, which is a single narrow endpoint rather than a service range set."
+  - slug: stytch
+    name: Stytch (webhooks)
+    evidence: https://stytch.com/docs/b2b/guides/webhooks
+    vendor_position: "Publishes no source-IP list of its own; states 'Stytch's webhooks are powered through Svix'. A receiving endpoint allowlists the svix service in this feed instead. Their own IP feature runs the other way: up to 10 customer IPs that may call the Stytch API, arranged over email with support."
   - slug: netlify
     name: Netlify (function egress)
     evidence: https://docs.netlify.com/manage/security/private-connectivity/
@@ -1549,6 +1661,28 @@ backlog:
         this is neither a publisher nor a non-publisher yet.
   # Researched, no public source located, and no vendor page stating a position
   # that could be cited. That missing citation is why they are not non-publishers.
+    - slug: pingone
+      note: >
+        PingOne publishes the outbound static IPs and must not be recorded as a
+        non-publisher. Their public reference page states where they are and that the
+        route is gated: the addresses live in "the Outbound section of the PingOne IP
+        Addresses article on the Ping Identity Support page" and "You might be prompted
+        to sign on when accessing the Ping Identity Support page" (verified 2026-08-13).
+        An anonymous fetch of support.pingidentity.com/s/article/PingOne-IP-Addresses
+        returns a 1.4KB Salesforce shell with a login marker and no article body, and
+        headless Chrome returns nothing at all, unlike the comparable Duo article which
+        renders. Evidence: docs.pingidentity.com/pingone/developer_tools/
+        p1_ip_address_domain_reference.html. Worth repeating if it ever lands: PingOne
+        cautions these are shared multi-tenant NAT gateways and "should not be relied
+        upon as a comprehensive security measure".
+    - slug: wiz
+      note: >
+        Undetermined, and deliberately not recorded either way. docs.wiz.io is not
+        anonymously reachable: repeated probes from two different networks returned 429
+        and 403 with no article body (2026-08-12 and 2026-08-13), so no public page could
+        be read and no vendor position can be cited. Third-party pages quote Wiz data
+        centre addresses, which is exactly the inherited-claim route that produced five
+        errors in the 45-vendor sweep, so none of it is usable. Vendor-outreach candidate.
   no_source_found:
     - slug: sentinelone
       note: >
