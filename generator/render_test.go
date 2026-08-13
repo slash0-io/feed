@@ -105,3 +105,53 @@ func TestRenderedFixturesParseWithoutBrowser(t *testing.T) {
 		t.Errorf("%s is missing from sources.yaml", slug)
 	}
 }
+
+// A vendor that splits IPv4 and IPv6 across two endpoints must end up with one
+// purpose carrying both. Assigning rather than merging would silently publish
+// only whichever endpoint happened to be listed last.
+func TestPurposeMergesAcrossEndpoints(t *testing.T) {
+	reg, err := LoadRegistry("../sources.yaml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	f := NewFetcher("../testdata/fixtures")
+	for _, svc := range reg.Services {
+		if svc.Slug != "checkly" {
+			continue
+		}
+		if len(svc.Endpoints) < 2 {
+			t.Fatalf("checkly should feed one purpose from two endpoints, has %d", len(svc.Endpoints))
+		}
+		doc, err := buildService(svc, f, "2026-08-12T00:00:00Z", "1")
+		if err != nil {
+			t.Fatal(err)
+		}
+		p, ok := doc.Purposes["probes"]
+		if !ok {
+			t.Fatal("checkly has no probes purpose")
+		}
+		if len(p.IPv4) == 0 || len(p.IPv6) == 0 {
+			t.Errorf("probes should carry both families, got v4=%d v6=%d", len(p.IPv4), len(p.IPv6))
+		}
+		return
+	}
+	t.Fatal("checkly is missing from sources.yaml")
+}
+
+// mergeRanges must never widen the covered set, the same invariant the
+// single-document aggregation holds.
+func TestMergeRangesIsLossless(t *testing.T) {
+	// Public space on purpose: normalize drops RFC1918, so private test
+	// fixtures would pass vacuously by producing nothing at all.
+	got := mergeRanges([]string{"203.0.113.0/25"}, []string{"203.0.113.128/25"})
+	if len(got) != 1 || got[0] != "203.0.113.0/24" {
+		t.Errorf("adjacent halves should merge to the parent, got %v", got)
+	}
+	got = mergeRanges([]string{"198.51.100.0/24"}, []string{"203.0.113.0/24"})
+	if len(got) != 2 {
+		t.Errorf("disjoint ranges must both survive, got %v", got)
+	}
+	if out := mergeRanges(nil, []string{"198.51.100.0/24"}); len(out) != 1 {
+		t.Errorf("empty left side should pass the right through, got %v", out)
+	}
+}

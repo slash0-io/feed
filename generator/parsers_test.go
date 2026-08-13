@@ -198,6 +198,28 @@ func TestParserSpotChecks(t *testing.T) {
 		t.Error("html-cidr-extract: unmatched from= marker returned no error")
 	}
 
+	// Syntax highlighters wrap each octet in its own element, so stripping
+	// tags to a space yields "3 . 217 . 146 . 166". WorkOS publishes that way
+	// and would otherwise parse to nothing.
+	body, ep = get("workos", "docs")
+	rawWO, err := parsers[ep.Format](body, "section=Create an IP allowlist")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v4wo, _ := normalize(rawWO, func(string, ...any) {})
+	if len(v4wo) != 9 {
+		t.Errorf("workos = %d ranges, want 9: %v", len(v4wo), v4wo)
+	}
+	if !contains(v4wo, "3.217.146.166/32") {
+		t.Errorf("workos missing 3.217.146.166/32, octet repair failed: %v", v4wo)
+	}
+	// The repair must only close whitespace that already sits around a dot
+	// between digits, so numbers in neighbouring cells are never welded into a
+	// plausible-looking address.
+	for _, fake := range extractRanges("<td>10</td><td>20</td><td>30</td><td>40</td>") {
+		t.Errorf("adjacent cells fabricated an address: %q", fake)
+	}
+
 	// GitLab docs: the "IP range" section is exactly two dedicated ranges.
 	body, ep = get("gitlab", "docs")
 	raw, err = parsers[ep.Format](body, "section=IP range")

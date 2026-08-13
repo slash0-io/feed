@@ -95,6 +95,23 @@ func normalize(raw []string, warn func(format string, args ...any)) (v4, v6 []st
 	return v4, v6
 }
 
+// mergeRanges combines two already-normalized single-family lists, re-running
+// the same lossless aggregation so ranges a vendor split across two endpoints
+// collapse exactly as they would have from one document. Inputs are canonical
+// CIDR strings, so re-normalizing cannot widen anything.
+func mergeRanges(a, b []string) []string {
+	switch {
+	case len(a) == 0:
+		return b
+	case len(b) == 0:
+		return a
+	}
+	combined := make([]string, 0, len(a)+len(b))
+	combined = append(append(combined, a...), b...)
+	v4, v6 := normalize(combined, func(string, ...any) {})
+	return append(v4, v6...)
+}
+
 // aggregate performs LOSSLESS aggregation on a sorted, deduped prefix list:
 // prefixes contained in another published prefix are dropped, and sibling
 // pairs (the two exact halves of a common parent) are merged into that

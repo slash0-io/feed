@@ -419,6 +419,17 @@ func buildService(svc SourceService, fetcher *Fetcher, generatedAt, syncToken st
 			if len(v4)+len(v6) == 0 {
 				return nil, fmt.Errorf("endpoint %s purpose %s: produced zero ranges (guardrail)", ep.ID, decl.Key)
 			}
+			// Two endpoints may feed one purpose, which is how a vendor that
+			// splits IPv4 and IPv6 across separate URLs is modelled. Assigning
+			// here instead of merging would silently publish only whichever
+			// endpoint happened to be listed last.
+			if prev, ok := out.Purposes[decl.Key]; ok {
+				if prev.Direction != decl.Direction {
+					return nil, fmt.Errorf("purpose %s declared as both %s and %s",
+						decl.Key, prev.Direction, decl.Direction)
+				}
+				v4, v6 = mergeRanges(prev.IPv4, v4), mergeRanges(prev.IPv6, v6)
+			}
 			out.Purposes[decl.Key] = feedschema.Purpose{Direction: decl.Direction, IPv4: v4, IPv6: v6}
 		}
 	}

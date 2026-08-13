@@ -183,10 +183,25 @@ func containsFold(haystack, needle string) bool {
 	return strings.Contains(strings.ToLower(haystack), strings.ToLower(needle))
 }
 
+// reSplitDottedNumber repairs an address whose octets were separated by
+// markup. Syntax highlighters routinely wrap each octet in its own element
+// (WorkOS emits `<span>3</span>.<span>217</span>...`), and stripping tags to a
+// space then yields "3 . 217 . 146 . 166", which matches nothing. Only
+// whitespace sitting between a dot and a digit on both sides is closed up, so
+// unrelated numbers in adjacent cells are never welded into a fake address.
+var reSplitDottedNumber = regexp.MustCompile(`([0-9])\s+\.\s*([0-9])|([0-9])\s*\.\s+([0-9])`)
+
 // extractRanges strips markup from an HTML fragment and returns every token
 // that validates as an IP or CIDR.
 func extractRanges(fragment string) []string {
 	text := reTagStrip.ReplaceAllString(fragment, " ")
+	for {
+		repaired := reSplitDottedNumber.ReplaceAllString(text, "$1$3.$2$4")
+		if repaired == text {
+			break
+		}
+		text = repaired
+	}
 	for entity, repl := range map[string]string{
 		"&amp;": "&", "&nbsp;": " ", "&lt;": "<", "&gt;": ">", "&#x2F;": "/", "&#47;": "/",
 	} {

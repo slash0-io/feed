@@ -77,6 +77,7 @@ published here, so it scores none.
 | [Braintree (PayPal)](https://developer.paypal.com/braintree/docs/reference/general/braintree-ip-addresses) | JSON | full download | none documented | none | egress |
 | [Braze](https://www.braze.com/docs/user_guide/messaging/design_and_edit/personalize/connected_content/making_an_api_call) | docs page | page extraction | none documented | none | ingress |
 | [Buildkite](https://buildkite.com/docs/apis/rest-api/meta) | JSON | conditional GET | [7 days, vendor says it will try](https://buildkite.com/docs/apis/rest-api/meta) | none | ingress |
+| [Checkly](https://www.checklyhq.com/docs/platform/allowlisting-traffic/) | JSON | full download | none documented | none | ingress |
 | [Checkout.com](https://www.checkout.com/docs/developer-resources/ip-addresses) | docs page | page extraction | none documented | none | ingress |
 | [CircleCI](https://circleci.com/docs/guides/security/ip-ranges/) | JSON | full download | [30 days](https://circleci.com/docs/guides/security/ip-ranges/) | [email to customers with a job opted into the IP ranges feature](https://circleci.com/docs/guides/security/ip-ranges/) | egress + ingress |
 | [Cisco Duo](https://help.duo.com/s/article/1337) | docs page | page extraction | none documented | none | egress |
@@ -122,6 +123,7 @@ published here, so it scores none.
 | [UptimeRobot](https://uptimerobot.com/help/locations/) | docs page | page extraction | none documented | none | ingress |
 | [Vultr (Constant, AS20473)](https://geofeed.constant.com/) | CSV | full download | none documented | none | egress |
 | [Wise](https://docs.wise.com/api-docs/features/webhooks-notifications) | docs page | page extraction | none documented | none | ingress |
+| [WorkOS](https://workos.com/docs/events/data-syncing/webhooks) | docs page | page extraction | none documented | none | ingress |
 | [Zendesk](https://developer.zendesk.com/api-reference/ticketing/account-configuration/public_ips/) | JSON | full download | none documented | none | egress + ingress |
 | [Zoom](https://support.zoom.com/hc/en/article?id=zm_kb&sysparm_article=KB0060548) | text | conditional GET | none documented | none | egress |
 | [Zscaler (zscaler.net cloud)](https://config.zscaler.com/) | JSON | conditional GET | none documented | none | egress |

@@ -1014,6 +1014,53 @@ services:
           - {key: appsec-engines, direction: ingress, select: "section=Allowlist Cloud Engine IPs"}
     verified: "2026-07-10"
 
+  - slug: workos
+    name: WorkOS
+    category: identity
+    classification: mixed
+    provenance: https://workos.com/docs/events/data-syncing/webhooks
+    cadence: "irregular; page carries no version marker"
+    notes: >
+      Webhook senders only. Their wording: "WorkOS sends webhooks from a fixed set of IP
+      addresses. It's recommended to restrict access to your webhook endpoint to only
+      these IP addresses." Classified mixed because the other direction is not pinnable:
+      WorkOS documents that authentication and redirect requests arrive from Cloudflare's
+      published ranges, so allowing those would allow the whole CDN.
+    endpoints:
+      - id: docs
+        url: https://workos.com/docs/events/data-syncing/webhooks
+        format: html-cidr-extract
+        detection: {poll: docs-page}
+        purposes:
+          - {key: webhooks, direction: ingress, select: "section=Create an IP allowlist"}
+    verified: "2026-08-12"
+
+  - slug: checkly
+    name: Checkly
+    category: observability
+    classification: dedicated
+    provenance: https://www.checklyhq.com/docs/platform/allowlisting-traffic/
+    cadence: "infrequent; vendor says the list changes every six months or less"
+    notes: >
+      Unauthenticated JSON API, with IPv4 and IPv6 on separate endpoints that both feed
+      the one purpose. These are the synthetic monitors that reach your endpoints, so the
+      direction is ingress. The API returns an ETag but ignores If-None-Match (probed
+      2026-08-12, replaying the tag still returns 200), so detection is a content hash.
+    endpoints:
+      - id: ipv4
+        url: https://api.checklyhq.com/v1/static-ips
+        format: json-ip-array
+        detection: {poll: hash}
+        purposes:
+          - {key: probes, direction: ingress, select: "*"}
+      - id: ipv6
+        url: https://api.checklyhq.com/v1/static-ipv6s
+        format: json-ip-array
+        detection: {poll: hash}
+        purposes:
+          - {key: probes, direction: ingress, select: "*"}
+    verified: "2026-08-12"
+
   - slug: duo
     name: Cisco Duo
     category: identity

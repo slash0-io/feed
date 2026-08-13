@@ -52,6 +52,22 @@ Add an entry to `sources.yaml` (official vendor endpoint only, with a provenance
 
 Push-based rebuilds (AWS SNS, Microsoft 365 `/version`), sub-minute polling via a long-lived poller (a GitHub Actions cron floors at roughly five minutes), and parser upgrades where a vendor has since published a better source than the one being read.
 
+A scheduled source audit, separate from the publish cron. The publish only
+notices a source that fails to parse; it says nothing about a citation that has
+quietly gone dead. Three failure modes have shown up in practice and a weekly
+job would catch all three:
+
+- **Evidence and provenance link rot.** Two cited vendor pages went to 401 and
+  403 within a fortnight, which leaves dead links on a page whose whole point is
+  that every claim is checkable.
+- **Sources that parse but should not.** A vendor reorganising a docs page can
+  leave a heading select matching a smaller section rather than failing outright.
+  Comparing published address counts against the previous run would flag it.
+- **Prose drift.** Hand-written text keeps falling behind the generated tables:
+  the tier examples in `research/SOURCES.md` outlived two vendors being
+  reclassified, and `/docs/coverage/` described the unpinnable set as "small"
+  after it reached two in five.
+
 Two source types that vendor research has shown are needed:
 
 - **Set subtraction across endpoints.** Google publishes `goog.json` and `cloud.json` and documents everything else as the difference between them, so a Workspace purpose is `goog` minus `cloud`. A purpose currently reads one endpoint, so this cannot be expressed.

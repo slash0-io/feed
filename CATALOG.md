@@ -57,6 +57,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
 | `appdynamics` | Splunk AppDynamics SaaS | mixed | `platform-sources` (ingress), `synthetic-agents` (ingress) | [official ↗](https://help.splunk.com/en/appdynamics-saas/product-announcements-and-alerts/saas-domains-and-ip-ranges) |
+| `checkly` | Checkly | dedicated | `probes` (ingress) | [official ↗](https://www.checklyhq.com/docs/platform/allowlisting-traffic/) |
 | `datadog` | Datadog | dedicated | `agents-eu` (egress), `agents` (egress), `api-eu` (egress), `api` (egress), `apm` (egress), `logs` (egress), `synthetics` (ingress), `webhooks` (ingress) | [official ↗](https://docs.datadoghq.com/api/latest/ip-ranges/) |
 | `grafana-cloud` | Grafana Cloud | dedicated | `alerts` (ingress), `logs` (ingress), `metrics` (ingress) | [official ↗](https://grafana.com/docs/grafana-cloud/security-and-account-management/allow-list/) |
 | `new-relic` | New Relic | dedicated | `agents` (egress), `synthetics` (ingress) | [official ↗](https://docs.newrelic.com/docs/new-relic-solutions/get-started/networks/) |
@@ -92,6 +93,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `auth0` | Auth0 (Okta CIC) | dedicated | `all` (both) | [official ↗](https://auth0.com/docs/secure/security-guidance/data-security/allowlist) |
 | `duo` | Cisco Duo | dedicated | `mfa` (egress) | [official ↗](https://help.duo.com/s/article/1337) |
 | `okta` | Okta | dedicated | `all` (both) | [official ↗](https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm) |
+| `workos` | WorkOS | mixed | `webhooks` (ingress) | [official ↗](https://workos.com/docs/events/data-syncing/webhooks) |
 
 ## Communications
 
