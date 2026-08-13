@@ -1,7 +1,7 @@
 # Upstream IP-range sources: research and verification
 
 *Companion machine registry: [`sources.yaml`](../sources.yaml). Prose last
-reviewed 2026-07-26. Original research date 2026-07-04.*
+reviewed 2026-08-12. Original research date 2026-07-04.*
 
 This document records, for every service in the catalog: how the ranges are
 obtained (the official source and its provenance), how often they change
@@ -46,9 +46,10 @@ a link to the vendor page that states it.
 |---|---|---|
 | **A** | Machine-readable endpoint, versioned (sync token, timestamp, or in-band changelog) | AWS, GCP, Salesforce, Atlassian, Auth0, Datadog, Oracle |
 | **B** | Machine-readable endpoint, unversioned (detect by header or content hash) | Stripe, Fastly, CircleCI, Grafana Cloud, Braintree, PagerDuty, Zoom |
-| **C** | Official docs or HTML page only (extract CIDRs, hash the extracted set) | Anthropic, GitLab.com, Sentry, New Relic, Postmark, DocuSign |
-| **D** | Published but gated behind auth or per-customer scoping | HubSpot (API), MongoDB Atlas control plane, Mailgun, Akamai |
-| **✗** | No pinnable publication, cataloged as `pinnable: false` with the vendor's stated alternative | Twilio, Adyen, SendGrid, Slack, Shopify, Duo, Snowflake, Vercel, Netlify |
+| **C** | Official docs or HTML page only (extract CIDRs, hash the extracted set) | Anthropic, GitLab.com, Sentry, New Relic, Postmark, Fivetran |
+| **C-js** | Docs page that renders only under a browser, fetched with `render: chrome` | Duo, UptimeRobot |
+| **D** | Published but gated behind auth or per-customer scoping | MongoDB Atlas control plane, Mailgun, Akamai, Confluent, Dynatrace |
+| **✗** | No pinnable publication, recorded under `non_publishers` with the vendor's stated alternative | Twilio, Adyen, SendGrid, Slack, Shopify, Snowflake, Vercel, Netlify, npm, PyPI |
 
 ## Verified catalog
 
