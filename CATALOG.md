@@ -140,7 +140,7 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 
 | Service | Vendor position |
 |---|---|
-| Twilio (REST API + webhooks) | IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking IS pinnable, see the twilio-sip service. |
+| Twilio (REST API + webhooks) | IPs 'highly dynamic, and span a large range, so it's impractical to list each of them'; they recommend allowing outbound HTTPS to any *.twilio.com subdomain instead. SIP trunking IS pinnable, see the twilio-sip service. |
 | Adyen | No IP list; allowlist out.adyen.com or resolve it via DNS hourly (their words). |
 | SendGrid (webhooks/parse) | Dynamic cloud infra; use signed webhooks, not IP allowlists. |
 | Slack | No published egress IPs; their allowlisting feature restricts YOUR IPs calling THEM. |
@@ -153,7 +153,7 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 | OpenAI API (api.openai.com) | api.openai.com resolves into Cloudflare's published ranges (verified 2026-07-30: 172.66.0.243 within 172.64.0.0/13, 162.159.140.245 within 162.158.0.0/15), so pinning it would allowlist the whole CDN rather than OpenAI. |
 | Akamai (CDN) | Site Shield issues a per-customer set of IP subnet ranges (a map) retrieved through Akamai Control Center or the Site Shield API, rather than one public global list. |
 | Box | Use domain names; 'IP addresses can change frequently and without notice' (their wording). No webhook source ranges published. |
-| Sumo Logic | No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region), covered by the aws service. |
+| Sumo Logic | No own ranges; directs users to download the AWS IP ranges JSON and use the prefixes for the AWS region their deployment sits in, which the aws service already covers. States plainly that 'the list of IP ranges is shared infrastructure. It is not limited to Sumo Logic nodes and is subject to change over time.' |
 | Oracle NetSuite (platform) | States plainly that Oracle 'does not support the use of NetSuite IP addresses to access or manage access to any NetSuite services', that outbound addresses are 'not documented in the NetSuite Help Center or in SuiteAnswers', and that *.netsuite.com is CDN-fronted. Directs users to 2FA, token-based auth and OAuth 2.0 instead, or to a DNS lookup on outboundips.netsuite.com. NetSuite Connector IS published, see the netsuite-connector service. |
 | Confluent Cloud | Public egress addresses are read from the Cloud Console or the authenticated Cloud REST API (api.confluent.cloud/networking/v1/ip-addresses), are shared by every customer in the same cloud and region, and are 'not guaranteed to be static' (their wording). |
 | Palo Alto Networks Prisma Access | Egress addresses are allocated per tenant and retrieved with your own API key from api.prod.datapath.prismaaccess.com, or read per location in the Prisma Access UI. |

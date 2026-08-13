@@ -1274,8 +1274,8 @@ services:
 non_publishers:
   - slug: twilio
     name: Twilio (REST API + webhooks)
-    evidence: https://support.twilio.com/hc/en-us/articles/115015934048-All-About-Twilio-IP-Addresses
-    vendor_position: "IPs 'highly dynamic, span a large range'; allow *.twilio.com instead. SIP trunking IS pinnable, see the twilio-sip service."
+    evidence: https://help.twilio.com/articles/115015934048
+    vendor_position: "IPs 'highly dynamic, and span a large range, so it's impractical to list each of them'; they recommend allowing outbound HTTPS to any *.twilio.com subdomain instead. SIP trunking IS pinnable, see the twilio-sip service."
   - slug: adyen
     name: Adyen
     evidence: https://help.adyen.com/knowledge/ecommerce-integrations/webhooks/what-ip-addresses-does-adyen-use-to-send-webhook-events
@@ -1326,8 +1326,8 @@ non_publishers:
     vendor_position: "Use domain names; 'IP addresses can change frequently and without notice' (their wording). No webhook source ranges published."
   - slug: sumo-logic
     name: Sumo Logic
-    evidence: https://support.sumologic.com/hc/en-us/articles/360012685393-How-to-allow-or-enable-IP-ranges-for-Sumo-Logic-endpoints
-    vendor_position: "No own ranges; officially delegates to AWS ip-ranges.json ('Amazon'/'EC2' services for your deployment region), covered by the aws service."
+    evidence: https://help.sumologic.com/docs/api/getting-started/
+    vendor_position: "No own ranges; directs users to download the AWS IP ranges JSON and use the prefixes for the AWS region their deployment sits in, which the aws service already covers. States plainly that 'the list of IP ranges is shared infrastructure. It is not limited to Sumo Logic nodes and is subject to change over time.'"
   - slug: netsuite
     name: Oracle NetSuite (platform)
     evidence: https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_N251955.html
