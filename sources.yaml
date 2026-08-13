@@ -1379,7 +1379,18 @@ services:
     classification: dedicated
     provenance: https://platform.claude.com/docs/en/api/ip-addresses
     cadence: "'will not change without notice' (documented); dedicated address space"
-    notes: "Rare among AI APIs: inbound API endpoint is IP-pinnable (160.79.104.0/23 v4, 2607:6bc0::/48 v6); outbound tool-call traffic from 160.79.104.0/21. No JSON feed, docs page only."
+    notes: >
+      Rare among AI APIs: inbound API endpoint is IP-pinnable (160.79.104.0/23 v4,
+      2607:6bc0::/48 v6); outbound tool-call traffic from 160.79.104.0/21. The API
+      ranges come from a docs page rather than a feed. Crawler addresses are separate
+      and do come as JSON: the support article on crawling points at it directly, saying
+      "If a crawler has a source IP address on this list, it indicates that the crawler
+      is coming from Anthropic". Read that as identification rather than a blocking
+      recommendation, because the same page says address blocking "may not work
+      correctly or persistently guarantee an opt-out, as doing so impedes our ability to
+      read your robots.txt file". robots.txt is the documented opt-out; these ranges are
+      for recognising the traffic. That article is the evidence for the crawler file:
+      https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler
     endpoints:
       - id: docs
         url: https://platform.claude.com/docs/en/api/ip-addresses
@@ -1388,15 +1399,32 @@ services:
         purposes:
           - {key: api,      direction: egress,  select: "section=Inbound IP addresses"}
           - {key: outbound, direction: ingress, select: "section=Outbound IP addresses;exclude=Phased out"}
-    verified: "2026-07-10"
+      - id: crawlers
+        url: https://claude.com/crawling/bots.json
+        format: google-prefixes        # {creationTime, prefixes[{ipv4Prefix|ipv6Prefix}]}
+        detection: {poll: hash}        # cache-control only, no ETag or Last-Modified
+        purposes:
+          - {key: crawlers, direction: ingress, select: "*"}
+    verified: "2026-08-13"
 
   - slug: openai
-    name: OpenAI (ChatGPT egress)
+    name: OpenAI
     category: ai
     classification: mixed
     provenance: https://developers.openai.com/api/docs/guides/ip-addresses
     cadence: "irregular; creationTime in each file; docs say fetch regularly"
-    notes: "These files cover OpenAI's egress to YOUR systems (connectors/actions/agents). api.openai.com itself is Cloudflare-fronted and NOT IP-pinnable for your egress; see non_publishers."
+    notes: >
+      Every one of these files covers OpenAI reaching YOUR systems. api.openai.com
+      itself is Cloudflare-fronted and NOT IP-pinnable for your egress; see
+      non_publishers. Connectors and agents are the product side. The four crawlers are
+      separate publications and OpenAI documents one file per bot, at
+      https://developers.openai.com/api/docs/bots, so each keeps its own purpose here
+      rather than being merged: the point of separate files is that a site can treat the
+      training crawler differently from the live browse agent. GPTBot is the training
+      crawler, OAI-SearchBot indexes for ChatGPT search, ChatGPT-User is the live browse
+      agent acting for a person, and OAI-AdsBot is the smallest at two prefixes. The bot
+      files carry ETag and Last-Modified while the connector and agent files do not,
+      which is why detection differs across endpoints of the same service.
     endpoints:
       - id: connectors
         url: https://openai.com/chatgpt-connectors.json
@@ -1408,7 +1436,27 @@ services:
         format: google-prefixes
         detection: {poll: hash}
         purposes: [{key: agents, direction: ingress, select: "*"}]
-    verified: "2026-07-04"
+      - id: gptbot
+        url: https://openai.com/gptbot.json
+        format: google-prefixes
+        detection: {poll: cond-get}
+        purposes: [{key: gptbot, direction: ingress, select: "*"}]
+      - id: searchbot
+        url: https://openai.com/searchbot.json
+        format: google-prefixes
+        detection: {poll: cond-get}
+        purposes: [{key: searchbot, direction: ingress, select: "*"}]
+      - id: chatgpt-user
+        url: https://openai.com/chatgpt-user.json
+        format: google-prefixes
+        detection: {poll: cond-get}
+        purposes: [{key: chatgpt-user, direction: ingress, select: "*"}]
+      - id: adsbot
+        url: https://openai.com/adsbot.json
+        format: google-prefixes
+        detection: {poll: cond-get}
+        purposes: [{key: adsbot, direction: ingress, select: "*"}]
+    verified: "2026-08-13"
 
   - slug: zendesk
     name: Zendesk

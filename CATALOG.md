@@ -138,8 +138,8 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
-| `anthropic` | Anthropic (Claude API) | dedicated | `api` (egress), `outbound` (ingress) | [official ↗](https://platform.claude.com/docs/en/api/ip-addresses) |
-| `openai` | OpenAI (ChatGPT egress) | mixed | `agents` (ingress), `connectors` (ingress) | [official ↗](https://developers.openai.com/api/docs/guides/ip-addresses) |
+| `anthropic` | Anthropic (Claude API) | dedicated | `api` (egress), `crawlers` (ingress), `outbound` (ingress) | [official ↗](https://platform.claude.com/docs/en/api/ip-addresses) |
+| `openai` | OpenAI | mixed | `adsbot` (ingress), `agents` (ingress), `chatgpt-user` (ingress), `connectors` (ingress), `gptbot` (ingress), `searchbot` (ingress) | [official ↗](https://developers.openai.com/api/docs/guides/ip-addresses) |
 
 ## Services that do NOT publish pinnable ranges
 

@@ -108,7 +108,7 @@ published here, so it scores none.
 | [New Relic](https://docs.newrelic.com/docs/new-relic-solutions/get-started/networks/) | docs page | page extraction | none documented | [github.com/newrelic/docs-website commits feed for networks.mdx](https://github.com/newrelic/docs-website/blob/develop/src/content/docs/new-relic-solutions/get-started/networks.mdx) (docs repo) | egress + ingress |
 | [Okta](https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm) | JSON | conditional GET | none documented | none | egress + ingress |
 | [OneLogin](https://onelogin.service-now.com/kb_view_customer.do?sysparm_article=KB0010432) | docs page | page extraction | none documented | none | egress + ingress |
-| [OpenAI (ChatGPT egress)](https://developers.openai.com/api/docs/guides/ip-addresses) | JSON | full download | none documented | none | ingress |
+| [OpenAI](https://developers.openai.com/api/docs/guides/ip-addresses) | JSON | full download | none documented | none | ingress |
 | [Oracle Cloud Infrastructure](https://docs.oracle.com/en-us/iaas/Content/General/Concepts/addressranges.htm) | JSON | conditional GET | none documented | none | egress |
 | [Oracle NetSuite Connector](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162859452018.html) | docs page | page extraction | none documented | none | ingress |
 | [PagerDuty](https://support.pagerduty.com/main/docs/safelist-ips) | JSON | conditional GET | none documented | none | ingress |

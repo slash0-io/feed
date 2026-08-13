@@ -469,6 +469,58 @@ func TestParserSpotChecks(t *testing.T) {
 	if _, err := parsers[ep.Format](body, "no-such-region"); err == nil {
 		t.Error("svix: expected error for unknown region key")
 	}
+
+	// OpenAI publishes one file per bot so a site can treat them differently,
+	// and the feed keeps that separation. Merging them would destroy the only
+	// reason the vendor split them. GPTBot trains, ChatGPT-User browses live,
+	// and the two sets are not the same infrastructure.
+	bodyGPT, epGPT := get("openai", "gptbot")
+	bodyUser, _ := get("openai", "chatgpt-user")
+	rawGPT, err := parsers[epGPT.Format](bodyGPT, "*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	rawUser, err := parsers[epGPT.Format](bodyUser, "*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v4gpt, _ := normalize(rawGPT, func(string, ...any) {})
+	v4user, _ := normalize(rawUser, func(string, ...any) {})
+	if len(v4gpt) == 0 || len(v4user) == 0 {
+		t.Fatalf("openai bots: gptbot %d, chatgpt-user %d", len(v4gpt), len(v4user))
+	}
+	if len(v4user) <= len(v4gpt) {
+		t.Errorf("openai: chatgpt-user (%d) should be much larger than gptbot (%d); "+
+			"are both endpoints reading the same file?", len(v4user), len(v4gpt))
+	}
+	sameSet := true
+	for _, c := range v4gpt {
+		if !contains(v4user, c) {
+			sameSet = false
+			break
+		}
+	}
+	if sameSet {
+		t.Error("openai: gptbot is a subset of chatgpt-user; the per-bot files look conflated")
+	}
+
+	// Anthropic's crawler file is a different document from the API docs page,
+	// and the two must not be confused: the API ranges are Anthropic's own
+	// space, the crawler ranges are cloud addresses.
+	body, ep = get("anthropic", "crawlers")
+	rawCrawl, err := parsers[ep.Format](body, "*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	v4crawl, _ := normalize(rawCrawl, func(string, ...any) {})
+	if len(v4crawl) == 0 {
+		t.Fatal("anthropic crawlers: zero ranges")
+	}
+	for _, c := range v4crawl {
+		if strings.HasPrefix(c, "160.79.104.") {
+			t.Errorf("anthropic: API range %s appeared in the crawler purpose", c)
+		}
+	}
 }
 
 func TestNormalize(t *testing.T) {
