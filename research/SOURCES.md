@@ -71,7 +71,7 @@ published here, so it scores none.
 | [Airbyte Cloud](https://docs.airbyte.com/platform/operating-airbyte/ip-allowlist) | docs page | page extraction | none documented | none | ingress |
 | [Akamai Connected Cloud (Linode)](https://geoip.linode.com/) | CSV | conditional GET | none documented | none | egress |
 | [Amazon Web Services](https://docs.aws.amazon.com/vpc/latest/userguide/aws-ip-ranges.html) | JSON | conditional GET | none documented | [SNS arn:aws:sns:us-east-1:806199016981:AmazonIpSpaceChanged (us-east-1 subscription required)](https://docs.aws.amazon.com/vpc/latest/userguide/subscribe-notifications.html) | egress + ingress |
-| [Anthropic (Claude API)](https://platform.claude.com/docs/en/api/ip-addresses) | docs page | page extraction | none documented | none | egress + ingress |
+| [Anthropic](https://platform.claude.com/docs/en/api/ip-addresses) | docs page | page extraction | none documented | none | egress + ingress |
 | [Atlassian Cloud](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/) | JSON | conditional GET | none documented | [SNS arn:aws:sns:us-east-1:745490931007:atlassian-public-ip-changes](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/) | egress + ingress |
 | [Auth0 (Okta CIC)](https://auth0.com/docs/secure/security-guidance/data-security/allowlist) | JSON | conditional GET | [several months, by email](https://auth0.com/docs/secure/security-guidance/data-security/allowlist) | none | egress + ingress |
 | [Braintree (PayPal)](https://developer.paypal.com/braintree/docs/reference/general/braintree-ip-addresses) | JSON | full download | none documented | none | egress |

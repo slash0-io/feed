@@ -1374,7 +1374,7 @@ services:
 
   # ── AI APIs ───────────────────────────────────────────────────────────────
   - slug: anthropic
-    name: Anthropic (Claude API)
+    name: Anthropic
     category: ai
     classification: dedicated
     provenance: https://platform.claude.com/docs/en/api/ip-addresses
