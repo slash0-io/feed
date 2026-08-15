@@ -54,8 +54,54 @@ func TestGitHubAuthIsHostScoped(t *testing.T) {
 	}
 }
 
-// 4xx means the vendor moved or blocked us: fail immediately, no retries.
-func TestFetcherDoesNotRetry4xx(t *testing.T) {
+// 4xx other than 404 means the vendor blocked us or the request is wrong:
+// deterministic, so fail immediately rather than hammering them.
+func TestFetcherDoesNotRetryOther4xx(t *testing.T) {
+	fastFetchRetries(t)
+	var calls int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		atomic.AddInt32(&calls, 1)
+		http.Error(w, "blocked", http.StatusForbidden)
+	}))
+	defer srv.Close()
+
+	f := NewFetcher("")
+	if _, _, err := f.Get(SourceService{Slug: "x"}, Endpoint{ID: "e", URL: srv.URL}); err == nil {
+		t.Fatal("403 must fail")
+	}
+	if calls != 1 {
+		t.Fatalf("403 fetched %d times, want exactly 1", calls)
+	}
+}
+
+// 404 is the exception among 4xx: a CDN in front of a vendor's docs can serve
+// one spuriously. DigitalOcean's geofeed 404ed a publish run on 2026-08-15 and
+// served 200 consistently afterwards, so a single 404 should not cost a cycle.
+func TestFetcherRetriesSpurious404(t *testing.T) {
+	fastFetchRetries(t)
+	var calls int32
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if atomic.AddInt32(&calls, 1) == 1 {
+			http.NotFound(w, r)
+			return
+		}
+		w.Write([]byte(`ok`))
+	}))
+	defer srv.Close()
+
+	f := NewFetcher("")
+	body, _, err := f.Get(SourceService{Slug: "x"}, Endpoint{ID: "e", URL: srv.URL})
+	if err != nil {
+		t.Fatalf("fetch with one spurious 404: %v", err)
+	}
+	if string(body) != "ok" || calls != 2 {
+		t.Fatalf("body=%q calls=%d, want retried success", body, calls)
+	}
+}
+
+// A URL that really is gone still fails, just a few seconds later. Retrying
+// must not turn vendor rot into a silent success.
+func TestFetcherStillFailsOnPersistent404(t *testing.T) {
 	fastFetchRetries(t)
 	var calls int32
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -66,9 +112,11 @@ func TestFetcherDoesNotRetry4xx(t *testing.T) {
 
 	f := NewFetcher("")
 	if _, _, err := f.Get(SourceService{Slug: "x"}, Endpoint{ID: "e", URL: srv.URL}); err == nil {
-		t.Fatal("404 must fail")
+		t.Fatal("a persistent 404 must still fail the service")
 	}
-	if calls != 1 {
-		t.Fatalf("404 fetched %d times, want exactly 1", calls)
+	// Derived from the retry table rather than hard-coded: the test harness
+	// shortens it, so a literal would assert the harness, not the behaviour.
+	if want := int32(len(fetchRetryDelays) + 1); calls != want {
+		t.Fatalf("persistent 404 fetched %d times, want %d (initial + every retry)", calls, want)
 	}
 }

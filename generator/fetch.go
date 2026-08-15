@@ -67,7 +67,7 @@ func (f *Fetcher) Get(svc SourceService, ep Endpoint) ([]byte, string, error) {
 // whole publish cycle.
 var fetchRetryDelays = []time.Duration{2 * time.Second, 4 * time.Second}
 
-// doGet fetches url, retrying transport errors, 5xx, and 429. Other
+// doGet fetches url, retrying transport errors, 5xx, 429, and 404. Other
 // statuses (403, 404: the vendor moved or blocked us) fail immediately.
 func (f *Fetcher) doGet(url string, headers map[string]string) ([]byte, error) {
 	for attempt := 0; ; attempt++ {
@@ -99,7 +99,14 @@ func (f *Fetcher) getOnce(url string, headers map[string]string) (body []byte, r
 	}
 	defer resp.Body.Close()
 	if resp.StatusCode != http.StatusOK {
-		retryable := resp.StatusCode >= 500 || resp.StatusCode == http.StatusTooManyRequests
+		// 404 is retried alongside 5xx and 429 because a CDN in front of a
+		// vendor's docs can serve one spuriously: digitalocean's geofeed 404ed
+		// a publish run on 2026-08-15 and served 200 consistently afterwards.
+		// A URL that really is gone still fails, six seconds later, so this
+		// costs detection nothing and saves a publish cycle.
+		retryable := resp.StatusCode >= 500 ||
+			resp.StatusCode == http.StatusTooManyRequests ||
+			resp.StatusCode == http.StatusNotFound
 		return nil, retryable, fmt.Errorf("GET %s: %s", url, resp.Status)
 	}
 	body, err = io.ReadAll(io.LimitReader(resp.Body, maxBodyBytes))
