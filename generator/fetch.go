@@ -67,8 +67,9 @@ func (f *Fetcher) Get(svc SourceService, ep Endpoint) ([]byte, string, error) {
 // whole publish cycle.
 var fetchRetryDelays = []time.Duration{2 * time.Second, 4 * time.Second}
 
-// doGet fetches url, retrying transport errors, 5xx, 429, and 404. Other
-// statuses (403, 404: the vendor moved or blocked us) fail immediately.
+// doGet fetches url, retrying transport errors, 5xx, 429, and 404. Other 4xx
+// (403 and friends: the vendor blocked us, or the request is wrong) are
+// deterministic and fail immediately.
 func (f *Fetcher) doGet(url string, headers map[string]string) ([]byte, error) {
 	for attempt := 0; ; attempt++ {
 		body, retryable, err := f.getOnce(url, headers)
@@ -117,14 +118,27 @@ var reAzureTagsURL = regexp.MustCompile(`https://download\.microsoft\.com/[^"'<>
 
 // getAzureServiceTags resolves Azure's weekly-rotating download URL from the
 // Download Center details page, then fetches the ServiceTags JSON itself.
+//
+// A missing link is retried like a transient status, because the Download
+// Center serves 200 with the link absent often enough to fail a publish run on
+// its own (2026-08-17). doGet cannot see that failure: the request succeeded
+// and only the body is wrong. A page that really stopped carrying the link
+// still fails, six seconds later.
 func (f *Fetcher) getAzureServiceTags(ep Endpoint) ([]byte, string, error) {
-	page, err := f.doGet(ep.URL, ep.Headers)
-	if err != nil {
-		return nil, "", fmt.Errorf("azure details page: %w", err)
-	}
-	jsonURL := reAzureTagsURL.FindString(string(page))
-	if jsonURL == "" {
-		return nil, "", fmt.Errorf("azure details page: no ServiceTags_Public JSON link found")
+	var jsonURL string
+	for attempt := 0; ; attempt++ {
+		page, err := f.doGet(ep.URL, ep.Headers)
+		if err != nil {
+			return nil, "", fmt.Errorf("azure details page: %w", err)
+		}
+		if jsonURL = reAzureTagsURL.FindString(string(page)); jsonURL != "" {
+			break
+		}
+		if attempt >= len(fetchRetryDelays) {
+			return nil, "", fmt.Errorf("azure details page: no ServiceTags_Public JSON link found")
+		}
+		log.Printf("azure details page: no ServiceTags_Public JSON link — retrying")
+		time.Sleep(fetchRetryDelays[attempt])
 	}
 	body, err := f.doGet(jsonURL, ep.Headers)
 	if err != nil {
