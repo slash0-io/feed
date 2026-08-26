@@ -4,17 +4,19 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/slash0-io/feed/feedschema"
 	"io"
 	"io/fs"
 	"log"
+	"math/big"
 	"net/http"
+	"net/netip"
 	"os"
 	"path/filepath"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
-
-	"github.com/slash0-io/feed/feedschema"
 )
 
 // previousFeed is the currently published feed, loaded for incremental
@@ -98,10 +100,13 @@ func previousGetter(base string) func(rel string) ([]byte, error) {
 	if strings.HasPrefix(base, "http://") || strings.HasPrefix(base, "https://") {
 		client := &http.Client{Timeout: 30 * time.Second}
 		base = strings.TrimSuffix(base, "/")
-		// One cache-busting token per build: a query string gives a distinct
-		// CDN cache key (the origin ignores it), so the previous feed is what
-		// is published right now rather than a stale cached copy from before
-		// the last deploy, and the whole run reads one coherent snapshot.
+		// This token does NOT bust the CDN, despite reading like it should.
+		// Measured 2026-08-26 against feed.slash0.io: a random ?fresh= value
+		// returns "x-cache: HIT" with the same age as the plain URL, and
+		// Cache-Control: no-cache, max-age=0, no-store and Pragma: no-cache
+		// are all ignored the same way. What actually makes the previous feed
+		// current is the CDN purge Pages performs on deploy. Kept only so the
+		// request shape does not change; do not rely on it for freshness.
 		bust := "?fresh=" + strconv.FormatInt(time.Now().Unix(), 10)
 		// getOnce reports whether a failure is transient (transport error,
 		// 5xx, truncated read) and worth retrying. 404 maps to fs.ErrNotExist
@@ -155,32 +160,142 @@ func purposesFingerprint(p map[string]feedschema.Purpose) string {
 	return sha256hex(b)
 }
 
-// quarantineReason applies the mass-removal guardrail: a change that removes
-// more than maxFrac of a purpose's previously published ranges (when the
-// purpose had at least minCount ranges) must not auto-publish — a truncated
-// or erroneous upstream body would otherwise propagate to every consumer.
+// quarantineReason applies the mass-removal guardrail: a change that stops
+// publishing more than maxFrac of a purpose's previously published ADDRESS
+// SPACE (when the purpose had at least minCount ranges) must not auto-publish,
+// because a truncated or erroneous upstream body would otherwise propagate to
+// every consumer.
+//
+// Coverage is compared as address sets, never as CIDR strings. A vendor is
+// free to re-express the same space with different prefixes, and doing so
+// removes almost every old string while removing no addresses at all. Azure
+// did exactly that on 2026-08-24, summarising the AzureCloud service tag from
+// 15385 prefixes into 2016 broader supernets: a string comparison called it
+// "2765 of 4540 ranges removed (61%)" and quarantined the service for two
+// days, while the new set was in fact a strict superset of the old one.
 func quarantineReason(prev, next map[string]feedschema.Purpose, maxFrac float64, minCount int) string {
 	for key, pp := range prev {
-		prevSet := rangeSet(pp)
-		if len(prevSet) < minCount {
+		if len(pp.IPv4)+len(pp.IPv6) < minCount {
 			continue
 		}
 		np, ok := next[key]
 		if !ok {
-			return fmt.Sprintf("purpose %q disappeared (%d ranges)", key, len(prevSet))
+			return fmt.Sprintf("purpose %q disappeared (%d ranges)", key, len(pp.IPv4)+len(pp.IPv6))
 		}
-		nextSet := rangeSet(np)
-		removed := 0
-		for r := range prevSet {
-			if !nextSet[r] {
-				removed++
+		// Families are judged separately: one IPv6 range outweighs the whole
+		// IPv4 internet by address count, so a combined fraction would hide
+		// the total loss of a purpose's IPv4 coverage.
+		for _, fam := range []struct {
+			name       string
+			prev, next []string
+		}{
+			{"IPv4", pp.IPv4, np.IPv4},
+			{"IPv6", pp.IPv6, np.IPv6},
+		} {
+			had, lost := lostCoverage(fam.prev, fam.next)
+			if had.Sign() == 0 {
+				continue
 			}
-		}
-		if frac := float64(removed) / float64(len(prevSet)); frac > maxFrac {
-			return fmt.Sprintf("purpose %q: %d of %d ranges removed (%.0f%%)", key, removed, len(prevSet), frac*100)
+			frac := new(big.Rat).SetFrac(lost, had)
+			f, _ := frac.Float64()
+			if f > maxFrac {
+				return fmt.Sprintf("purpose %q: %.0f%% of previously published %s addresses no longer covered (%s of %s)",
+					key, f*100, fam.name, lost, had)
+			}
 		}
 	}
 	return ""
+}
+
+// lostCoverage reports how much of prev's address space next does not cover,
+// alongside the size of prev. Both are address counts, so an IPv4 and an IPv6
+// list must not be mixed in one call.
+func lostCoverage(prev, next []string) (had, lost *big.Int) {
+	pv := coalesceIntervals(intervals(prev))
+	nx := coalesceIntervals(intervals(next))
+	had, lost = new(big.Int), new(big.Int)
+	one := big.NewInt(1)
+	for _, iv := range pv {
+		size := new(big.Int).Sub(iv[1], iv[0])
+		size.Add(size, one)
+		had.Add(had, size)
+		// nx is sorted and disjoint, so walk it once per prev interval and
+		// subtract each overlap.
+		uncovered := new(big.Int).Set(size)
+		for _, n := range nx {
+			if n[1].Cmp(iv[0]) < 0 {
+				continue
+			}
+			if n[0].Cmp(iv[1]) > 0 {
+				break
+			}
+			lo, hi := iv[0], iv[1]
+			if n[0].Cmp(lo) > 0 {
+				lo = n[0]
+			}
+			if n[1].Cmp(hi) < 0 {
+				hi = n[1]
+			}
+			overlap := new(big.Int).Sub(hi, lo)
+			overlap.Add(overlap, one)
+			uncovered.Sub(uncovered, overlap)
+		}
+		if uncovered.Sign() > 0 {
+			lost.Add(lost, uncovered)
+		}
+	}
+	return had, lost
+}
+
+// intervals converts CIDR strings to inclusive [lo, hi] address ranges.
+// Anything unparseable is skipped: normalize has already rejected it upstream,
+// and a parse failure here must not be read as lost coverage.
+func intervals(cidrs []string) [][2]*big.Int {
+	out := make([][2]*big.Int, 0, len(cidrs))
+	for _, c := range cidrs {
+		p, err := netip.ParsePrefix(c)
+		if err != nil {
+			continue
+		}
+		p = p.Masked()
+		var b []byte
+		if p.Addr().Is4() {
+			a := p.Addr().As4()
+			b = a[:]
+		} else {
+			a := p.Addr().As16()
+			b = a[:]
+		}
+		lo := new(big.Int).SetBytes(b)
+		size := new(big.Int).Lsh(big.NewInt(1), uint(len(b)*8-p.Bits()))
+		hi := new(big.Int).Add(lo, size)
+		hi.Sub(hi, big.NewInt(1))
+		out = append(out, [2]*big.Int{lo, hi})
+	}
+	return out
+}
+
+// coalesceIntervals sorts and coalesces overlapping or adjacent ranges so the
+// sweep in lostCoverage can never count the same address twice.
+func coalesceIntervals(in [][2]*big.Int) [][2]*big.Int {
+	if len(in) == 0 {
+		return in
+	}
+	sort.Slice(in, func(i, j int) bool { return in[i][0].Cmp(in[j][0]) < 0 })
+	out := [][2]*big.Int{in[0]}
+	one := big.NewInt(1)
+	for _, iv := range in[1:] {
+		last := out[len(out)-1]
+		next := new(big.Int).Add(last[1], one)
+		if iv[0].Cmp(next) <= 0 {
+			if iv[1].Cmp(last[1]) > 0 {
+				last[1] = iv[1]
+			}
+			continue
+		}
+		out = append(out, iv)
+	}
+	return out
 }
 
 // purposeDiffs summarizes added/removed counts per purpose between two
