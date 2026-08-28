@@ -74,6 +74,9 @@ type PurposeDecl struct {
 	Key       string `yaml:"key"`
 	Direction string `yaml:"direction"`
 	Select    string `yaml:"select"`
+	// Aggregate marks this purpose as the union of the others on the service,
+	// which keeps it out of subscription wildcards. See feedschema.Purpose.
+	Aggregate bool `yaml:"aggregate"`
 }
 
 type NonPublisherY struct {

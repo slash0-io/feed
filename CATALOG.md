@@ -82,7 +82,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | Slug | Service | Classification | Purposes | Source |
 |---|---|---|---|---|
 | `airbyte` | Airbyte Cloud | dedicated | `all` (ingress) | [official ↗](https://docs.airbyte.com/platform/operating-airbyte/ip-allowlist) |
-| `databricks` | Databricks | dedicated | `all` (both) | [official ↗](https://docs.databricks.com/aws/en/resources/ip-domain-region) |
+| `databricks` | Databricks | dedicated | `all` (both), `aws-egress` (egress), `aws-ingress` (ingress), `azure-egress` (egress), `azure-ingress` (ingress), `gcp-egress` (egress), `gcp-ingress` (ingress) | [official ↗](https://docs.databricks.com/aws/en/resources/ip-domain-region) |
 | `dbt-cloud` | dbt Cloud | dedicated | `all` (ingress) | [official ↗](https://docs.getdbt.com/docs/cloud/about-cloud/access-regions-ip-addresses) |
 | `elastic-cloud` | Elastic Cloud | dedicated | `api` (egress), `outbound` (ingress) | [official ↗](https://www.elastic.co/docs/deploy-manage/security/elastic-cloud-static-ips) |
 | `fivetran` | Fivetran | dedicated | `sync` (ingress), `webhooks` (ingress) | [official ↗](https://fivetran.com/docs/using-fivetran/ips) |
@@ -95,7 +95,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 |---|---|---|---|---|
 | `auth0` | Auth0 (Okta CIC) | dedicated | `all` (both) | [official ↗](https://auth0.com/docs/secure/security-guidance/data-security/allowlist) |
 | `duo` | Cisco Duo | dedicated | `mfa` (egress) | [official ↗](https://help.duo.com/s/article/1337) |
-| `okta` | Okta | dedicated | `all` (both) | [official ↗](https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm) |
+| `okta` | Okta | dedicated | `all` (both), `pam-emea` (both), `pam-us` (both), `preview-emea` (both), `preview-pam` (both), `preview-us` (both), `production-australia` (both), `production-canada` (both), `production-germany` (both), `production-hipaa` (both), `production-india` (both), `production-ireland` (both), `production-japan` (both), `production-us` (both), `us-cell-20` (both), `us-cell-22` (both) | [official ↗](https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm) |
 | `onelogin` | OneLogin | mixed | `agents-eu` (egress), `agents` (egress), `email` (ingress) | [official ↗](https://onelogin.service-now.com/kb_view_customer.do?sysparm_article=KB0010432) |
 | `workos` | WorkOS | mixed | `webhooks` (ingress) | [official ↗](https://workos.com/docs/events/data-syncing/webhooks) |
 

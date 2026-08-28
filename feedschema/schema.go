@@ -110,7 +110,18 @@ type SourceRecord struct {
 }
 
 type Purpose struct {
-	Direction string   `json:"direction"`
+	Direction string `json:"direction"`
+	// Aggregate marks a purpose that is the union of the other purposes on the
+	// same service, published for consumers who genuinely want everything.
+	//
+	// It exists so a subscription wildcard can mean the PARTS. Without it,
+	// asking for every purpose of a split service hands back the union and each
+	// piece of it, which is redundant and, where a consumer pays per range
+	// (AWS prefix lists against a security-group quota), doubles the cost of
+	// the thing the split was meant to make cheaper. Name it explicitly to get
+	// it. Added 2026-08-28; absent means false, so older documents read the
+	// same as they always did.
+	Aggregate bool     `json:"aggregate,omitempty"`
 	IPv4      []string `json:"ipv4"`
 	IPv6      []string `json:"ipv6"`
 }

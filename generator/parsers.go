@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
+	"sort"
 	"strings"
 )
 
@@ -225,18 +226,90 @@ func parseAtlassianRanges(body []byte, sel string) ([]string, error) {
 	return out, nil
 }
 
-func parseOktaCells(body []byte, _ string) ([]string, error) {
+func parseOktaCells(body []byte, sel string) ([]string, error) {
+	d, err := oktaCells(body)
+	if err != nil {
+		return nil, err
+	}
+	if _, _, all := selKV(sel); all {
+		var out []string
+		for _, cell := range d {
+			out = append(out, cell...)
+		}
+		return out, nil
+	}
+	key, val, _ := selKV(sel)
+	if key != "cells" {
+		return nil, fmt.Errorf("okta-cells: unsupported select %q (want \"*\" or \"cells=a,b\")", sel)
+	}
+	var out []string
+	for _, name := range strings.Split(val, ",") {
+		name = strings.TrimSpace(name)
+		ranges, ok := d[name]
+		if !ok {
+			// A cell Okta stopped publishing, or a typo. Either way the purpose
+			// would silently shrink, so fail instead.
+			return nil, fmt.Errorf("okta-cells: no cell %q in the published document", name)
+		}
+		out = append(out, ranges...)
+	}
+	return out, nil
+}
+
+func oktaCells(body []byte) (map[string][]string, error) {
 	var d map[string]struct {
 		IPRanges []string `json:"ip_ranges"`
 	}
 	if err := json.Unmarshal(body, &d); err != nil {
 		return nil, err
 	}
-	var out []string
-	for _, cell := range d {
-		out = append(out, cell.IPRanges...)
+	out := make(map[string][]string, len(d))
+	for k, v := range d {
+		out[k] = v.IPRanges
 	}
 	return out, nil
+}
+
+// checkOktaCellCoverage fails the build when Okta publishes a cell that no
+// purpose claims. Okta's allowlisting page maps cells to product and geography
+// groups, and that page runs behind the JSON: on 2026-08-28 it stopped at
+// us_cell_17 while the document already served us_cell_20 and us_cell_22.
+// Those two are published as their own purposes precisely because inferring
+// which group they belong to would be a claim about Okta that Okta has not
+// made. A new unmapped cell must surface here rather than sitting only inside
+// the catch-all purpose, where nobody would notice it.
+func checkOktaCellCoverage(body []byte, purposes []PurposeDecl) error {
+	d, err := oktaCells(body)
+	if err != nil {
+		return err
+	}
+	claimed := map[string]bool{}
+	partitioned := false
+	for _, p := range purposes {
+		key, val, all := selKV(p.Select)
+		if all || key != "cells" {
+			continue // the catch-all purpose does not count as coverage
+		}
+		partitioned = true
+		for _, name := range strings.Split(val, ",") {
+			claimed[strings.TrimSpace(name)] = true
+		}
+	}
+	if !partitioned {
+		return nil
+	}
+	var missing []string
+	for name := range d {
+		if !claimed[name] {
+			missing = append(missing, name)
+		}
+	}
+	if len(missing) > 0 {
+		sort.Strings(missing)
+		return fmt.Errorf("okta-cells: %d cell(s) claimed by no purpose: %s — add them to a documented group, or publish each as its own purpose, but do not leave them only in the catch-all",
+			len(missing), strings.Join(missing, ", "))
+	}
+	return nil
 }
 
 func parseAuth0Regions(body []byte, _ string) ([]string, error) {
@@ -451,9 +524,22 @@ func parseZscalerCENR(body []byte, _ string) ([]string, error) {
 	return out, nil
 }
 
+// parseDatabricksRanges selects by platform and by Databricks' own type field.
+//
+// Select syntax: "*" or "platform=aws;type=inbound", either key optional.
+//
+// Their type values are written from Databricks' side and invert on the way
+// out. Their page heads one table "Inbound IPs: the inbound IP addresses for
+// Databricks control plane services", which are the addresses a workload
+// connects TO, so `type=inbound` is EGRESS for us. It heads the other
+// "Outbound IPs", published "as a JSON file at ip-ranges.json", which are the
+// addresses Databricks connects FROM, so `type=outbound` is INGRESS. Reading
+// the labels literally would invert both, the same way HubSpot's "EGRESS"
+// means ingress for the customer.
 func parseDatabricksRanges(body []byte, sel string) ([]string, error) {
 	var d struct {
 		Prefixes []struct {
+			Platform     string   `json:"platform"`
 			Type         string   `json:"type"`
 			IPv4Prefixes []string `json:"ipv4Prefixes"`
 			IPv6Prefixes []string `json:"ipv6Prefixes"`
@@ -462,13 +548,41 @@ func parseDatabricksRanges(body []byte, sel string) ([]string, error) {
 	if err := json.Unmarshal(body, &d); err != nil {
 		return nil, err
 	}
-	_, want, all := selKV(sel)
-	var out []string
-	for _, p := range d.Prefixes {
-		if all || strings.EqualFold(p.Type, want) {
-			out = append(out, p.IPv4Prefixes...)
-			out = append(out, p.IPv6Prefixes...)
+	var platform, typ string
+	if sel = strings.TrimSpace(sel); sel != "" && sel != "*" {
+		for _, part := range strings.Split(sel, ";") {
+			k, v, ok := strings.Cut(part, "=")
+			if !ok {
+				return nil, fmt.Errorf("databricks-ranges: malformed select %q", part)
+			}
+			switch strings.TrimSpace(k) {
+			case "platform":
+				platform = strings.TrimSpace(v)
+			case "type":
+				typ = strings.TrimSpace(v)
+			default:
+				return nil, fmt.Errorf("databricks-ranges: unknown select key %q", k)
+			}
 		}
+	}
+	var out []string
+	matched := 0
+	for _, p := range d.Prefixes {
+		if platform != "" && !strings.EqualFold(p.Platform, platform) {
+			continue
+		}
+		if typ != "" && !strings.EqualFold(p.Type, typ) {
+			continue
+		}
+		matched++
+		out = append(out, p.IPv4Prefixes...)
+		out = append(out, p.IPv6Prefixes...)
+	}
+	// A platform or type Databricks stops publishing would otherwise shrink
+	// the purpose silently, and the zero-range guardrail only catches it when
+	// nothing at all matches.
+	if matched == 0 && (platform != "" || typ != "") {
+		return nil, fmt.Errorf("databricks-ranges: select %q matched no prefixes", sel)
 	}
 	return out, nil
 }

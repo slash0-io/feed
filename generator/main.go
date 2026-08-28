@@ -378,6 +378,13 @@ func (e errUnimplemented) Error() string { return "format not yet implemented: "
 
 // buildService fetches all endpoints of a service and assembles its feed
 // document. A service with zero parseable endpoints returns an error.
+// partitionChecks validate that a format whose purposes carve up one keyed
+// document leave nothing unclaimed. A parser only ever sees its own purpose,
+// so a key nobody selected is invisible to it.
+var partitionChecks = map[string]func([]byte, []PurposeDecl) error{
+	"okta-cells": checkOktaCellCoverage,
+}
+
 func buildService(svc SourceService, fetcher *Fetcher, generatedAt, syncToken string) (*feedschema.Service, error) {
 	out := &feedschema.Service{
 		SchemaVersion:  feedschema.SchemaVersion,
@@ -407,6 +414,11 @@ func buildService(svc SourceService, fetcher *Fetcher, generatedAt, syncToken st
 			RetrievedAt: generatedAt,
 			SHA256:      sha256hex(body),
 		})
+		if check, ok := partitionChecks[ep.Format]; ok {
+			if err := check(body, ep.Purposes); err != nil {
+				return nil, fmt.Errorf("endpoint %s: %w", ep.ID, err)
+			}
+		}
 		for _, decl := range ep.Purposes {
 			raw, err := parse(body, decl.Select)
 			if err != nil {
@@ -430,7 +442,7 @@ func buildService(svc SourceService, fetcher *Fetcher, generatedAt, syncToken st
 				}
 				v4, v6 = mergeRanges(prev.IPv4, v4), mergeRanges(prev.IPv6, v6)
 			}
-			out.Purposes[decl.Key] = feedschema.Purpose{Direction: decl.Direction, IPv4: v4, IPv6: v6}
+			out.Purposes[decl.Key] = feedschema.Purpose{Direction: decl.Direction, Aggregate: decl.Aggregate, IPv4: v4, IPv6: v6}
 		}
 	}
 

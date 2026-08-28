@@ -702,14 +702,42 @@ services:
     classification: dedicated
     provenance: https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm
     cadence: "periodic as cells are provisioned; Okta docs recommend checking Last-Modified"
+    notes: >
+      Okta serves each org from one cell, so allowlisting every cell is far broader than any
+      single customer needs: the union is 2068 ranges and firewall-scale, while most individual
+      groups are under 150. The purpose keys below are Okta's own product and geography groups,
+      copied from the allowlisting page, not our own grouping.
+
+      Two cells, us_cell_20 and us_cell_22, are served in the JSON but appear nowhere in that
+      page, which stops at us_cell_17 (checked 2026-08-28). They are published under their own
+      keys rather than folded into production-us, because assigning them would be a claim about
+      Okta that Okta has not made, and a customer in one of them would get an allowlist missing
+      their own cell. checkOktaCellCoverage fails the build if a further unmapped cell appears.
+
+      "all" is kept as the complete union so nothing is lost by the split.
     endpoints:
       - id: main
         url: https://s3.amazonaws.com/okta-ip-ranges/ip_ranges.json
         format: okta-cells             # {<cell>: {ip_ranges: []}}
         detection: {poll: cond-get}
         purposes:
-          - {key: all, direction: both, select: "*"}
-    verified: "2026-07-04"
+          - {key: all,                  direction: both, aggregate: true, select: "*"}
+          - {key: production-us,        direction: both, select: "cells=us_cell_1,us_cell_2,us_cell_3,us_cell_4,us_cell_5,us_cell_6,us_cell_7,us_cell_10,us_cell_11,us_cell_12,us_cell_14,us_cell_17"}
+          - {key: production-germany,   direction: both, select: "cells=emea_cell_1"}
+          - {key: production-ireland,   direction: both, select: "cells=emea_cell_2"}
+          - {key: production-australia, direction: both, select: "cells=apac_cell_1"}
+          - {key: production-japan,     direction: both, select: "cells=apac_cell_2"}
+          - {key: production-canada,    direction: both, select: "cells=ca_cell_1"}
+          - {key: production-india,     direction: both, select: "cells=in_cell_1"}
+          - {key: production-hipaa,     direction: both, select: "cells=us_cell_5,us_cell_10"}
+          - {key: preview-us,           direction: both, select: "cells=preview_cell_1,preview_cell_2,preview_cell_3"}
+          - {key: preview-emea,         direction: both, select: "cells=preview_cell_2"}
+          - {key: preview-pam,          direction: both, select: "cells=preview_pam_cell_1"}
+          - {key: pam-us,               direction: both, select: "cells=us_pam_cell_1"}
+          - {key: pam-emea,             direction: both, select: "cells=emea_pam_cell_1"}
+          - {key: us-cell-20,           direction: both, select: "cells=us_cell_20"}
+          - {key: us-cell-22,           direction: both, select: "cells=us_cell_22"}
+    verified: "2026-08-28"
 
   - slug: auth0
     name: Auth0 (Okta CIC)
@@ -1241,14 +1269,38 @@ services:
     cadence: "can change as often as every 30 days; updated IPs active >=60 days after publication (documented grace window)"
     notice: "60 days before updated IPs activate"
     notice_evidence: https://docs.databricks.com/aws/en/resources/ip-domain-region
+    notes: >
+      The published document tags every prefix with a platform (aws, azure, gcp) and a type,
+      and a customer uses one platform, so the union is far broader than anyone needs: 852
+      ranges and firewall-scale, against 32 for aws/inbound.
+
+      Databricks' type values are written from their side and invert on the way out. Their page
+      heads one table "Inbound IPs: the inbound IP addresses for Databricks control plane
+      services", which are addresses a workload connects TO, so type=inbound is EGRESS here.
+      It heads the other "Outbound IPs", published "as a JSON file at ip-ranges.json", which
+      are addresses Databricks connects FROM, so type=outbound is INGRESS. Same shape as
+      HubSpot labelling customer-ingress traffic "EGRESS".
+
+      Databricks recommends allowlisting the SCC relay FQDNs rather than these addresses, and
+      says customers who pin IPs "may experience service disruptions when infrastructure
+      changes occur". Recorded rather than treated as grounds to exclude, the same call as Duo:
+      the staleness they are warning about is what this feed removes.
+
+      "all" is kept as the complete union so nothing is lost by the split.
     endpoints:
       - id: main
         url: https://www.databricks.com/networking/v1/ip-ranges.json
         format: databricks-ranges      # {timestampSeconds, schemaVersion, prefixes}
         detection: {poll: hash}
         purposes:
-          - {key: all, direction: both, select: "*"}
-    verified: "2026-07-04"
+          - {key: all,           direction: both,    aggregate: true, select: "*"}
+          - {key: aws-egress,    direction: egress,  select: "platform=aws;type=inbound"}
+          - {key: aws-ingress,   direction: ingress, select: "platform=aws;type=outbound"}
+          - {key: azure-egress,  direction: egress,  select: "platform=azure;type=inbound"}
+          - {key: azure-ingress, direction: ingress, select: "platform=azure;type=outbound"}
+          - {key: gcp-egress,    direction: egress,  select: "platform=gcp;type=inbound"}
+          - {key: gcp-ingress,   direction: ingress, select: "platform=gcp;type=outbound"}
+    verified: "2026-08-28"
 
   - slug: elastic-cloud
     name: Elastic Cloud

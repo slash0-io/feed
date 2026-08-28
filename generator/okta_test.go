@@ -1,0 +1,131 @@
+package main
+
+import (
+	"strings"
+	"testing"
+)
+
+const oktaBody = `{
+  "us_cell_1":  {"ip_ranges": ["192.0.2.0/25", "192.0.2.128/25"]},
+  "emea_cell_1":{"ip_ranges": ["198.51.100.0/24"]},
+  "us_cell_99": {"ip_ranges": ["203.0.113.0/24"]}
+}`
+
+// Okta serves each org from one cell, so a purpose has to be able to name the
+// cells it covers rather than taking the whole document.
+func TestOktaCellSelection(t *testing.T) {
+	got, err := parseOktaCells([]byte(oktaBody), "cells=emea_cell_1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 1 || got[0] != "198.51.100.0/24" {
+		t.Fatalf("selected %v, want just the emea_cell_1 range", got)
+	}
+}
+
+// The catch-all purpose still takes everything, so splitting loses nothing.
+func TestOktaWildcardTakesEveryCell(t *testing.T) {
+	got, err := parseOktaCells([]byte(oktaBody), "*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 4 {
+		t.Fatalf("wildcard got %d ranges, want all 4", len(got))
+	}
+}
+
+// A cell Okta stops publishing must fail rather than silently shrinking the
+// purpose to nothing.
+func TestOktaUnknownCellFails(t *testing.T) {
+	_, err := parseOktaCells([]byte(oktaBody), "cells=us_cell_404")
+	if err == nil {
+		t.Fatal("a cell absent from the document must fail the build")
+	}
+	if !strings.Contains(err.Error(), "us_cell_404") {
+		t.Fatalf("error should name the missing cell, got %v", err)
+	}
+}
+
+// The reason the check exists: Okta's allowlisting page runs behind their JSON.
+// A cell no purpose claims would otherwise sit only in the catch-all, where
+// nobody would notice it, and customers in it would have no purpose to use.
+func TestOktaUnclaimedCellFailsTheBuild(t *testing.T) {
+	decls := []PurposeDecl{
+		{Key: "all", Select: "*"},
+		{Key: "production-us", Select: "cells=us_cell_1"},
+		{Key: "production-germany", Select: "cells=emea_cell_1"},
+	}
+	err := checkOktaCellCoverage([]byte(oktaBody), decls)
+	if err == nil {
+		t.Fatal("us_cell_99 is claimed by no purpose; that must fail")
+	}
+	if !strings.Contains(err.Error(), "us_cell_99") {
+		t.Fatalf("error should name the unclaimed cell, got %v", err)
+	}
+	// The catch-all must not count as coverage, or the check is pointless.
+	if strings.Contains(err.Error(), "all") && !strings.Contains(err.Error(), "catch-all") {
+		t.Fatalf("unexpected mention of the catch-all purpose: %v", err)
+	}
+}
+
+func TestOktaFullCoveragePasses(t *testing.T) {
+	decls := []PurposeDecl{
+		{Key: "all", Select: "*"},
+		{Key: "production-us", Select: "cells=us_cell_1,us_cell_99"},
+		{Key: "production-germany", Select: "cells=emea_cell_1"},
+	}
+	if err := checkOktaCellCoverage([]byte(oktaBody), decls); err != nil {
+		t.Fatalf("every cell is claimed, so this must pass: %v", err)
+	}
+}
+
+// A service that has not been partitioned at all keeps working: the check only
+// applies once some purpose starts naming cells.
+func TestOktaCoverageSkippedWhenNotPartitioned(t *testing.T) {
+	if err := checkOktaCellCoverage([]byte(oktaBody), []PurposeDecl{{Key: "all", Select: "*"}}); err != nil {
+		t.Fatalf("an unpartitioned endpoint must not trip the check: %v", err)
+	}
+}
+
+const dbxBody = `{"prefixes":[
+ {"platform":"aws","type":"inbound","ipv4Prefixes":["192.0.2.0/24"],"ipv6Prefixes":[]},
+ {"platform":"aws","type":"outbound","ipv4Prefixes":["198.51.100.0/24"],"ipv6Prefixes":[]},
+ {"platform":"azure","type":"outbound","ipv4Prefixes":["203.0.113.0/24"],"ipv6Prefixes":[]}
+]}`
+
+// Databricks tags every prefix with a platform, and a customer uses one, so the
+// union is far broader than anyone needs.
+func TestDatabricksSelectsPlatformAndType(t *testing.T) {
+	got, err := parseDatabricksRanges([]byte(dbxBody), "platform=aws;type=inbound")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 1 || got[0] != "192.0.2.0/24" {
+		t.Fatalf("got %v, want only the aws inbound prefix", got)
+	}
+}
+
+// A platform or type Databricks stops publishing must fail rather than quietly
+// producing a smaller purpose.
+func TestDatabricksEmptySelectionFails(t *testing.T) {
+	if _, err := parseDatabricksRanges([]byte(dbxBody), "platform=gcp;type=inbound"); err == nil {
+		t.Fatal("a select matching no prefixes must fail the build")
+	}
+}
+
+func TestDatabricksRejectsUnknownSelectKey(t *testing.T) {
+	if _, err := parseDatabricksRanges([]byte(dbxBody), "region=us-east-1"); err == nil {
+		t.Fatal("an unknown select key must fail rather than matching everything")
+	}
+}
+
+// The catch-all still takes every platform and type.
+func TestDatabricksWildcardTakesEverything(t *testing.T) {
+	got, err := parseDatabricksRanges([]byte(dbxBody), "*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 3 {
+		t.Fatalf("wildcard got %d, want 3", len(got))
+	}
+}
