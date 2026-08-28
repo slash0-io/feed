@@ -1140,6 +1140,20 @@ services:
     classification: dedicated
     provenance: https://config.zscaler.com/
     cadence: "irregular; per-cloud JSON APIs (zscaler.net shown; zscalertwo/three/ten same pattern)"
+    notes: >
+      Deliberately NOT split by continent or data centre, though the CENR document is keyed
+      that way. Zscaler routes a user to the nearest enforcement node, so there is no binding
+      between a customer and a region, and their page states that "customers should ensure that
+      access is permitted to data center IP ranges. Allowing access to only specific IP
+      addresses may result in a loss of service." Publishing per-continent purposes would imply
+      a narrower allowlist is safe, which Zscaler contradicts.
+
+      announced is the table Zscaler labels "Zscaler Aggregate IP Address Ranges" and advises
+      all customers to allowlist, because "the IPs from these ranges can become live at any
+      time after being announced". Compared as address sets on 2026-08-28 it strictly contains
+      enforcement-nodes, with zero CENR addresses outside it, and adds 340064 IPv4 addresses of
+      headroom for centres not yet live. Both are published: enforcement-nodes is the tight
+      current set, announced is what the vendor recommends.
     endpoints:
       - id: cenr
         url: https://config.zscaler.com/api/zscaler.net/cenr/json
@@ -1147,7 +1161,13 @@ services:
         detection: {poll: cond-get}
         purposes:
           - {key: enforcement-nodes, direction: egress, select: "*"}
-    verified: "2026-07-04"
+      - id: future
+        url: https://config.zscaler.com/api/zscaler.net/future/json
+        format: zscaler-announced      # {cloudName, prefixes[]}
+        detection: {poll: cond-get}
+        purposes:
+          - {key: announced, direction: egress, select: "*"}
+    verified: "2026-08-28"
 
   - slug: netskope
     name: Netskope (NewEdge)

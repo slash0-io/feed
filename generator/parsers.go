@@ -37,6 +37,7 @@ var parsers = map[string]parseFunc{
 	"circleci-list":      parseCircleCIList,
 	"braintree-ips":      parseBraintreeIPs,
 	"zscaler-cenr":       parseZscalerCENR,
+	"zscaler-announced":  parseZscalerAnnounced,
 	"databricks-ranges":  parseDatabricksRanges,
 	"o365-endpoints":     parseO365Endpoints,
 	"html-cidr-extract":  parseHTMLCIDRExtract,
@@ -567,6 +568,34 @@ func parseBraintreeIPs(body []byte, sel string) ([]string, error) {
 
 // parseZscalerCENR walks {"<cloud>": {continent: {city: [{range}]}}},
 // ignoring the svpnIPs sibling key.
+// parseZscalerAnnounced reads Zscaler's forward-looking supernets:
+// {cloudName, prefixes[]}.
+//
+// Zscaler labels this table "Zscaler Aggregate IP Address Ranges" and advises
+// "all customers to add IP ranges listed in [it] to your access lists,
+// firewalls and application allowlist", because "the IPs from these ranges can
+// become live at any time after being announced". The same page warns that
+// "allowing access to only specific IP addresses may result in a loss of
+// service".
+//
+// Verified as address sets on 2026-08-28: it strictly contains the per-data
+// centre CENR ranges (zero CENR addresses fall outside it) and adds 340064
+// IPv4 addresses of headroom for centres not yet live. It is published
+// alongside enforcement-nodes rather than replacing it, so a consumer can
+// choose the tight current set or the set Zscaler actually recommends.
+func parseZscalerAnnounced(body []byte, _ string) ([]string, error) {
+	var d struct {
+		Prefixes []string `json:"prefixes"`
+	}
+	if err := json.Unmarshal(body, &d); err != nil {
+		return nil, err
+	}
+	if len(d.Prefixes) == 0 {
+		return nil, fmt.Errorf("zscaler-announced: no prefixes in the published document")
+	}
+	return d.Prefixes, nil
+}
+
 func parseZscalerCENR(body []byte, _ string) ([]string, error) {
 	var top map[string]json.RawMessage
 	if err := json.Unmarshal(body, &top); err != nil {

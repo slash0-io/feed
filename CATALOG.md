@@ -132,7 +132,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 | `netskope` | Netskope (NewEdge) | dedicated | `dataplane` (both) | [official ↗](https://docs.netskope.com/en/newedge-ip-ranges-for-allowlisting) |
 | `rapid7` | Rapid7 (InsightAppSec cloud engines) | dedicated | `appsec-engines` (ingress) | [official ↗](https://docs.rapid7.com/insightappsec/allowlist-cloud-engine-ips/) |
 | `tenable` | Tenable (Vulnerability Management) | dedicated | `scanners` (ingress) | [official ↗](https://docs.tenable.com/vulnerability-management/Content/Settings/Sensors/CloudSensors.htm) |
-| `zscaler` | Zscaler (zscaler.net cloud) | dedicated | `enforcement-nodes` (egress) | [official ↗](https://config.zscaler.com/) |
+| `zscaler` | Zscaler (zscaler.net cloud) | dedicated | `announced` (egress), `enforcement-nodes` (egress) | [official ↗](https://config.zscaler.com/) |
 
 ## AI APIs
 
