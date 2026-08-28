@@ -59,14 +59,75 @@ services:
     classification: dedicated
     provenance: https://knowledge.workspace.google.com/admin/security/obtain-google-ip-address-ranges
     cadence: "regenerated frequently (roughly daily); syncToken/creationTime in file"
+    notes: >
+      Google tags every prefix with a region scope and a workload usually talks to resources in
+      one or two of them, so the union is far broader than anyone needs: 444 IPv4 ranges, over
+      the 250 viability cap, against a median of 14 per region.
+
+      The purpose keys are Google's own scope values, copied verbatim rather than grouped, since
+      any grouping into continents would be ours and not Google's. They are committed rather
+      than generated at build time on purpose: a purpose key is public API and becomes a prefix
+      list name the reconciler treats as immutable identity, so a region Google adds or renames
+      has to reach a human before it reaches consumers. checkGoogleScopeCoverage fails the build
+      when a scope is unclaimed, and tools/gen-google-scopes.sh regenerates this block.
+
+      "all" is the aggregate and stays out of subscription wildcards.
     endpoints:
       - id: cloud
         url: https://www.gstatic.com/ipranges/cloud.json
         format: google-prefixes        # {syncToken, creationTime, prefixes[{ipv4Prefix|ipv6Prefix, scope, service}]}
         detection: {poll: cond-get}
         purposes:
-          - {key: all, direction: egress, select: "*"}
-    verified: "2026-07-04"
+          - {key: all, direction: egress, aggregate: true, select: "*"}
+          - {key: africa-south1,           direction: egress, select: "scope=africa-south1"}
+          - {key: asia-east1,              direction: egress, select: "scope=asia-east1"}
+          - {key: asia-east2,              direction: egress, select: "scope=asia-east2"}
+          - {key: asia-northeast1,         direction: egress, select: "scope=asia-northeast1"}
+          - {key: asia-northeast2,         direction: egress, select: "scope=asia-northeast2"}
+          - {key: asia-northeast3,         direction: egress, select: "scope=asia-northeast3"}
+          - {key: asia-south1,             direction: egress, select: "scope=asia-south1"}
+          - {key: asia-south2,             direction: egress, select: "scope=asia-south2"}
+          - {key: asia-southeast1,         direction: egress, select: "scope=asia-southeast1"}
+          - {key: asia-southeast2,         direction: egress, select: "scope=asia-southeast2"}
+          - {key: asia-southeast3,         direction: egress, select: "scope=asia-southeast3"}
+          - {key: australia-southeast1,    direction: egress, select: "scope=australia-southeast1"}
+          - {key: australia-southeast2,    direction: egress, select: "scope=australia-southeast2"}
+          - {key: europe-central2,         direction: egress, select: "scope=europe-central2"}
+          - {key: europe-north1,           direction: egress, select: "scope=europe-north1"}
+          - {key: europe-north2,           direction: egress, select: "scope=europe-north2"}
+          - {key: europe-southwest1,       direction: egress, select: "scope=europe-southwest1"}
+          - {key: europe-west1,            direction: egress, select: "scope=europe-west1"}
+          - {key: europe-west10,           direction: egress, select: "scope=europe-west10"}
+          - {key: europe-west12,           direction: egress, select: "scope=europe-west12"}
+          - {key: europe-west15,           direction: egress, select: "scope=europe-west15"}
+          - {key: europe-west2,            direction: egress, select: "scope=europe-west2"}
+          - {key: europe-west3,            direction: egress, select: "scope=europe-west3"}
+          - {key: europe-west4,            direction: egress, select: "scope=europe-west4"}
+          - {key: europe-west6,            direction: egress, select: "scope=europe-west6"}
+          - {key: europe-west8,            direction: egress, select: "scope=europe-west8"}
+          - {key: europe-west9,            direction: egress, select: "scope=europe-west9"}
+          - {key: global,                  direction: egress, select: "scope=global"}
+          - {key: me-central1,             direction: egress, select: "scope=me-central1"}
+          - {key: me-central2,             direction: egress, select: "scope=me-central2"}
+          - {key: me-west1,                direction: egress, select: "scope=me-west1"}
+          - {key: northamerica-northeast1, direction: egress, select: "scope=northamerica-northeast1"}
+          - {key: northamerica-northeast2, direction: egress, select: "scope=northamerica-northeast2"}
+          - {key: northamerica-south1,     direction: egress, select: "scope=northamerica-south1"}
+          - {key: southamerica-east1,      direction: egress, select: "scope=southamerica-east1"}
+          - {key: southamerica-west1,      direction: egress, select: "scope=southamerica-west1"}
+          - {key: us-central1,             direction: egress, select: "scope=us-central1"}
+          - {key: us-central2,             direction: egress, select: "scope=us-central2"}
+          - {key: us-east1,                direction: egress, select: "scope=us-east1"}
+          - {key: us-east4,                direction: egress, select: "scope=us-east4"}
+          - {key: us-east5,                direction: egress, select: "scope=us-east5"}
+          - {key: us-east7,                direction: egress, select: "scope=us-east7"}
+          - {key: us-south1,               direction: egress, select: "scope=us-south1"}
+          - {key: us-west1,                direction: egress, select: "scope=us-west1"}
+          - {key: us-west2,                direction: egress, select: "scope=us-west2"}
+          - {key: us-west3,                direction: egress, select: "scope=us-west3"}
+          - {key: us-west4,                direction: egress, select: "scope=us-west4"}
+          - {key: us-west8,                direction: egress, select: "scope=us-west8"}
+    verified: "2026-08-28"
 
   - slug: google
     name: Google (all services)

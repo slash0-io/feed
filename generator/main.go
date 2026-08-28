@@ -382,8 +382,9 @@ func (e errUnimplemented) Error() string { return "format not yet implemented: "
 // document leave nothing unclaimed. A parser only ever sees its own purpose,
 // so a key nobody selected is invisible to it.
 var partitionChecks = map[string]func([]byte, []PurposeDecl) error{
-	"okta-cells":    checkOktaCellCoverage,
-	"auth0-regions": checkAuth0RegionCoverage,
+	"okta-cells":      checkOktaCellCoverage,
+	"auth0-regions":   checkAuth0RegionCoverage,
+	"google-prefixes": checkGoogleScopeCoverage,
 }
 
 func buildService(svc SourceService, fetcher *Fetcher, generatedAt, syncToken string) (*feedschema.Service, error) {

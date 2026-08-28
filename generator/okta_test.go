@@ -181,3 +181,61 @@ func TestAuth0FullCoveragePasses(t *testing.T) {
 		t.Fatalf("every region is claimed: %v", err)
 	}
 }
+
+const gcBody = `{"prefixes":[
+ {"ipv4Prefix":"192.0.2.0/24","service":"Google Cloud","scope":"us-central1"},
+ {"ipv6Prefix":"2001:db8::/32","service":"Google Cloud","scope":"us-central1"},
+ {"ipv4Prefix":"198.51.100.0/24","service":"Google Cloud","scope":"europe-west1"}
+]}`
+
+// A workload talks to resources in one or two regions, not all 48.
+func TestGoogleScopeSelection(t *testing.T) {
+	got, err := parseGooglePrefixes([]byte(gcBody), "scope=europe-west1")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 1 || got[0] != "198.51.100.0/24" {
+		t.Fatalf("got %v, want only the europe-west1 range", got)
+	}
+}
+
+// The bot files (openai, anthropic) share this parser and carry no scope, so
+// the wildcard must keep taking everything.
+func TestGoogleWildcardUnaffectedByScopes(t *testing.T) {
+	got, err := parseGooglePrefixes([]byte(gcBody), "*")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 3 {
+		t.Fatalf("wildcard got %d, want all 3", len(got))
+	}
+}
+
+// A region Google adds or renames must reach a human before it reaches
+// consumers, because a purpose key becomes an immutable prefix list name.
+func TestGoogleUnclaimedScopeFailsTheBuild(t *testing.T) {
+	decls := []PurposeDecl{
+		{Key: "all", Select: "*"},
+		{Key: "us-central1", Select: "scope=us-central1"},
+	}
+	err := checkGoogleScopeCoverage([]byte(gcBody), decls)
+	if err == nil {
+		t.Fatal("europe-west1 is claimed by no purpose; that must fail")
+	}
+	if !strings.Contains(err.Error(), "europe-west1") {
+		t.Fatalf("error should name the unclaimed scope, got %v", err)
+	}
+}
+
+// A scope value that cannot be a purpose key must fail rather than becoming a
+// prefix list name that can never be renamed.
+func TestGoogleRejectsUnusableScopeKey(t *testing.T) {
+	body := `{"prefixes":[{"ipv4Prefix":"192.0.2.0/24","scope":"US Central (new!)"}]}`
+	err := checkGoogleScopeCoverage([]byte(body), []PurposeDecl{
+		{Key: "all", Select: "*"},
+		{Key: "x", Select: "scope=whatever"},
+	})
+	if err == nil || !strings.Contains(err.Error(), "unusable as a purpose key") {
+		t.Fatalf("a scope with spaces and punctuation must be refused, got %v", err)
+	}
+}

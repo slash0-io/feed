@@ -91,23 +91,105 @@ func parseAWSIPRanges(body []byte, sel string) ([]string, error) {
 	return out, nil
 }
 
-func parseGooglePrefixes(body []byte, _ string) ([]string, error) {
+// parseGooglePrefixes reads Google's {prefixes:[{ipv4Prefix|ipv6Prefix, scope,
+// service}]} shape, shared by cloud.json, goog.json and the per-bot files.
+//
+// Select syntax: "*" or "scope=us-central1". Only cloud.json carries a scope;
+// the bot files have none, so they use "*".
+func parseGooglePrefixes(body []byte, sel string) ([]string, error) {
+	d, err := googlePrefixes(body)
+	if err != nil {
+		return nil, err
+	}
+	if _, _, all := selKV(sel); all {
+		var out []string
+		for _, e := range d {
+			out = append(out, e.ranges...)
+		}
+		return out, nil
+	}
+	key, val, _ := selKV(sel)
+	if key != "scope" {
+		return nil, fmt.Errorf("google-prefixes: unsupported select %q (want \"*\" or \"scope=us-central1\")", sel)
+	}
+	e, ok := d[val]
+	if !ok {
+		return nil, fmt.Errorf("google-prefixes: no scope %q in the published document", val)
+	}
+	return e.ranges, nil
+}
+
+type googleScope struct{ ranges []string }
+
+func googlePrefixes(body []byte) (map[string]googleScope, error) {
 	var d struct {
 		Prefixes []map[string]string `json:"prefixes"`
 	}
 	if err := json.Unmarshal(body, &d); err != nil {
 		return nil, err
 	}
-	var out []string
+	out := map[string]googleScope{}
 	for _, p := range d.Prefixes {
+		scope := p["scope"]
+		e := out[scope]
 		if v := p["ipv4Prefix"]; v != "" {
-			out = append(out, v)
+			e.ranges = append(e.ranges, v)
 		}
 		if v := p["ipv6Prefix"]; v != "" {
-			out = append(out, v)
+			e.ranges = append(e.ranges, v)
 		}
+		out[scope] = e
 	}
 	return out, nil
+}
+
+// purposeKeyRe bounds what a vendor field may become. Google's scope values
+// turn into purpose keys, which are public API and, downstream, prefix list
+// names that the reconciler treats as immutable identity. A surprising value
+// must fail the build rather than mint a permanently badly-named list.
+var purposeKeyRe = regexp.MustCompile(`^[a-z0-9][a-z0-9-]{0,40}$`)
+
+// checkGoogleScopeCoverage fails the build when cloud.json carries a scope no
+// purpose claims, which is how a region Google adds or renames reaches review
+// instead of silently changing the published purpose set.
+func checkGoogleScopeCoverage(body []byte, purposes []PurposeDecl) error {
+	d, err := googlePrefixes(body)
+	if err != nil {
+		return err
+	}
+	claimed := map[string]bool{}
+	partitioned := false
+	for _, p := range purposes {
+		key, val, all := selKV(p.Select)
+		if all || key != "scope" {
+			continue
+		}
+		partitioned = true
+		claimed[val] = true
+	}
+	if !partitioned {
+		return nil
+	}
+	var missing, bad []string
+	for scope := range d {
+		if !purposeKeyRe.MatchString(scope) {
+			bad = append(bad, scope)
+			continue
+		}
+		if !claimed[scope] {
+			missing = append(missing, scope)
+		}
+	}
+	sort.Strings(missing)
+	sort.Strings(bad)
+	if len(bad) > 0 {
+		return fmt.Errorf("google-prefixes: scope(s) unusable as a purpose key: %s", strings.Join(bad, ", "))
+	}
+	if len(missing) > 0 {
+		return fmt.Errorf("google-prefixes: %d scope(s) claimed by no purpose: %s — regenerate the purpose list (tools/gen-google-scopes.sh) and review the diff",
+			len(missing), strings.Join(missing, ", "))
+	}
+	return nil
 }
 
 func parseCloudflareAPI(body []byte, _ string) ([]string, error) {
