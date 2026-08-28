@@ -129,3 +129,55 @@ func TestDatabricksWildcardTakesEverything(t *testing.T) {
 		t.Fatalf("wildcard got %d, want 3", len(got))
 	}
 }
+
+const auth0Body = `{"regions":{
+ "US":{"ipv4_cidrs":["192.0.2.0/24"]},
+ "EU":{"ipv4_cidrs":["198.51.100.0/24"]},
+ "JP":{"ipv4_cidrs":["203.0.113.0/24"]}
+}}`
+
+// An Auth0 tenant lives in one region, so a purpose has to be able to name it.
+func TestAuth0RegionSelection(t *testing.T) {
+	got, err := parseAuth0Regions([]byte(auth0Body), "regions=EU")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(got) != 1 || got[0] != "198.51.100.0/24" {
+		t.Fatalf("got %v, want only the EU range", got)
+	}
+}
+
+func TestAuth0UnknownRegionFails(t *testing.T) {
+	if _, err := parseAuth0Regions([]byte(auth0Body), "regions=ZZ"); err == nil {
+		t.Fatal("a region absent from the document must fail the build")
+	}
+}
+
+// A region Auth0 adds must not land only in the aggregate, where a tenant
+// there would have no purpose to select.
+func TestAuth0UnclaimedRegionFailsTheBuild(t *testing.T) {
+	decls := []PurposeDecl{
+		{Key: "all", Select: "*"},
+		{Key: "united-states", Select: "regions=US"},
+		{Key: "europe", Select: "regions=EU"},
+	}
+	err := checkAuth0RegionCoverage([]byte(auth0Body), decls)
+	if err == nil {
+		t.Fatal("JP is claimed by no purpose; that must fail")
+	}
+	if !strings.Contains(err.Error(), "JP") {
+		t.Fatalf("error should name the unclaimed region, got %v", err)
+	}
+}
+
+func TestAuth0FullCoveragePasses(t *testing.T) {
+	decls := []PurposeDecl{
+		{Key: "all", Select: "*"},
+		{Key: "united-states", Select: "regions=US"},
+		{Key: "europe", Select: "regions=EU"},
+		{Key: "japan", Select: "regions=JP"},
+	}
+	if err := checkAuth0RegionCoverage([]byte(auth0Body), decls); err != nil {
+		t.Fatalf("every region is claimed: %v", err)
+	}
+}

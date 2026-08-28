@@ -747,14 +747,32 @@ services:
     cadence: "rare; notification 'several months' before changes (documented); changelog embedded in the file"
     notice: "several months, by email"
     notice_evidence: https://auth0.com/docs/secure/security-guidance/data-security/allowlist
+    notes: >
+      A tenant lives in one region, and Auth0 says so directly: "For Public Cloud tenants, the
+      IP addresses that you must allow through your firewall are specific to the tenant's
+      region." The union is 103 ranges against 3 for UK or 6 for CA.
+
+      Direction is ingress, not both. The page is titled "Auth0 IP Addresses for Allow Lists"
+      and describes the list as "for use in allow lists for inbound traffic behind a firewall",
+      naming Actions, Rules, Hooks, Custom Database Action Scripts, Log Streams and external
+      SMTP as the features that make Auth0 call into your network. Nothing on the page supports
+      using these as egress destinations, so the earlier "both" asserted more than Auth0 does.
+
+      "all" is the aggregate and stays out of subscription wildcards.
     endpoints:
       - id: main
         url: https://cdn.auth0.com/ip-ranges.json
         format: auth0-regions          # {last_updated_at, regions{<region>...}, changelog}
         detection: {poll: cond-get}
         purposes:
-          - {key: all, direction: both, select: "*"}
-    verified: "2026-07-04"
+          - {key: all,             direction: ingress, aggregate: true, select: "*"}
+          - {key: united-states,   direction: ingress, select: "regions=US"}
+          - {key: europe,          direction: ingress, select: "regions=EU"}
+          - {key: australia,       direction: ingress, select: "regions=AU"}
+          - {key: canada,          direction: ingress, select: "regions=CA"}
+          - {key: japan,           direction: ingress, select: "regions=JP"}
+          - {key: united-kingdom,  direction: ingress, select: "regions=UK"}
+    verified: "2026-08-28"
 
   - slug: onelogin
     name: OneLogin

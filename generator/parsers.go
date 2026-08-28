@@ -312,7 +312,43 @@ func checkOktaCellCoverage(body []byte, purposes []PurposeDecl) error {
 	return nil
 }
 
-func parseAuth0Regions(body []byte, _ string) ([]string, error) {
+// parseAuth0Regions selects by Auth0 tenant region.
+//
+// Select syntax: "*" or "regions=US,EU".
+//
+// An Auth0 tenant lives in one region and their allowlist page says so
+// directly: "For Public Cloud tenants, the IP addresses that you must allow
+// through your firewall are specific to the tenant's region." The union is 103
+// ranges against 3 for UK.
+func parseAuth0Regions(body []byte, sel string) ([]string, error) {
+	d, err := auth0Regions(body)
+	if err != nil {
+		return nil, err
+	}
+	if _, _, all := selKV(sel); all {
+		var out []string
+		for _, r := range d {
+			out = append(out, r...)
+		}
+		return out, nil
+	}
+	key, val, _ := selKV(sel)
+	if key != "regions" {
+		return nil, fmt.Errorf("auth0-regions: unsupported select %q (want \"*\" or \"regions=US,EU\")", sel)
+	}
+	var out []string
+	for _, name := range strings.Split(val, ",") {
+		name = strings.TrimSpace(name)
+		ranges, ok := d[name]
+		if !ok {
+			return nil, fmt.Errorf("auth0-regions: no region %q in the published document", name)
+		}
+		out = append(out, ranges...)
+	}
+	return out, nil
+}
+
+func auth0Regions(body []byte) (map[string][]string, error) {
 	var d struct {
 		Regions map[string]struct {
 			IPv4CIDRs []string `json:"ipv4_cidrs"`
@@ -322,12 +358,48 @@ func parseAuth0Regions(body []byte, _ string) ([]string, error) {
 	if err := json.Unmarshal(body, &d); err != nil {
 		return nil, err
 	}
-	var out []string
-	for _, r := range d.Regions {
-		out = append(out, r.IPv4CIDRs...)
-		out = append(out, r.IPv6CIDRs...)
+	out := make(map[string][]string, len(d.Regions))
+	for k, v := range d.Regions {
+		out[k] = append(append([]string{}, v.IPv4CIDRs...), v.IPv6CIDRs...)
 	}
 	return out, nil
+}
+
+// checkAuth0RegionCoverage fails the build when Auth0 adds a region no purpose
+// claims. Without it the new region would appear only inside the aggregate,
+// where a tenant in it has no purpose to select and nobody would notice.
+func checkAuth0RegionCoverage(body []byte, purposes []PurposeDecl) error {
+	d, err := auth0Regions(body)
+	if err != nil {
+		return err
+	}
+	claimed := map[string]bool{}
+	partitioned := false
+	for _, p := range purposes {
+		key, val, all := selKV(p.Select)
+		if all || key != "regions" {
+			continue
+		}
+		partitioned = true
+		for _, name := range strings.Split(val, ",") {
+			claimed[strings.TrimSpace(name)] = true
+		}
+	}
+	if !partitioned {
+		return nil
+	}
+	var missing []string
+	for name := range d {
+		if !claimed[name] {
+			missing = append(missing, name)
+		}
+	}
+	if len(missing) > 0 {
+		sort.Strings(missing)
+		return fmt.Errorf("auth0-regions: %d region(s) claimed by no purpose: %s — add a purpose for each, or a tenant there has nothing to select",
+			len(missing), strings.Join(missing, ", "))
+	}
+	return nil
 }
 
 func parseOCIRanges(body []byte, sel string) ([]string, error) {
