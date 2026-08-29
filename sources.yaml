@@ -1340,26 +1340,48 @@ services:
     category: identity
     classification: dedicated
     provenance: https://help.duo.com/s/article/1337
-    cadence: "irregular; article carries no version marker"
+    cadence: "irregular; KB article revised in place"
     notes: >
-      Requires browser rendering: the article is a Salesforce-community page and a plain
-      fetch returns an app shell with zero addresses. Direction is egress in the vendor's
-      own framing: "administrators need to ensure that communication is allowed to reach
-      all of the following Duo MFA service IP blocks for the data residency area for your
-      deployment". Duo separately says it does not recommend locking a firewall to these
-      ranges because they change, which is the staleness this feed removes rather than a
-      reason to leave them out.
+      The article carries TWO tables under the same "Data Residency (Jurisdiction)" heading,
+      for two different products, and we previously merged both into one "mfa" purpose. The
+      first is the MFA service and is the one Duo ties to a customer: "administrators need to
+      ensure that communication is allowed to reach all of the following Duo MFA service IP
+      blocks for the data residency area for your deployment", with each area mapped to
+      explicit deployment IDs. The second is Trusted Endpoints, "if your organization is
+      applying Trusted Endpoints policies to mobile devices", with no per-deployment binding,
+      so it is published whole rather than split.
+
+      mfa now means the MFA service only and is the union of the ten areas. The one range that
+      left it, 13.56.32.240/29, was never MFA and is published under trusted-endpoints, so no
+      coverage is lost.
+
+      Selectors name their table explicitly because both match on "Data Residency"; picking the
+      first would silently serve the other product's ranges if Duo reorders the page.
+
+      Duo says they "do not recommend locking down your firewall to individual IP addresses
+      because these can and do change over time". Recorded, not treated as grounds to exclude:
+      the staleness they warn about is what this feed removes.
     endpoints:
       - id: kb
         url: https://help.duo.com/s/article/1337
-        format: html-cidr-extract
-        render: chrome
+        render: chrome                 # Salesforce community page; a plain fetch returns a shell
+        format: duo-residency          # two <table>s keyed by data residency area
         detection: {poll: docs-page}
         purposes:
-          - {key: mfa, direction: egress, select: "section=data residency areas by deployment"}
-    verified: "2026-07-30"
+          - {key: mfa,               direction: egress, aggregate: true, select: "table=Duo Deployments"}
+          - {key: mfa-us,            direction: egress, select: "table=Duo Deployments;area=U.S."}
+          - {key: mfa-eu,            direction: egress, select: "table=Duo Deployments;area=EU"}
+          - {key: mfa-central-europe, direction: egress, select: "table=Duo Deployments;area=Central Europe"}
+          - {key: mfa-canada,        direction: egress, select: "table=Duo Deployments;area=Canada"}
+          - {key: mfa-australia,     direction: egress, select: "table=Duo Deployments;area=Australia"}
+          - {key: mfa-japan,         direction: egress, select: "table=Duo Deployments;area=Japan"}
+          - {key: mfa-southeast-asia, direction: egress, select: "table=Duo Deployments;area=Southeast Asia"}
+          - {key: mfa-india,         direction: egress, select: "table=Duo Deployments;area=India"}
+          - {key: mfa-uk,            direction: egress, select: "table=Duo Deployments;area=UK"}
+          - {key: mfa-uae,           direction: egress, select: "table=Duo Deployments;area=UAE"}
+          - {key: trusted-endpoints, direction: egress, select: "table=Trusted Endpoints"}
+    verified: "2026-08-28"
 
-  # ── Data platforms ────────────────────────────────────────────────────────
   - slug: databricks
     name: Databricks
     category: data-platform

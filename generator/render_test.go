@@ -78,7 +78,9 @@ func TestRenderedFixturesParseWithoutBrowser(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	want := map[string]int{"duo": 22, "uptimerobot": 205}
+	// Counts exclude aggregate purposes, which are the union of the others and
+	// would double-count a split service against itself.
+	want := map[string]int{"duo": 32, "uptimerobot": 205}
 	f := NewFetcher("../testdata/fixtures")
 	for _, svc := range reg.Services {
 		n, ok := want[svc.Slug]
@@ -94,6 +96,9 @@ func TestRenderedFixturesParseWithoutBrowser(t *testing.T) {
 		}
 		total := 0
 		for _, p := range doc.Purposes {
+			if p.Aggregate {
+				continue
+			}
 			total += len(p.IPv4) + len(p.IPv6)
 		}
 		if total != n {

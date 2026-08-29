@@ -385,6 +385,7 @@ var partitionChecks = map[string]func([]byte, []PurposeDecl) error{
 	"okta-cells":      checkOktaCellCoverage,
 	"auth0-regions":   checkAuth0RegionCoverage,
 	"google-prefixes": checkGoogleScopeCoverage,
+	"duo-residency":   checkDuoAreaCoverage,
 }
 
 func buildService(svc SourceService, fetcher *Fetcher, generatedAt, syncToken string) (*feedschema.Service, error) {

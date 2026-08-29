@@ -38,6 +38,7 @@ var documentTypes = map[string]string{
 	"zendesk-ips":        "json",
 	"zscaler-cenr":       "json",
 	"zscaler-announced":  "json",
+	"duo-residency":      "html",
 	"geofeed-csv":        "csv",
 	"cidr-lines":         "text",
 	"ip-lines":           "text",

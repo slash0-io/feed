@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"html"
 	"regexp"
 	"sort"
 	"strings"
@@ -38,6 +39,7 @@ var parsers = map[string]parseFunc{
 	"braintree-ips":      parseBraintreeIPs,
 	"zscaler-cenr":       parseZscalerCENR,
 	"zscaler-announced":  parseZscalerAnnounced,
+	"duo-residency":      parseDuoResidency,
 	"databricks-ranges":  parseDatabricksRanges,
 	"o365-endpoints":     parseO365Endpoints,
 	"html-cidr-extract":  parseHTMLCIDRExtract,
@@ -665,6 +667,189 @@ func parseBraintreeIPs(body []byte, sel string) ([]string, error) {
 // IPv4 addresses of headroom for centres not yet live. It is published
 // alongside enforcement-nodes rather than replacing it, so a consumer can
 // choose the tight current set or the set Zscaler actually recommends.
+// parseDuoResidency reads Duo's data-residency table: one row per jurisdiction,
+// with its IP ranges and the deployment IDs it serves.
+//
+// Select syntax: "*" or "area=<substring of the jurisdiction cell>".
+//
+// A customer belongs to one deployment, and Duo maps deployments to areas on
+// the same page: "administrators need to ensure that communication is allowed
+// to reach all of the following Duo MFA service IP blocks for the data
+// residency area for your deployment". Publishing only the union asks everyone
+// to allow all ten areas.
+//
+// Duo also says "we do not recommend locking down your firewall to individual
+// IP addresses because these can and do change over time". Recorded rather
+// than treated as grounds to exclude, the same call as before: the staleness
+// they warn about is what this feed removes.
+// areaMatches compares a residency label to a selector by PREFIX, not
+// substring. Duo's labels nest: a substring match for "EU" also hits "Central
+// Europe (Germany / Switzerland)", which silently doubled mfa-eu. Prefix
+// matching keeps the parenthetical qualifiers tolerable while keeping distinct
+// areas distinct.
+func areaMatches(area, want string) bool {
+	norm := func(s string) string { return strings.ToLower(strings.Join(strings.Fields(s), " ")) }
+	return strings.HasPrefix(norm(area), norm(want))
+}
+
+func parseDuoResidency(body []byte, sel string) ([]string, error) {
+	var marker, area string
+	for _, part := range strings.Split(strings.TrimSpace(sel), ";") {
+		k, v, ok := strings.Cut(part, "=")
+		if !ok {
+			return nil, fmt.Errorf("duo-residency: malformed select %q", part)
+		}
+		switch strings.TrimSpace(k) {
+		case "table":
+			marker = strings.TrimSpace(v)
+		case "area":
+			area = strings.TrimSpace(v)
+		default:
+			return nil, fmt.Errorf("duo-residency: unknown select key %q", k)
+		}
+	}
+	if marker == "" {
+		return nil, fmt.Errorf("duo-residency: select must name a table= marker")
+	}
+	rows, err := duoResidencyRows(body, marker)
+	if err != nil {
+		return nil, err
+	}
+	var out []string
+	matched := false
+	for _, r := range rows {
+		if area == "" || areaMatches(r.area, area) {
+			matched = true
+			out = append(out, r.ranges...)
+		}
+	}
+	if !matched {
+		return nil, fmt.Errorf("duo-residency: no residency area matching %q in table %q", area, marker)
+	}
+	return out, nil
+}
+
+type duoRow struct {
+	area   string
+	ranges []string
+}
+
+var (
+	reDuoTable = regexp.MustCompile(`(?is)<table[^>]*>.*?</table>`)
+	reDuoRow   = regexp.MustCompile(`(?is)<tr[^>]*>(.*?)</tr>`)
+	reDuoCell  = regexp.MustCompile(`(?is)<t[dh][^>]*>(.*?)</t[dh]>`)
+)
+
+// duoResidencyRows returns one entry per jurisdiction row of the table named
+// by marker. The page carries two tables with the same "Data Residency"
+// header, one per Duo product, so the marker is required rather than taking
+// the first match: MFA is identified by its "Duo Deployments" column and
+// Trusted Endpoints by the heading above it. A marker that stops matching
+// fails the build instead of silently selecting the other product's ranges.
+//
+// The table is real markup rather than flattened text, so rows are read
+// structurally instead of by slicing a paragraph, which keeps one area's
+// ranges from bleeding into the next.
+func duoResidencyRows(body []byte, marker string) ([]duoRow, error) {
+	doc := string(body)
+	var table string
+	for _, loc := range reDuoTable.FindAllStringIndex(doc, -1) {
+		t := doc[loc[0]:loc[1]]
+		if !containsFold(t, "Data Residency") {
+			continue
+		}
+		// Look inside the table and at the prose immediately above it, which
+		// is where the product name sits.
+		lead := doc[max(0, loc[0]-900):loc[0]]
+		if containsFold(t, marker) || containsFold(lead, marker) {
+			table = t
+			break
+		}
+	}
+	if table == "" {
+		return nil, fmt.Errorf("duo-residency: no Data Residency table matching %q", marker)
+	}
+	var rows []duoRow
+	for _, m := range reDuoRow.FindAllStringSubmatch(table, -1) {
+		cells := reDuoCell.FindAllStringSubmatch(m[1], -1)
+		if len(cells) < 2 {
+			continue
+		}
+		area := strings.TrimSpace(html.UnescapeString(reTagStrip.ReplaceAllString(cells[0][1], " ")))
+		area = strings.Join(strings.Fields(area), " ")
+		if area == "" || containsFold(area, "Data Residency") {
+			continue // header row
+		}
+		ranges := extractRanges(cells[1][1])
+		if len(ranges) == 0 {
+			continue
+		}
+		rows = append(rows, duoRow{area: area, ranges: ranges})
+	}
+	if len(rows) == 0 {
+		return nil, fmt.Errorf("duo-residency: table %q found but no rows carried ranges", marker)
+	}
+	return rows, nil
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+// checkDuoAreaCoverage fails the build when Duo adds a residency area no
+// purpose claims, which is how a new jurisdiction reaches review rather than
+// sitting only inside the union where a customer there cannot select it.
+func checkDuoAreaCoverage(body []byte, purposes []PurposeDecl) error {
+	byTable := map[string][]string{}
+	for _, p := range purposes {
+		var marker, area string
+		for _, part := range strings.Split(strings.TrimSpace(p.Select), ";") {
+			k, v, ok := strings.Cut(part, "=")
+			if !ok {
+				continue
+			}
+			switch strings.TrimSpace(k) {
+			case "table":
+				marker = strings.TrimSpace(v)
+			case "area":
+				area = strings.TrimSpace(v)
+			}
+		}
+		if marker == "" || area == "" {
+			continue // the union purpose for a table claims nothing specific
+		}
+		byTable[marker] = append(byTable[marker], area)
+	}
+	for marker, wants := range byTable {
+		rows, err := duoResidencyRows(body, marker)
+		if err != nil {
+			return err
+		}
+		var missing []string
+		for _, r := range rows {
+			claimed := false
+			for _, w := range wants {
+				if areaMatches(r.area, w) {
+					claimed = true
+					break
+				}
+			}
+			if !claimed {
+				missing = append(missing, r.area)
+			}
+		}
+		if len(missing) > 0 {
+			sort.Strings(missing)
+			return fmt.Errorf("duo-residency: table %q has %d residency area(s) claimed by no purpose: %s",
+				marker, len(missing), strings.Join(missing, ", "))
+		}
+	}
+	return nil
+}
+
 func parseZscalerAnnounced(body []byte, _ string) ([]string, error) {
 	var d struct {
 		Prefixes []string `json:"prefixes"`

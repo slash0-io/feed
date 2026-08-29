@@ -239,3 +239,68 @@ func TestGoogleRejectsUnusableScopeKey(t *testing.T) {
 		t.Fatalf("a scope with spaces and punctuation must be refused, got %v", err)
 	}
 }
+
+const duoBody = `<html>
+<p>allowed to reach all of the following Duo MFA service IP blocks for the data residency area for your deployment</p>
+<table><thead><tr><th>Data Residency (Jurisdiction)</th><th>IP Ranges</th><th>Duo Deployments</th></tr></thead>
+<tbody>
+<tr><td>U.S.</td><td>192.0.2.0/25 192.0.2.128/25</td><td>DUO1, DUO2</td></tr>
+<tr><td>EU</td><td>198.51.100.0/26</td><td>DUO3</td></tr>
+<tr><td>Central Europe (Germany / Switzerland)</td><td>203.0.113.0/26</td><td>DUO38</td></tr>
+</tbody></table>
+<p>Trusted Endpoints If your organization is applying Trusted Endpoints policies</p>
+<table><thead><tr><th>Data Residency (Jurisdiction)</th><th>IP Range(s)</th></tr></thead>
+<tbody><tr><td>U.S.</td><td>203.0.113.128/29</td></tr></tbody></table>
+</html>`
+
+// The page carries two tables under the same heading, one per product. Picking
+// the first would serve MFA ranges as Trusted Endpoints, or the reverse.
+func TestDuoSelectsTheNamedTable(t *testing.T) {
+	mfa, err := parseDuoResidency([]byte(duoBody), "table=Duo Deployments")
+	if err != nil {
+		t.Fatal(err)
+	}
+	te, err := parseDuoResidency([]byte(duoBody), "table=Trusted Endpoints")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(mfa) != 4 {
+		t.Fatalf("mfa table got %v, want the 4 MFA ranges", mfa)
+	}
+	if len(te) != 1 || te[0] != "203.0.113.128/29" {
+		t.Fatalf("trusted endpoints table got %v", te)
+	}
+}
+
+// Regression: a substring match for "EU" also hits "Central Europe", which
+// silently doubled mfa-eu. Areas are matched by prefix.
+func TestDuoAreaMatchIsPrefixNotSubstring(t *testing.T) {
+	eu, err := parseDuoResidency([]byte(duoBody), "table=Duo Deployments;area=EU")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(eu) != 1 || eu[0] != "198.51.100.0/26" {
+		t.Fatalf("area=EU got %v, want only the EU row (not Central Europe)", eu)
+	}
+}
+
+// A residency area Duo adds must reach a human, not sit only in the union.
+func TestDuoUnclaimedAreaFailsTheBuild(t *testing.T) {
+	decls := []PurposeDecl{
+		{Key: "mfa", Select: "table=Duo Deployments"},
+		{Key: "mfa-us", Select: "table=Duo Deployments;area=U.S."},
+		{Key: "mfa-eu", Select: "table=Duo Deployments;area=EU"},
+	}
+	err := checkDuoAreaCoverage([]byte(duoBody), decls)
+	if err == nil || !strings.Contains(err.Error(), "Central Europe") {
+		t.Fatalf("the unclaimed Central Europe row must fail the build, got %v", err)
+	}
+}
+
+// A table marker that stops matching must fail rather than falling through to
+// the other product's table.
+func TestDuoUnknownTableFails(t *testing.T) {
+	if _, err := parseDuoResidency([]byte(duoBody), "table=Nonexistent Product"); err == nil {
+		t.Fatal("an unmatched table marker must fail the build")
+	}
+}
