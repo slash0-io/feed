@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 	"os"
 	"strings"
 
@@ -74,6 +75,15 @@ type PurposeDecl struct {
 	Key       string `yaml:"key"`
 	Direction string `yaml:"direction"`
 	Select    string `yaml:"select"`
+	// DirectionEvidence is the vendor page whose text establishes which way
+	// traffic flows for this purpose. Direction is the most-wrong field in the
+	// catalog: it was recorded as `both` for auth0 and databricks when the
+	// vendors state otherwise, and vendor labels invert often enough that
+	// reading one literally is a coin toss. Optional while the validation
+	// expedition fills it in; it becomes required once every purpose carries
+	// one, exactly like notice_evidence. The sentence itself lives in
+	// internal-docs/audits/<slug>.md, which is deliberately in no repo.
+	DirectionEvidence string `yaml:"direction_evidence"`
 	// Aggregate marks this purpose as the union of the others on the service,
 	// which keeps it out of subscription wildcards. See feedschema.Purpose.
 	Aggregate bool `yaml:"aggregate"`
@@ -108,9 +118,37 @@ func LoadRegistry(path string) (*Registry, error) {
 			return nil, fmt.Errorf("non-publisher %s: evidence must be a vendor URL, got %q",
 				np.Slug, np.Evidence)
 		}
+		if err := checkCitationURL(np.Evidence); err != nil {
+			return nil, fmt.Errorf("non-publisher %s evidence: %w", np.Slug, err)
+		}
 	}
 	for _, svc := range r.Services {
+		for _, field := range []struct{ name, value string }{
+			{"provenance", svc.Provenance},
+			{"notice_evidence", svc.NoticeEvidence},
+		} {
+			if field.value == "" {
+				continue
+			}
+			if err := checkCitationURL(field.value); err != nil {
+				return nil, fmt.Errorf("%s %s: %w", svc.Slug, field.name, err)
+			}
+		}
 		for _, ep := range svc.Endpoints {
+			if ev := ep.Detection.PushEvidence; ev != "" {
+				if err := checkCitationURL(ev); err != nil {
+					return nil, fmt.Errorf("%s/%s push_evidence: %w", svc.Slug, ep.ID, err)
+				}
+			}
+			for _, decl := range ep.Purposes {
+				if decl.DirectionEvidence == "" {
+					continue
+				}
+				if err := checkCitationURL(decl.DirectionEvidence); err != nil {
+					return nil, fmt.Errorf("%s/%s purpose %s direction_evidence: %w",
+						svc.Slug, ep.ID, decl.Key, err)
+				}
+			}
 			switch ep.Render {
 			case "", "chrome":
 			default:
@@ -142,4 +180,26 @@ func LoadRegistry(path string) (*Registry, error) {
 		}
 	}
 	return &r, nil
+}
+
+// checkCitationURL rejects a citation that is not purely a URL. These values
+// publish into the feed, CATALOG.md, research/SOURCES.md and every service
+// page on the site, where anything trailing the URL breaks the link on all
+// four at once: salesforce carried "...?id=000384438 (IP Addresses and Domains
+// to Allow)" and rendered dead everywhere it appeared.
+func checkCitationURL(raw string) error {
+	if strings.ContainsAny(raw, " \t\n") {
+		return fmt.Errorf("must be a bare URL with no label or whitespace, got %q", raw)
+	}
+	u, err := url.Parse(raw)
+	if err != nil {
+		return fmt.Errorf("unparseable URL %q: %w", raw, err)
+	}
+	if u.Scheme != "http" && u.Scheme != "https" {
+		return fmt.Errorf("not an http(s) URL: %q", raw)
+	}
+	if u.Host == "" {
+		return fmt.Errorf("URL has no host: %q", raw)
+	}
+	return nil
 }

@@ -118,7 +118,7 @@ published here, so it scores none.
 | [Postmark](https://postmarkapp.com/support/article/800-ips-for-firewalls) | docs page | page extraction | none documented | none | egress + ingress |
 | [Rapid7 (InsightAppSec cloud engines)](https://docs.rapid7.com/insightappsec/allowlist-cloud-engine-ips/) | docs page | page extraction | none documented | none | ingress |
 | [Retool](https://docs.retool.com/data-sources/reference/ip-allowlist-cloud-orgs) | docs page | page extraction | none documented | none | ingress |
-| [Salesforce](https://help.salesforce.com/s/articleView?id=000384438 (IP Addresses and Domains to Allow)) | JSON | conditional GET | none documented | none | egress + ingress |
+| [Salesforce](https://help.salesforce.com/s/articleView?id=000384438&type=1) | JSON | conditional GET | none documented | none | egress + ingress |
 | [Sentry (hosted)](https://docs.sentry.io/security-legal-pii/security/ip-ranges/) | docs page | page extraction | none documented | [github.com/getsentry/sentry-docs commits feed for the ip-ranges page source](https://github.com/getsentry/sentry-docs/blob/master/docs/security-legal-pii/security/ip-ranges.mdx) (docs repo) | egress + ingress |
 | [Splunk AppDynamics SaaS](https://help.splunk.com/en/appdynamics-saas/product-announcements-and-alerts/saas-domains-and-ip-ranges) | docs page | page extraction | none documented | none | ingress |
 | [Stripe](https://docs.stripe.com/ips) | JSON | full download | [7 days, by mailing list](https://docs.stripe.com/ips) | [stripe.com/ips mailing list (seven days notice before changes)](https://docs.stripe.com/ips) | egress + ingress |

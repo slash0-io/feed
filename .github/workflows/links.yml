@@ -1,0 +1,26 @@
+name: Evidence links
+
+# Every notice, change-signal and non-publisher claim in the feed carries the
+# vendor URL that states it. Those pages move: two of 91 died in a single
+# fortnight, one behind a login and one 403ing browsers. A dead citation is a
+# published claim with nothing behind it, so the set is checked on a schedule
+# rather than whenever someone remembers.
+on:
+  schedule:
+    - cron: "17 6 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+      # Writes the table to the run summary so a failure is readable without
+      # opening the log. Exits nonzero when any URL does not return 200.
+      - run: go run ./generator -audit-links | tee -a "$GITHUB_STEP_SUMMARY"

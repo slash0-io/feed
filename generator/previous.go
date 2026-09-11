@@ -277,23 +277,34 @@ func intervals(cidrs []string) [][2]*big.Int {
 
 // coalesceIntervals sorts and coalesces overlapping or adjacent ranges so the
 // sweep in lostCoverage can never count the same address twice.
+//
+// It works on copies. Extending an interval in place would otherwise reach
+// back into the caller's slice, and the sets compared here are built from
+// published documents that must not be mutated by being measured.
 func coalesceIntervals(in [][2]*big.Int) [][2]*big.Int {
 	if len(in) == 0 {
 		return in
 	}
 	sort.Slice(in, func(i, j int) bool { return in[i][0].Cmp(in[j][0]) < 0 })
-	out := [][2]*big.Int{in[0]}
+	clone := func(iv [2]*big.Int) [2]*big.Int {
+		return [2]*big.Int{new(big.Int).Set(iv[0]), new(big.Int).Set(iv[1])}
+	}
+	out := [][2]*big.Int{clone(in[0])}
 	one := big.NewInt(1)
 	for _, iv := range in[1:] {
 		last := out[len(out)-1]
 		next := new(big.Int).Add(last[1], one)
 		if iv[0].Cmp(next) <= 0 {
+			// Adjacent or overlapping: extend the interval we already hold.
+			// Assigning to a copy of the array element instead (last[1] = ...)
+			// silently discards the extension AND drops iv, which understated
+			// every coverage figure this file produces.
 			if iv[1].Cmp(last[1]) > 0 {
-				last[1] = iv[1]
+				last[1].Set(iv[1])
 			}
 			continue
 		}
-		out = append(out, iv)
+		out = append(out, clone(iv))
 	}
 	return out
 }

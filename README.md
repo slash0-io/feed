@@ -1,6 +1,6 @@
 # slash0 feed
 
-The versioned public feed of third-party service IP ranges behind [terraform-provider-egress](https://github.com/slash0-io/terraform-provider-egress): **45 services** (Stripe, GitHub, Datadog, Okta, Cloudflare, AWS, Azure, Anthropic, PayPal, Zendesk, …) plus **16 documented non-publishers**, built exclusively from each vendor's **official publication**, never from third-party aggregators.
+The versioned public feed of third-party service IP ranges behind [terraform-provider-ipranges](https://github.com/slash0-io/terraform-provider-ipranges). Stripe, GitHub, Datadog, Okta, Cloudflare, AWS, Azure, Anthropic, PayPal, Zendesk and the rest, plus the vendors documented as publishing no pinnable ranges. Built exclusively from each vendor's **official publication**, never from third-party aggregators. The [catalog](CATALOG.md) carries the current list; counts stated in prose go stale, and have.
 
 Feed URL: `https://feed.slash0.io/v1` (`index.json` + `services/<slug>.json`).
 
@@ -42,7 +42,7 @@ go run ./generator -sources-doc research/SOURCES.md
 
 ## Hosted tier
 
-Want these ranges as AWS-managed prefix lists kept current in your account, with no `terraform apply` required? The hosted tier is in development with design partners: [request early access](https://github.com/slash0-io/terraform-provider-egress/issues/new?template=early-access.yml).
+Want these ranges as AWS-managed prefix lists kept current in your account, with no `terraform apply` required? The hosted tier is in development with design partners: [request early access](https://github.com/slash0-io/terraform-provider-ipranges/issues/new?template=early-access.yml).
 
 ## Contributing a source
 
@@ -54,15 +54,18 @@ Push-based rebuilds (AWS SNS, Microsoft 365 `/version`), sub-minute polling via 
 
 A scheduled source audit, separate from the publish cron. The publish only
 notices a source that fails to parse; it says nothing about a citation that has
-quietly gone dead. Three failure modes have shown up in practice and a weekly
-job would catch all three:
+quietly gone dead. Three failure modes have shown up in practice:
 
 - **Evidence and provenance link rot.** Two cited vendor pages went to 401 and
   403 within a fortnight, which leaves dead links on a page whose whole point is
-  that every claim is checkable.
+  that every claim is checkable. `go run ./generator -audit-links` checks every
+  provenance and evidence URL and runs weekly in CI.
 - **Sources that parse but should not.** A vendor reorganising a docs page can
   leave a heading select matching a smaller section rather than failing outright.
-  Comparing published address counts against the previous run would flag it.
+  `go run ./generator -audit <slug>` compares the published address set against
+  everything the fetched document contains, in both directions, and lists the
+  sections and tables on the page that yield addresses nobody publishes. It runs
+  on demand rather than on a schedule, because reading the result is the point.
 - **Prose drift.** Hand-written text keeps falling behind the generated tables:
   the tier examples in `research/SOURCES.md` outlived two vendors being
   reclassified, and `/docs/coverage/` described the unpinnable set as "small"

@@ -48,6 +48,10 @@ type buildOptions struct {
 	ChangelogFloor string
 	MaxRemovedFrac float64
 	MinGuardCount  int
+	// AuditOut, when set, is the directory a -audit run writes its per-service
+	// record into. Records live outside this repo while the findings they
+	// describe are still open.
+	AuditOut string
 }
 
 type buildStats struct {
@@ -70,9 +74,26 @@ func main() {
 	flag.StringVar(&opts.ChangelogFloor, "changelog-floor", "", "checked-in changelog JSON merged into every publish as a durable history floor")
 	flag.Float64Var(&opts.MaxRemovedFrac, "max-removed-frac", 0.5, "quarantine a change removing more than this fraction of a purpose's ranges")
 	flag.IntVar(&opts.MinGuardCount, "min-guard-count", 8, "apply the removal guardrail only when the purpose previously had at least this many ranges")
+	flag.StringVar(&opts.AuditOut, "audit-out", "", "with -audit, also write the per-service record into this directory")
+	auditSlug := flag.String("audit", "", "audit one service or non-publisher against its vendor document and exit")
+	auditLinks := flag.Bool("audit-links", false, "check every provenance and evidence URL, then exit")
 	catalogPath := flag.String("catalog", "", "write the human-readable catalog markdown to this path and exit (no fetching)")
 	sourcesDocPath := flag.String("sources-doc", "", "refresh the generated tables in this research document in place and exit (no fetching)")
 	flag.Parse()
+
+	if *auditSlug != "" {
+		if err := runAudit(*auditSlug, opts, os.Stdout); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
+
+	if *auditLinks {
+		if err := runAuditLinks(opts, os.Stdout); err != nil {
+			log.Fatal(err)
+		}
+		return
+	}
 
 	if *catalogPath != "" {
 		reg, err := LoadRegistry(opts.SourcesPath)

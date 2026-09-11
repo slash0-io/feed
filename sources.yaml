@@ -590,20 +590,20 @@ services:
         format: datadog-ranges         # {version, modified, <product>:{prefixes_ipv4[], prefixes_ipv6[]}}
         detection: {poll: cond-get}
         purposes:
-          - {key: agents,     direction: egress,  select: "agents"}
-          - {key: api,        direction: egress,  select: "api"}
-          - {key: logs,       direction: egress,  select: "logs"}
-          - {key: apm,        direction: egress,  select: "apm"}
-          - {key: synthetics, direction: ingress, select: "synthetics"}
-          - {key: webhooks,   direction: ingress, select: "webhooks"}
+          - {key: agents,     direction: egress,  select: "agents", direction_evidence: "https://docs.datadoghq.com/agent/configuration/network/"}
+          - {key: api,        direction: egress,  select: "api", direction_evidence: "https://docs.datadoghq.com/agent/configuration/network/"}
+          - {key: logs,       direction: egress,  select: "logs", direction_evidence: "https://docs.datadoghq.com/agent/configuration/network/"}
+          - {key: apm,        direction: egress,  select: "apm", direction_evidence: "https://docs.datadoghq.com/agent/configuration/network/"}
+          - {key: synthetics, direction: ingress, select: "synthetics", direction_evidence: "https://docs.datadoghq.com/synthetics/guide/identify_synthetics_bots/"}
+          - {key: webhooks,   direction: ingress, select: "webhooks", direction_evidence: "https://docs.datadoghq.com/integrations/webhooks/"}
       - id: eu
         url: https://ip-ranges.datadoghq.eu/
         format: datadog-ranges
         detection: {poll: cond-get}
         region: eu
         purposes:
-          - {key: agents-eu, direction: egress, select: "agents"}
-          - {key: api-eu,    direction: egress, select: "api"}
+          - {key: agents-eu, direction: egress, select: "agents", direction_evidence: "https://docs.datadoghq.com/agent/configuration/network/"}
+          - {key: api-eu,    direction: egress, select: "api", direction_evidence: "https://docs.datadoghq.com/agent/configuration/network/"}
     verified: "2026-07-04"
 
   - slug: grafana-cloud
@@ -647,9 +647,9 @@ services:
           push_kind: docs-repo
           push_evidence: https://github.com/getsentry/sentry-docs/blob/master/docs/security-legal-pii/security/ip-ranges.mdx
         purposes:
-          - {key: ingest,   direction: egress,  select: "section=Event Ingestion"}
-          - {key: webhooks, direction: ingress, select: "section=Outbound Requests"}
-          - {key: uptime,   direction: ingress, select: "section=Uptime Monitoring"}
+          - {key: ingest,   direction: egress,  select: "section=Event Ingestion", direction_evidence: "https://docs.sentry.io/security-legal-pii/security/ip-ranges/"}
+          - {key: webhooks, direction: ingress, select: "section=Outbound Requests", direction_evidence: "https://docs.sentry.io/security-legal-pii/security/ip-ranges/"}
+          - {key: uptime,   direction: ingress, select: "section=Uptime Monitoring", direction_evidence: "https://docs.sentry.io/security-legal-pii/security/ip-ranges/"}
     verified: "2026-07-10"
 
   - slug: new-relic
@@ -1059,7 +1059,7 @@ services:
     name: Salesforce
     category: business-saas
     classification: dedicated
-    provenance: "https://help.salesforce.com/s/articleView?id=000384438 (IP Addresses and Domains to Allow)"
+    provenance: "https://help.salesforce.com/s/articleView?id=000384438&type=1"
     cadence: "irregular; AWS-style syncToken/createDate in file"
     endpoints:
       - id: main
@@ -1248,7 +1248,7 @@ services:
         format: html-cidr-extract
         detection: {poll: docs-page}
         purposes:
-          - {key: dataplane, direction: both, select: "section=NewEdge IP Ranges for Allowlisting;exclude=AI Red Team"}
+          - {key: dataplane, direction: both, select: "section=NewEdge IP Ranges for Allowlisting;exclude=AI Red Team", direction_evidence: "https://docs.netskope.com/en/newedge-ip-ranges-for-allowlisting"}
     verified: "2026-07-11"
 
   - slug: tenable
@@ -1570,14 +1570,14 @@ services:
         format: html-cidr-extract
         detection: {poll: docs-page}
         purposes:
-          - {key: api,      direction: egress,  select: "section=Inbound IP addresses"}
-          - {key: outbound, direction: ingress, select: "section=Outbound IP addresses;exclude=Phased out"}
+          - {key: api,      direction: egress,  select: "section=Inbound IP addresses", direction_evidence: "https://platform.claude.com/docs/en/api/ip-addresses"}
+          - {key: outbound, direction: ingress, select: "section=Outbound IP addresses;exclude=Phased out", direction_evidence: "https://platform.claude.com/docs/en/api/ip-addresses"}
       - id: crawlers
         url: https://claude.com/crawling/bots.json
         format: google-prefixes        # {creationTime, prefixes[{ipv4Prefix|ipv6Prefix}]}
         detection: {poll: hash}        # cache-control only, no ETag or Last-Modified
         purposes:
-          - {key: crawlers, direction: ingress, select: "*"}
+          - {key: crawlers, direction: ingress, select: "*", direction_evidence: "https://support.claude.com/en/articles/8896518-does-anthropic-crawl-data-from-the-web-and-how-can-site-owners-block-the-crawler"}
     verified: "2026-08-13"
 
   - slug: openai
