@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"runtime"
@@ -62,12 +63,41 @@ func chromePath() (string, error) {
 		"(only endpoints with `render: chrome` need it)", runtime.GOOS)
 }
 
-// renderChrome loads url in a headless browser and returns the resulting DOM.
+// renderRetryDelays paces one retry of a failed render. The HTTP path retries
+// twice; this list is shorter on purpose, because every attempt here can burn
+// the full renderTimeout. help.make.com renders in 20 to 26 seconds and the
+// observed failure is an occasional hang to the deadline (5 publish runs of 40
+// between 2026-09-06 and 2026-09-11, all of them that page, all of them
+// timeouts). One retry turns a hang into a successful publish, while a page
+// that is genuinely broken costs two attempts per run instead of three.
+var renderRetryDelays = []time.Duration{3 * time.Second}
+
+// renderChrome loads url in a headless browser and returns the resulting DOM,
+// retrying a hung or crashed render. A missing browser is a configuration
+// error rather than a transient one, so it fails immediately.
 func renderChrome(url string) ([]byte, error) {
 	bin, err := chromePath()
 	if err != nil {
 		return nil, err
 	}
+	for attempt := 0; ; attempt++ {
+		body, retryable, err := renderOnce(bin, url)
+		if err == nil {
+			return body, nil
+		}
+		if !retryable || attempt >= len(renderRetryDelays) {
+			return nil, err
+		}
+		log.Printf("render %s: %v — retrying", url, err)
+		time.Sleep(renderRetryDelays[attempt])
+	}
+}
+
+// renderOnce runs the browser once. Every failure it can produce is transient:
+// a hang, a crashed browser, or an empty document. A page that has genuinely
+// stopped carrying addresses still fails, through the zero-ranges guardrail in
+// buildService, rather than through this function.
+func renderOnce(bin, url string) (body []byte, retryable bool, err error) {
 	ctx, cancel := context.WithTimeout(context.Background(), renderTimeout)
 	defer cancel()
 
@@ -88,14 +118,14 @@ func renderChrome(url string) ([]byte, error) {
 	cmd.Stdout, cmd.Stderr = &stdout, &stderr
 	if err := cmd.Run(); err != nil {
 		if ctx.Err() == context.DeadlineExceeded {
-			return nil, fmt.Errorf("render %s: timed out after %s", url, renderTimeout)
+			return nil, true, fmt.Errorf("render %s: timed out after %s", url, renderTimeout)
 		}
-		return nil, fmt.Errorf("render %s: %w (%s)", url, err, firstLine(stderr.String()))
+		return nil, true, fmt.Errorf("render %s: %w (%s)", url, err, firstLine(stderr.String()))
 	}
 	if stdout.Len() == 0 {
-		return nil, fmt.Errorf("render %s: browser returned an empty document", url)
+		return nil, true, fmt.Errorf("render %s: browser returned an empty document", url)
 	}
-	return stdout.Bytes(), nil
+	return stdout.Bytes(), false, nil
 }
 
 func firstLine(s string) string {

@@ -1,10 +1,12 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+	"time"
 )
 
 // writeRegistry builds a minimal one-endpoint registry so the render config
@@ -158,5 +160,88 @@ func TestMergeRangesIsLossless(t *testing.T) {
 	}
 	if out := mergeRanges(nil, []string{"198.51.100.0/24"}); len(out) != 1 {
 		t.Errorf("empty left side should pass the right through, got %v", out)
+	}
+}
+
+func fastRenderRetries(t *testing.T) {
+	t.Helper()
+	old := renderRetryDelays
+	renderRetryDelays = []time.Duration{0}
+	t.Cleanup(func() { renderRetryDelays = old })
+}
+
+// fakeBrowser writes a script standing in for Chrome. It fails its first
+// failCount invocations and succeeds afterwards, counting through a file so the
+// count survives across processes.
+func fakeBrowser(t *testing.T, failCount int, output string) string {
+	t.Helper()
+	dir := t.TempDir()
+	counter := filepath.Join(dir, "n")
+	script := filepath.Join(dir, "browser")
+	body := fmt.Sprintf(`#!/bin/sh
+n=0
+[ -f %[1]q ] && n=$(cat %[1]q)
+n=$((n+1))
+printf '%%s' "$n" > %[1]q
+if [ "$n" -le %[2]d ]; then
+  echo "simulated crash" >&2
+  exit 1
+fi
+printf '%%s' %[3]q
+`, counter, failCount, output)
+	if err := os.WriteFile(script, []byte(body), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	t.Setenv("SLASH0_CHROME", script)
+	return counter
+}
+
+// A hung or crashed render is transient. It cost five publish runs in a week,
+// every one of them help.make.com timing out on a page that renders in about 25
+// seconds, while the HTTP path beside it had retried transient failures all
+// along.
+func TestRenderChromeRetriesATransientFailure(t *testing.T) {
+	fastRenderRetries(t)
+	counter := fakeBrowser(t, 1, "<html><body>198.51.100.0/24</body></html>")
+
+	body, err := renderChrome("https://example.test/ips")
+	if err != nil {
+		t.Fatalf("render failed despite a retry being available: %v", err)
+	}
+	if !strings.Contains(string(body), "198.51.100.0/24") {
+		t.Errorf("got %q, want the rendered document", body)
+	}
+	if n, _ := os.ReadFile(counter); string(n) != "2" {
+		t.Errorf("browser ran %s times, want 2 (one failure then one success)", n)
+	}
+}
+
+// A browser that never succeeds still fails, and does so bounded rather than
+// looping.
+func TestRenderChromeGivesUpAfterItsRetries(t *testing.T) {
+	fastRenderRetries(t)
+	counter := fakeBrowser(t, 99, "")
+
+	if _, err := renderChrome("https://example.test/ips"); err == nil {
+		t.Fatal("a browser that always fails must fail the render")
+	}
+	want := fmt.Sprint(len(renderRetryDelays) + 1)
+	if n, _ := os.ReadFile(counter); string(n) != want {
+		t.Errorf("browser ran %s times, want %s", n, want)
+	}
+}
+
+// An empty document is a failed render, not an empty page: publishing it would
+// look like a vendor removing every range.
+func TestRenderChromeRetriesAnEmptyDocument(t *testing.T) {
+	fastRenderRetries(t)
+	counter := fakeBrowser(t, 0, "")
+
+	if _, err := renderChrome("https://example.test/ips"); err == nil {
+		t.Fatal("an empty document must not be returned as a successful render")
+	}
+	want := fmt.Sprint(len(renderRetryDelays) + 1)
+	if n, _ := os.ReadFile(counter); string(n) != want {
+		t.Errorf("browser ran %s times, want %s", n, want)
 	}
 }
