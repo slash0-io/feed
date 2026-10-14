@@ -278,3 +278,33 @@ func TestAuditRecordRefusesToOverwrite(t *testing.T) {
 		t.Errorf("the finished record was modified:\n%s", got)
 	}
 }
+
+// A vendor document that embeds its own history reports the retired addresses
+// as unpublished on every run. auth0's ip-ranges.json carries a changelog of 29
+// addresses it has withdrawn, and they must never be published. Naming the path
+// answers in one line what otherwise needs a hand check every time.
+func TestJSONGapsAreAttributedToTheirPath(t *testing.T) {
+	body := []byte(`{
+	  "regions": {"US": {"ipv4_cidrs": ["198.51.100.0/24"]}},
+	  "changelog": [{"date": "2017-02-20", "ipv4_cidrs": ["203.0.113.7/32"]}]
+	}`)
+	our4, our6 := splitFamilies([]string{"198.51.100.0/24"})
+
+	var b strings.Builder
+	writeJSONGapSites(&b, body, our4, our6)
+	got := b.String()
+
+	if !strings.Contains(got, "changelog.ipv4_cidrs") {
+		t.Errorf("the retired address was not attributed to changelog:\n%s", got)
+	}
+	if strings.Contains(got, "regions.US") {
+		t.Errorf("a fully published path must not be listed as a gap:\n%s", got)
+	}
+
+	// A body that is not JSON is left to the page-structure section.
+	b.Reset()
+	writeJSONGapSites(&b, []byte("<html><body>203.0.113.7</body></html>"), our4, our6)
+	if b.Len() != 0 {
+		t.Errorf("non-JSON body produced JSON path output:\n%s", b.String())
+	}
+}

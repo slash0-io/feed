@@ -15,6 +15,7 @@ package main
 // what hid Zscaler's announced ranges and Duo's second product.
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"math/big"
@@ -233,6 +234,7 @@ func writeAuditReport(w io.Writer, svc *SourceService, eps []auditEndpoint) {
 		p("")
 		writeCoverage(w, "IPv4", doc4, our4)
 		writeCoverage(w, "IPv6", doc6, our6)
+		writeJSONGapSites(w, e.body, our4, our6)
 
 		if looksHTML(e.body) {
 			writePageStructure(w, e)
@@ -390,6 +392,83 @@ func writeUnionCheck(w io.Writer, eps []auditEndpoint) {
 	for _, l := range lines {
 		p("%s", l)
 	}
+}
+
+// writeJSONGapSites attributes unpublished addresses in a JSON body to the path
+// they sit under. Without it, a document that embeds its own history reports the
+// same flat list every time and trains the reader to skip it: auth0's
+// ip-ranges.json carries a changelog of addresses it has retired, which is 29
+// addresses that correctly must never be published. Saying "all of them are
+// under changelog" answers in one line what otherwise needs a hand check.
+func writeJSONGapSites(w io.Writer, body []byte, our4, our6 addrSet) {
+	var doc any
+	if err := json.Unmarshal(body, &doc); err != nil {
+		return
+	}
+	sites := map[string][]string{}
+	var walk func(path string, v any)
+	walk = func(path string, v any) {
+		switch t := v.(type) {
+		case map[string]any:
+			for k, child := range t {
+				next := k
+				if path != "" {
+					next = path + "." + k
+				}
+				walk(next, child)
+			}
+		case []any:
+			for _, child := range t {
+				walk(path, child)
+			}
+		case string:
+			if _, err := canonCIDR(t); err == nil {
+				sites[path] = append(sites[path], t)
+			}
+		}
+	}
+	walk("", doc)
+	if len(sites) == 0 {
+		return
+	}
+
+	type gapSite struct {
+		path string
+		set  addrSet
+		fam  string
+	}
+	var found []gapSite
+	for path, cidrs := range sites {
+		s4, s6 := splitFamilies(cidrs)
+		if g := s4.minus(our4); !g.empty() {
+			found = append(found, gapSite{path, g, "IPv4"})
+		}
+		if g := s6.minus(our6); !g.empty() {
+			found = append(found, gapSite{path, g, "IPv6"})
+		}
+	}
+	if len(found) == 0 {
+		return
+	}
+	sort.Slice(found, func(i, j int) bool {
+		if found[i].path != found[j].path {
+			return found[i].path < found[j].path
+		}
+		return found[i].fam < found[j].fam
+	})
+	fmt.Fprintf(w, "\nUnpublished addresses by document path:\n")
+	shown := found
+	if len(shown) > auditSample {
+		shown = shown[:auditSample]
+	}
+	for _, f := range shown {
+		fmt.Fprintf(w, "  %-44s %s %s addresses\n", f.path, comma(f.set.size()), f.fam)
+	}
+	if len(found) > len(shown) {
+		fmt.Fprintf(w, "  ... and %d more paths\n", len(found)-len(shown))
+	}
+	fmt.Fprintf(w, "A path holding a vendor's own history (changelog, retired, deprecated)\n")
+	fmt.Fprintf(w, "SHOULD be unpublished. A path naming a product or a region should not be.\n")
 }
 
 // --- page structure: what is on the page that we do not consume -------------
