@@ -763,17 +763,30 @@ services:
     classification: dedicated
     provenance: https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm
     cadence: "periodic as cells are provisioned; Okta docs recommend checking Last-Modified"
+    guard:
+      max_removed_frac: 0.7
+      reason: >
+        The feed did not publish from 2026-09-12 to 2026-10-12, and in that time Okta replaced
+        8 of the 12 addresses in emea_pam_cell_1, so pam-emea loses 67% and trips the default
+        50% guardrail. Verified against the vendor file (Last-Modified 2026-10-13) before
+        accepting: every address on both sides is a single /32, the cell still lists 12, none of
+        the 8 removed addresses moved to another cell, and the file carries 31 cells including
+        five new PAM cells, which a truncated publish would not produce. REMOVE THIS OVERRIDE
+        once the change has published.
     notes: >
       Okta serves each org from one cell, so allowlisting every cell is far broader than any
-      single customer needs: the union is 2068 ranges and firewall-scale, while most individual
+      single customer needs: the union is over 2,000 ranges and firewall-scale, while most individual
       groups are under 150. The purpose keys below are Okta's own product and geography groups,
       copied from the allowlisting page, not our own grouping.
 
-      Two cells, us_cell_20 and us_cell_22, are served in the JSON but appear nowhere in that
-      page, which stops at us_cell_17 (checked 2026-08-28). They are published under their own
-      keys rather than folded into production-us, because assigning them would be a claim about
-      Okta that Okta has not made, and a customer in one of them would get an allowlist missing
-      their own cell. checkOktaCellCoverage fails the build if a further unmapped cell appears.
+      Seven cells are served in the JSON but appear nowhere in that page (checked 2026-10-14):
+      us_cell_20 and us_cell_22, where the page's Production US group stops at us_cell_17, and
+      the PAM cells apac_pam_cell_1, apac_pam_cell_2, ca_pam_cell_1, in_pam_cell_1 and
+      us_pam_cell_2, where the page names only PAM EMEA (emea_pam_cell_1) and PAM US
+      (us_pam_cell_1). Each is published under its own key rather than folded into the nearest
+      named group, because assigning one would be a claim about Okta that Okta has not made, and
+      a customer in that cell would get an allowlist missing their own cell.
+      checkOktaCellCoverage fails the build if a further unmapped cell appears.
 
       "all" is kept as the complete union so nothing is lost by the split.
     endpoints:
@@ -798,6 +811,11 @@ services:
           - {key: pam-emea,             direction: both, select: "cells=emea_pam_cell_1"}
           - {key: us-cell-20,           direction: both, select: "cells=us_cell_20"}
           - {key: us-cell-22,           direction: both, select: "cells=us_cell_22"}
+          - {key: apac-pam-cell-1,      direction: both, select: "cells=apac_pam_cell_1"}
+          - {key: apac-pam-cell-2,      direction: both, select: "cells=apac_pam_cell_2"}
+          - {key: ca-pam-cell-1,        direction: both, select: "cells=ca_pam_cell_1"}
+          - {key: in-pam-cell-1,        direction: both, select: "cells=in_pam_cell_1"}
+          - {key: us-pam-cell-2,        direction: both, select: "cells=us_pam_cell_2"}
     verified: "2026-08-28"
 
   - slug: auth0
@@ -887,6 +905,17 @@ services:
     classification: dedicated
     provenance: https://developers.intercom.com/docs/webhooks
     cadence: "regenerated daily at 09:00 Dublin (documented)"
+    guard:
+      max_removed_frac: 0.65
+      reason: >
+        The feed did not publish from 2026-09-12 to 2026-10-12, so a month of change in
+        Intercom's files arrived as one diff, which tripped the default 50% guardrail. Purpose
+        "all" loses 141 of its 277 addresses (51%) and "all-eu" 54 of 88 (61%). Verified against
+        the vendor files dated 2026-10-14 before accepting: every removed range is a single /32
+        in INTERCOM-GENERAL, and new /32s arrive in the same group (147 US, 49 EU), so the sets
+        are changing rather than shrinking; the one larger block, 18.97.36.0/25, is kept;
+        outbound-webhooks is identical; and the files parse to 156 US and 83 EU ranges, which a
+        truncated publish would not produce. REMOVE THIS OVERRIDE once the change has published.
     endpoints:
       - id: us
         url: https://static.intercomcdn.com/intercom-ips/us/intercom-ip-ranges.json
@@ -1351,9 +1380,14 @@ services:
       applying Trusted Endpoints policies to mobile devices", with no per-deployment binding,
       so it is published whole rather than split.
 
-      mfa now means the MFA service only and is the union of the ten areas. The one range that
-      left it, 13.56.32.240/29, was never MFA and is published under trusted-endpoints, so no
-      coverage is lost.
+      mfa now means the MFA service only and is the union of every area in the table. The one
+      range that left it, 13.56.32.240/29, was never MFA and is published under
+      trusted-endpoints, so no coverage is lost.
+
+      The article dated 2026-09-28 no longer lists UAE in either table (checked 2026-10-14):
+      the Duo Deployments row (DUO81, 51.112.11.128/26 and 16.24.91.0/26) and the Trusted
+      Endpoints range 51.112.11.132/30 are both gone. mfa-uae was therefore withdrawn rather
+      than kept serving ranges Duo no longer lists, and trusted-endpoints drops that one range.
 
       Selectors name their table explicitly because both match on "Data Residency"; picking the
       first would silently serve the other product's ranges if Duo reorders the page.
@@ -1378,7 +1412,6 @@ services:
           - {key: mfa-southeast-asia, direction: egress, select: "table=Duo Deployments;area=Southeast Asia"}
           - {key: mfa-india,         direction: egress, select: "table=Duo Deployments;area=India"}
           - {key: mfa-uk,            direction: egress, select: "table=Duo Deployments;area=UK"}
-          - {key: mfa-uae,           direction: egress, select: "table=Duo Deployments;area=UAE"}
           - {key: trusted-endpoints, direction: egress, select: "table=Trusted Endpoints"}
     verified: "2026-08-28"
 

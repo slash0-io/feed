@@ -82,7 +82,7 @@ func TestRenderedFixturesParseWithoutBrowser(t *testing.T) {
 	}
 	// Counts exclude aggregate purposes, which are the union of the others and
 	// would double-count a split service against itself.
-	want := map[string]int{"duo": 32, "uptimerobot": 205}
+	want := map[string]int{"duo": 29, "uptimerobot": 205}
 	f := NewFetcher("../testdata/fixtures")
 	for _, svc := range reg.Services {
 		n, ok := want[svc.Slug]

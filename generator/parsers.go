@@ -676,7 +676,7 @@ func parseBraintreeIPs(body []byte, sel string) ([]string, error) {
 // the same page: "administrators need to ensure that communication is allowed
 // to reach all of the following Duo MFA service IP blocks for the data
 // residency area for your deployment". Publishing only the union asks everyone
-// to allow all ten areas.
+// to allow every area.
 //
 // Duo also says "we do not recommend locking down your firewall to individual
 // IP addresses because these can and do change over time". Recorded rather
