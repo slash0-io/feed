@@ -763,16 +763,6 @@ services:
     classification: dedicated
     provenance: https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm
     cadence: "periodic as cells are provisioned; Okta docs recommend checking Last-Modified"
-    guard:
-      max_removed_frac: 0.7
-      reason: >
-        The feed did not publish from 2026-09-12 to 2026-10-12, and in that time Okta replaced
-        8 of the 12 addresses in emea_pam_cell_1, so pam-emea loses 67% and trips the default
-        50% guardrail. Verified against the vendor file (Last-Modified 2026-10-13) before
-        accepting: every address on both sides is a single /32, the cell still lists 12, none of
-        the 8 removed addresses moved to another cell, and the file carries 31 cells including
-        five new PAM cells, which a truncated publish would not produce. REMOVE THIS OVERRIDE
-        once the change has published.
     notes: >
       Okta serves each org from one cell, so allowlisting every cell is far broader than any
       single customer needs: the union is over 2,000 ranges and firewall-scale, while most individual
@@ -905,17 +895,6 @@ services:
     classification: dedicated
     provenance: https://developers.intercom.com/docs/webhooks
     cadence: "regenerated daily at 09:00 Dublin (documented)"
-    guard:
-      max_removed_frac: 0.65
-      reason: >
-        The feed did not publish from 2026-09-12 to 2026-10-12, so a month of change in
-        Intercom's files arrived as one diff, which tripped the default 50% guardrail. Purpose
-        "all" loses 141 of its 277 addresses (51%) and "all-eu" 54 of 88 (61%). Verified against
-        the vendor files dated 2026-10-14 before accepting: every removed range is a single /32
-        in INTERCOM-GENERAL, and new /32s arrive in the same group (147 US, 49 EU), so the sets
-        are changing rather than shrinking; the one larger block, 18.97.36.0/25, is kept;
-        outbound-webhooks is identical; and the files parse to 156 US and 83 EU ranges, which a
-        truncated publish would not produce. REMOVE THIS OVERRIDE once the change has published.
     endpoints:
       - id: us
         url: https://static.intercomcdn.com/intercom-ips/us/intercom-ip-ranges.json
