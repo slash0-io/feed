@@ -1686,6 +1686,18 @@ services:
     classification: dedicated
     provenance: https://geofeed.constant.com/
     cadence: "irregular; 'Last Updated' comment in feed; RFC 8805 geofeed"
+    guard:
+      max_removed_frac: 1.0
+      reason: >
+        On 2026-10-20 Vultr removed seven IANA special-purpose blocks from its geofeed, all
+        previously attributed to Lithia Springs, GA: 192.0.2.0/24, 198.51.100.0/24 and
+        203.0.113.0/24 (RFC 5737 documentation), 2001:db8::/32, 2001:2::/48, 2001:10::/28 and
+        2002::/16. 2002::/16 alone is 2^112 addresses, so by address count purpose "all" loses
+        99.999% of its IPv6 and trips the guardrail at any threshold below 1. Verified against
+        the vendor file stamped 2026-10-20 10:07:20 before accepting: those seven are the ONLY
+        rows removed, nothing was added, and every other IPv4 and IPv6 row is unchanged (120
+        IPv4 and 21 IPv6 aggregated ranges remain). REMOVE THIS OVERRIDE once the change has
+        published.
     endpoints:
       - id: geofeed
         url: https://geofeed.constant.com/
