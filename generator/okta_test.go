@@ -79,6 +79,25 @@ func TestOktaFullCoveragePasses(t *testing.T) {
 	}
 }
 
+// An empty cell cannot have a purpose (it would parse to zero ranges), so it
+// must not fail the coverage check either. The same cell gaining a range must.
+func TestOktaEmptyCellNeedsNoPurpose(t *testing.T) {
+	decls := []PurposeDecl{
+		{Key: "all", Select: "*"},
+		{Key: "production-us", Select: "cells=us_cell_1,us_cell_99"},
+		{Key: "production-germany", Select: "cells=emea_cell_1"},
+	}
+	empty := strings.Replace(oktaBody, `"us_cell_99"`, `"us_workflow_cell_5": {"ip_ranges": []}, "us_cell_99"`, 1)
+	if err := checkOktaCellCoverage([]byte(empty), decls); err != nil {
+		t.Fatalf("an empty unclaimed cell must not fail the build: %v", err)
+	}
+	filled := strings.Replace(oktaBody, `"us_cell_99"`, `"us_workflow_cell_5": {"ip_ranges": ["192.0.2.64/26"]}, "us_cell_99"`, 1)
+	err := checkOktaCellCoverage([]byte(filled), decls)
+	if err == nil || !strings.Contains(err.Error(), "us_workflow_cell_5") {
+		t.Fatalf("the same cell with a range must fail the build, got %v", err)
+	}
+}
+
 // A service that has not been partitioned at all keeps working: the check only
 // applies once some purpose starts naming cells.
 func TestOktaCoverageSkippedWhenNotPartitioned(t *testing.T) {

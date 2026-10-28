@@ -763,20 +763,34 @@ services:
     classification: dedicated
     provenance: https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm
     cadence: "periodic as cells are provisioned; Okta docs recommend checking Last-Modified"
+    guard:
+      max_removed_frac: 0.75
+      reason: >
+        Between 2026-10-20 and 2026-10-28 Okta replaced most of the single addresses in every
+        PAM cell, so apac-pam-cell-1 loses 68% (13 of 19) and trips the default 50% guardrail;
+        apac-pam-cell-2, in-pam-cell-1, ca-pam-cell-1, pam-emea and preview-pam lose 56% to
+        67%. Verified against the vendor file (Last-Modified 2026-10-28 18:53:41) before
+        accepting: every address on both sides is a single /32, each cell still lists 18, none
+        of the removed addresses moved to another cell, and the file now carries 52 cells,
+        which a truncated publish would not produce. REMOVE THIS OVERRIDE once the change has
+        published.
     notes: >
       Okta serves each org from one cell, so allowlisting every cell is far broader than any
       single customer needs: the union is over 2,000 ranges and firewall-scale, while most individual
       groups are under 150. The purpose keys below are Okta's own product and geography groups,
       copied from the allowlisting page, not our own grouping.
 
-      Seven cells are served in the JSON but appear nowhere in that page (checked 2026-10-14):
-      us_cell_20 and us_cell_22, where the page's Production US group stops at us_cell_17, and
-      the PAM cells apac_pam_cell_1, apac_pam_cell_2, ca_pam_cell_1, in_pam_cell_1 and
-      us_pam_cell_2, where the page names only PAM EMEA (emea_pam_cell_1) and PAM US
-      (us_pam_cell_1). Each is published under its own key rather than folded into the nearest
-      named group, because assigning one would be a claim about Okta that Okta has not made, and
-      a customer in that cell would get an allowlist missing their own cell.
-      checkOktaCellCoverage fails the build if a further unmapped cell appears.
+      Many cells are served in the JSON but appear nowhere in that page (checked 2026-10-28):
+      us_cell_20 and us_cell_22, where the page's Production US group stops at us_cell_17;
+      emea_cell_3, which no Production group names; the PAM cells apac_pam_cell_1,
+      apac_pam_cell_2, ca_pam_cell_1, in_pam_cell_1 and us_pam_cell_2, where the page names
+      only PAM EMEA (emea_pam_cell_1) and PAM US (us_pam_cell_1); and every *_workflow_cell_*
+      cell, which the page does not mention at all. Each is published under its own key rather
+      than folded into the nearest named group, because assigning one would be a claim about
+      Okta that Okta has not made, and a customer in that cell would get an allowlist missing
+      their own cell. us_workflow_cell_5 is served with no ranges and so has no purpose yet.
+      checkOktaCellCoverage fails the build if a further unmapped cell appears, and skips a
+      cell only while it is empty.
 
       "all" is kept as the complete union so nothing is lost by the split.
     endpoints:
@@ -806,6 +820,26 @@ services:
           - {key: ca-pam-cell-1,        direction: both, select: "cells=ca_pam_cell_1"}
           - {key: in-pam-cell-1,        direction: both, select: "cells=in_pam_cell_1"}
           - {key: us-pam-cell-2,        direction: both, select: "cells=us_pam_cell_2"}
+          - {key: emea-cell-3,          direction: both, select: "cells=emea_cell_3"}
+          - {key: apac-workflow-cell-1, direction: both, select: "cells=apac_workflow_cell_1"}
+          - {key: apac-workflow-cell-2, direction: both, select: "cells=apac_workflow_cell_2"}
+          - {key: ca-workflow-cell-1,   direction: both, select: "cells=ca_workflow_cell_1"}
+          - {key: emea-workflow-cell-1, direction: both, select: "cells=emea_workflow_cell_1"}
+          - {key: emea-workflow-cell-2, direction: both, select: "cells=emea_workflow_cell_2"}
+          - {key: in-workflow-cell-1,   direction: both, select: "cells=in_workflow_cell_1"}
+          - {key: preview-workflow-cell-1, direction: both, select: "cells=preview_workflow_cell_1"}
+          - {key: preview-workflow-cell-2, direction: both, select: "cells=preview_workflow_cell_2"}
+          - {key: preview-workflow-cell-3, direction: both, select: "cells=preview_workflow_cell_3"}
+          - {key: us-workflow-cell-1,   direction: both, select: "cells=us_workflow_cell_1"}
+          - {key: us-workflow-cell-2,   direction: both, select: "cells=us_workflow_cell_2"}
+          - {key: us-workflow-cell-3,   direction: both, select: "cells=us_workflow_cell_3"}
+          - {key: us-workflow-cell-4,   direction: both, select: "cells=us_workflow_cell_4"}
+          - {key: us-workflow-cell-6,   direction: both, select: "cells=us_workflow_cell_6"}
+          - {key: us-workflow-cell-7,   direction: both, select: "cells=us_workflow_cell_7"}
+          - {key: us-workflow-cell-10,  direction: both, select: "cells=us_workflow_cell_10"}
+          - {key: us-workflow-cell-11,  direction: both, select: "cells=us_workflow_cell_11"}
+          - {key: us-workflow-cell-12,  direction: both, select: "cells=us_workflow_cell_12"}
+          - {key: us-workflow-cell-14,  direction: both, select: "cells=us_workflow_cell_14"}
     verified: "2026-08-28"
 
   - slug: auth0
@@ -1492,7 +1526,10 @@ services:
     cadence: "irregular; page carries no version marker"
     notes: >
       Both purposes are ingress: Fivetran reaches into your warehouse and sources, and
-      sends webhook events to your endpoint. The Fivetran Proxy section of the same page
+      sends webhook events to your endpoint. The webhooks purpose reads the section Fivetran
+      now titles "Fivetran application IP addresses" (renamed from "Webhooks users" by
+      2026-10-28, same four ranges), which it also uses for OAuth flows and for setup requests
+      to sources that restrict access by IP. The Fivetran Proxy section of the same page
       is deliberately not published. It routes through wildcard domains whose addresses,
       in the vendor's own words, "may change in the future without notice", so the page
       directs users to resolve those hostnames rather than offering a list.
@@ -1502,8 +1539,8 @@ services:
         format: html-cidr-extract
         detection: {poll: docs-page}
         purposes:
-          - {key: sync,     direction: ingress, select: "section=Fivetran IP Addresses;exclude=Webhooks users"}
-          - {key: webhooks, direction: ingress, select: "section=Webhooks users"}
+          - {key: sync,     direction: ingress, select: "section=Fivetran IP Addresses;exclude=Fivetran application IP addresses"}
+          - {key: webhooks, direction: ingress, select: "section=Fivetran application IP addresses"}
     verified: "2026-07-30"
 
   - slug: dbt-cloud
@@ -1686,18 +1723,6 @@ services:
     classification: dedicated
     provenance: https://geofeed.constant.com/
     cadence: "irregular; 'Last Updated' comment in feed; RFC 8805 geofeed"
-    guard:
-      max_removed_frac: 1.0
-      reason: >
-        On 2026-10-20 Vultr removed seven IANA special-purpose blocks from its geofeed, all
-        previously attributed to Lithia Springs, GA: 192.0.2.0/24, 198.51.100.0/24 and
-        203.0.113.0/24 (RFC 5737 documentation), 2001:db8::/32, 2001:2::/48, 2001:10::/28 and
-        2002::/16. 2002::/16 alone is 2^112 addresses, so by address count purpose "all" loses
-        99.999% of its IPv6 and trips the guardrail at any threshold below 1. Verified against
-        the vendor file stamped 2026-10-20 10:07:20 before accepting: those seven are the ONLY
-        rows removed, nothing was added, and every other IPv4 and IPv6 row is unchanged (120
-        IPv4 and 21 IPv6 aggregated ranges remain). REMOVE THIS OVERRIDE once the change has
-        published.
     endpoints:
       - id: geofeed
         url: https://geofeed.constant.com/

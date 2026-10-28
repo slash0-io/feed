@@ -384,8 +384,12 @@ func checkOktaCellCoverage(body []byte, purposes []PurposeDecl) error {
 		return nil
 	}
 	var missing []string
-	for name := range d {
-		if !claimed[name] {
+	for name, ranges := range d {
+		// An empty cell has no addresses to lose, and a purpose for it would parse
+		// to zero ranges, which is a build error of its own. Okta published
+		// us_workflow_cell_5 empty on 2026-10-22. The cell is caught here the
+		// moment it gains a range.
+		if !claimed[name] && len(ranges) > 0 {
 			missing = append(missing, name)
 		}
 	}
