@@ -47,7 +47,6 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 |---|---|---|---|---|
 | `braintree` | Braintree (PayPal) | dedicated | `api` (egress), `sandbox` (egress) | [official ↗](https://developer.paypal.com/braintree/docs/reference/general/braintree-ip-addresses) |
 | `checkout-com` | Checkout.com | mixed | `webhooks` (ingress) | [official ↗](https://www.checkout.com/docs/developer-resources/ip-addresses) |
-| `paypal` | PayPal | dedicated | `all` (both) | [official ↗](https://www.paypal.com/us/cshelp/article/what-are-the-internet-protocol-ip-addresses-for-paypal-server-endpoints-ts1056) |
 | `plaid` | Plaid | dedicated | `webhooks` (ingress) | [official ↗](https://plaid.com/docs/api/webhooks/) |
 | `stripe` | Stripe | dedicated | `api` (egress), `terminal` (egress), `webhooks` (ingress) | [official ↗](https://docs.stripe.com/ips) |
 | `wise` | Wise | dedicated | `webhooks-sandbox` (ingress), `webhooks` (ingress) | [official ↗](https://docs.wise.com/api-docs/features/webhooks-notifications) |
@@ -148,6 +147,7 @@ Published in the feed (`index.json` → `nonPublishers`) so tooling can surface 
 
 | Service | Vendor position |
 |---|---|
+| PayPal | Recommends DNS over allowlisting: 'we recommend using Domain Name Service (DNS) results with default Time To Live (TTL) values to determine IP addresses of our servers. We do not recommend adding IP addresses to an allow list.' The same help article lists ranges for anyone who must allowlist, but as of 2026-11-16 the help center refuses automated clients, so that list cannot be kept current and is not published here. |
 | Twilio (REST API + webhooks) | IPs 'highly dynamic, and span a large range, so it's impractical to list each of them'; they recommend allowing outbound HTTPS to any *.twilio.com subdomain instead. SIP trunking IS pinnable, see the twilio-sip service. |
 | Adyen | No IP list; allowlist out.adyen.com or resolve it via DNS hourly (their words). |
 | SendGrid (webhooks/parse) | Dynamic cloud infra; use signed webhooks, not IP allowlists. |

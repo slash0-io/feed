@@ -1691,22 +1691,6 @@ services:
           - {key: webhooks, direction: ingress, select: "way=egress"}
     verified: "2026-07-10"
 
-  - slug: paypal
-    name: PayPal
-    category: payments
-    classification: dedicated
-    provenance: https://www.paypal.com/us/cshelp/article/what-are-the-internet-protocol-ip-addresses-for-paypal-server-endpoints-ts1056
-    cadence: "irregular; PayPal recommends DNS resolution and publishes ranges 'if you must allowlist' (their wording)"
-    notes: "Single help article covers live + sandbox API endpoints and IPN/webhook sources; ranges not separated by purpose on the page."
-    endpoints:
-      - id: docs
-        url: https://www.paypal.com/us/cshelp/article/what-are-the-internet-protocol-ip-addresses-for-paypal-server-endpoints-ts1056
-        format: html-cidr-extract
-        detection: {poll: docs-page}
-        purposes:
-          - {key: all, direction: both, select: "section=What are the Internet Protocol"}
-    verified: "2026-07-10"
-
   - slug: vultr
     name: Vultr (Constant, AS20473)
     category: cloud
@@ -1726,6 +1710,10 @@ services:
 # Verified vendor positions. These are surfaced in the feed as `pinnable: false`
 # with the vendor's recommended alternative: the catalog covers what you cannot pin, too.
 non_publishers:
+  - slug: paypal
+    name: PayPal
+    evidence: https://www.paypal.com/us/cshelp/article/what-are-the-internet-protocol-ip-addresses-for-paypal-server-endpoints-ts1056
+    vendor_position: "Recommends DNS over allowlisting: 'we recommend using Domain Name Service (DNS) results with default Time To Live (TTL) values to determine IP addresses of our servers. We do not recommend adding IP addresses to an allow list.' The same help article lists ranges for anyone who must allowlist, but as of 2026-11-16 the help center refuses automated clients, so that list cannot be kept current and is not published here."
   - slug: twilio
     name: Twilio (REST API + webhooks)
     evidence: https://help.twilio.com/articles/115015934048
