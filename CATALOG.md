@@ -117,7 +117,7 @@ shared or dynamic · `cdn-shared` = shared CDN ranges (pinning allowlists the wh
 |---|---|---|---|---|
 | `atlassian` | Atlassian Cloud | dedicated | `all` (both), `bitbucket` (both), `egress` (ingress) | [official ↗](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/) |
 | `docusign` | DocuSign | mixed | `connect-webhooks` (ingress), `email` (ingress) | [official ↗](https://www.docusign.com/trust/security/esignature) |
-| `hubspot` | HubSpot | dedicated | `api` (ingress), `crawlers` (ingress), `dns` (ingress), `email` (ingress) | [official ↗](https://developers.hubspot.com/docs/api-reference/2026-09-beta/account/ip-ranges/guide) |
+| `hubspot` | HubSpot | dedicated | `api` (ingress), `crawlers` (ingress), `dns` (ingress), `email` (ingress) | [official ↗](https://developers.hubspot.com/docs/api-reference/latest/account/ip-ranges/guide) |
 | `make` | Make | mixed | `platform` (ingress) | [official ↗](https://help.make.com/allow-connections-to-and-from-make-ip-addresses) |
 | `microsoft-365` | Microsoft 365 | mixed | `common` (egress), `exchange` (egress), `sharepoint` (egress), `teams` (egress) | [official ↗](https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-ip-web-service) |
 | `netsuite-connector` | Oracle NetSuite Connector | dedicated | `connector` (ingress) | [official ↗](https://docs.oracle.com/en/cloud/saas/netsuite/ns-online-help/section_162859452018.html) |

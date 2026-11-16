@@ -763,17 +763,6 @@ services:
     classification: dedicated
     provenance: https://help.okta.com/en-us/content/topics/security/ip-address-allow-listing.htm
     cadence: "periodic as cells are provisioned; Okta docs recommend checking Last-Modified"
-    guard:
-      max_removed_frac: 0.75
-      reason: >
-        Between 2026-10-20 and 2026-10-28 Okta replaced most of the single addresses in every
-        PAM cell, so apac-pam-cell-1 loses 68% (13 of 19) and trips the default 50% guardrail;
-        apac-pam-cell-2, in-pam-cell-1, ca-pam-cell-1, pam-emea and preview-pam lose 56% to
-        67%. Verified against the vendor file (Last-Modified 2026-10-28 18:53:41) before
-        accepting: every address on both sides is a single /32, each cell still lists 18, none
-        of the removed addresses moved to another cell, and the file now carries 52 cells,
-        which a truncated publish would not produce. REMOVE THIS OVERRIDE once the change has
-        published.
     notes: >
       Okta serves each org from one cell, so allowlisting every cell is far broader than any
       single customer needs: the union is over 2,000 ranges and firewall-scale, while most individual
@@ -1019,7 +1008,7 @@ services:
     name: HubSpot
     category: business-saas
     classification: dedicated
-    provenance: https://developers.hubspot.com/docs/api-reference/2026-09-beta/account/ip-ranges/guide
+    provenance: https://developers.hubspot.com/docs/api-reference/latest/account/ip-ranges/guide
     cadence: "vendor states the returned ranges change over time and asks consumers to re-fetch regularly"
     notes: >
       Reclassified 2026-07-30 from non-publisher to publisher. HubSpot now serves
@@ -1033,12 +1022,13 @@ services:
       HubSpot publishes only its outbound addresses. The destination ranges for
       api.hubapi.com are still not published, so this does not help anyone trying
       to restrict egress TO HubSpot; that side remains unpinnable by address.
-      The endpoint path carries a beta marker and HubSpot flags the feature as
-      beta, so treat a 404 here as a vendor move rather than an outage.
+      HubSpot retired the 2026-09-beta path by 2026-11-16 (it returns 404) and its guide
+      now names /meta/network-origins/2026-09/ip-ranges. The path is dated, so treat a 404
+      here as a vendor version move rather than an outage, and look for the newer date.
       No ETag or Last-Modified, so detection is a content hash. IPv4 only.
     endpoints:
       - id: ranges
-        url: https://api.hubapi.com/meta/network-origins/2026-09-beta/ip-ranges
+        url: https://api.hubapi.com/meta/network-origins/2026-09/ip-ranges
         format: hubspot-ranges
         detection: {poll: hash}
         purposes:

@@ -95,7 +95,7 @@ published here, so it scores none.
 | [Google Cloud Platform](https://knowledge.workspace.google.com/admin/security/obtain-google-ip-address-ranges) | JSON | conditional GET | none documented | none | egress |
 | [Grafana Cloud](https://grafana.com/docs/grafana-cloud/security-and-account-management/allow-list/) | text | full download | none documented | none | ingress |
 | [Hightouch](https://hightouch.com/docs/security/networking) | docs page | page extraction | none documented | none | ingress |
-| [HubSpot](https://developers.hubspot.com/docs/api-reference/2026-09-beta/account/ip-ranges/guide) | JSON | full download | none documented | none | ingress |
+| [HubSpot](https://developers.hubspot.com/docs/api-reference/latest/account/ip-ranges/guide) | JSON | full download | none documented | none | ingress |
 | [IBM Cloud (Classic infrastructure)](https://cloud.ibm.com/docs/infrastructure-hub?topic=infrastructure-hub-ibm-cloud-ip-ranges) | docs page | page extraction | none documented | none | egress |
 | [Intercom](https://developers.intercom.com/docs/webhooks) | JSON | conditional GET | none documented | none | egress + ingress |
 | [Klaviyo](https://help.klaviyo.com/hc/en-us/articles/19143781289115) | JSON | full download | none documented | none | ingress |
